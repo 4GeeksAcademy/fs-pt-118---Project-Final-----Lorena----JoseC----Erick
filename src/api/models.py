@@ -40,7 +40,7 @@ class User(db.Model):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Definimos el campo 'role' como un Enum con valores 'user' y 'admin'
-    role: Mapped[RoleEnum] = mapped_column(SqlEnum(RoleEnum),
+    role: Mapped[RoleEnum] = mapped_column(SqlEnum(RoleEnum, native_enum = False),
                                             default=RoleEnum.USER, 
                                             nullable=False)
     # relaciones con otras tablas eventos
@@ -71,7 +71,11 @@ class User(db.Model):
             "role": self.role.value,
             "user_name": self.user_name,
             "created_at": self.created_at.isoformat() if self.created_at else None,
-            #"events_created": ["ev" for in "events_created"] if self.events_created else [],
+            "events_created": [event.serialize() for event in self.events_created] if self.events_created else [],
+            "groups_created": [group.serialize() for group in self.groups_created] if self.groups_created else [],
+            "comments": [comment.serialize() for comment in self.comments] if self.comments else [],
+            "reservations": [reservation.serialize() for reservation in self.reservations] if self.reservations else [],
+            "favorite_events": [event.serialize() for event in self.favorite_events] if self.favorite_events else []
         }
     
 class Events(db.Model):
@@ -164,7 +168,11 @@ class Groups(db.Model):
             "id": self.id,
             "name": self.name,
             "user_id": self.user_id,
+            "avatar": self.avatar,
+            "owner_name": self.owner.user_name if self.owner else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "members_count": len(self.members or []),
+            "members": [{"id": u.id, "user_name": u.user_name} for u in (self.members or [])],
         }
 
 # Tabla intermedia para la relación muchos a muchos entre usuarios y grupos
@@ -181,8 +189,8 @@ class UsersGroups(db.Model):
     group_id: Mapped[Optional[int]] = mapped_column(ForeignKey("groups.id",ondelete="CASCADE"), nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    #  agrego rol del usuario dentro del grupo (por ejemplo, "viewer", "captain", "player")
-    role: Mapped[str] = mapped_column(String(30), nullable=False, default="captain")
+    #  agrego rol del usuario dentro del grupo (por ejemplo, "player")
+    role: Mapped[str] = mapped_column(String(30), nullable=False, default="player")
     # guardamos la fecha en que el usuario se unió al grupo
     joined_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
     
@@ -279,7 +287,7 @@ class Reservations(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    participant: Mapped[ParticipantType] = mapped_column(SqlEnum(ParticipantType),
+    participant: Mapped[ParticipantType] = mapped_column(SqlEnum(ParticipantType, native_enum = False),
                                                         default=ParticipantType.VIEWER, 
                                                         nullable=False)
     status: Mapped[ReservationStatus] = mapped_column(
