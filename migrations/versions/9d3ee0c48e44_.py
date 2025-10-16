@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c5cf6f2ff31e
+Revision ID: 9d3ee0c48e44
 Revises: 
-Create Date: 2025-10-14 19:06:58.945007
+Create Date: 2025-10-15 18:46:13.467738
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c5cf6f2ff31e'
+revision = '9d3ee0c48e44'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('password_hash', sa.String(length=255), nullable=False),
     sa.Column('user_name', sa.String(length=50), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('role', sa.Enum('USER', 'ADMIN', name='roleenum'), nullable=False),
+    sa.Column('role', sa.Enum('USER', 'ADMIN', name='roleenum', native_enum=False), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('user_name')
@@ -87,7 +87,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('notes', sa.Text(), nullable=True),
-    sa.Column('participant', sa.Enum('PLAYER', 'VIEWER', 'CAPTAIN', name='participanttype'), nullable=False),
+    sa.Column('participant', sa.Enum('PLAYER', 'VIEWER', 'CAPTAIN', name='participanttype', native_enum=False), nullable=False),
     sa.Column('status', sa.Enum('PENDING', 'APPROVED', 'REJECTED', name='reservationstatus', native_enum=False), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('event_id', sa.Integer(), nullable=False),
