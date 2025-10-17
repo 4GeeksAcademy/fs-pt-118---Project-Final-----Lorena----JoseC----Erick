@@ -1,4 +1,45 @@
-from flask import jsonify, url_for
+from flask import jsonify, url_for, current_app
+from itsdangerous import URLSafeTimedSerializer
+import os
+from flask_mail import Message
+
+
+
+
+def generate_reset_token(email):
+    s = URLSafeTimedSerializer(os.getenv("JWT_SECRET_KEY"))
+    return s.dumps(email, salt="password-reset")
+
+def verify_reset_token(token, expiration=900):
+    s = URLSafeTimedSerializer(os.getenv("JWT_SECRET_KEY"))
+    try:
+        email = s.loads(token, salt="password-reset", max_age=expiration)
+        return email
+    except Exception:
+        return None
+
+
+
+def send_reset_email(user):
+    token = generate_reset_token(user.email)
+    reset_url = f"{os.getenv('FRONTEND_URL')}/reset-password?token={token}"
+
+    msg = Message(
+        subject="Recuperación de contraseña",
+        sender=current_app.config['MAIL_USERNAME'],
+        recipients=[user.email]
+    )
+    msg.body = f"""Hello {user.user_name},
+
+We received a request to reset your password. Click the link below to proceed:
+
+{reset_url}
+
+This link will expire in 15 minutes. If you did not request this change, you can ignore this message.
+"""
+    current_app.extensions['mail'].send(msg)
+
+
 
 class APIException(Exception):
     status_code = 400
