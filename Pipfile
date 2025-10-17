@@ -21,6 +21,7 @@ wtforms = "==3.1.2"
 sqlalchemy = "*"
 psycopg2-binary = "*"
 flask-mail = "*"
+itsdangerous = "*"
 
 [requires]
 python_version = "3.13"
