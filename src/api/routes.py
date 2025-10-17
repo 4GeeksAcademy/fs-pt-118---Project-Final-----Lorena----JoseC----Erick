@@ -221,9 +221,6 @@ def delete_user(id):
         db.session.rollback()
     return jsonify({"error": "Internal server error"}), 500
 
-
-
-
 @api.route('/forgot-password', methods=['POST'])
 def forgot_password():
     data = request.get_json()

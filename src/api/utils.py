@@ -4,8 +4,6 @@ import os
 from flask_mail import Message
 
 
-
-
 def generate_reset_token(email):
     s = URLSafeTimedSerializer(os.getenv("JWT_SECRET_KEY"))
     return s.dumps(email, salt="password-reset")
@@ -17,8 +15,6 @@ def verify_reset_token(token, expiration=900):
         return email
     except Exception:
         return None
-
-
 
 def send_reset_email(user):
     token = generate_reset_token(user.email)

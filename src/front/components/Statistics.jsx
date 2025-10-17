@@ -20,7 +20,7 @@ const Statistics = () => {
     };
 
     const overlayStyle = {
-        backgroundColor: "rgba(180, 177, 177, 0.63)",
+        backgroundColor: "rgba(180, 177, 177, 0.35)",
         padding: "1.5rem",
         position: "relative",
     };
@@ -38,7 +38,7 @@ const Statistics = () => {
 
                 <div style={overlayStyle}>
                     <div className="card-header text-center bg-transparent border-0">
-                        <h3 className="text-white display-5"> STATISTICS</h3>
+                        <h2 className="text-white display-5"> STATISTICS</h2>
                         <i className="fa-solid fa-chart-line display-5"></i>
                     </div>
 

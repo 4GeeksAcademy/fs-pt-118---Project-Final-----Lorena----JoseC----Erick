@@ -1,5 +1,6 @@
-import { useSearchParams, Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
+import userServices from '../Services/userServices';
 
 const ResetPassword = () => {
     const [searchParams] = useSearchParams();
@@ -8,8 +9,9 @@ const ResetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [msg, setMsg] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
@@ -18,16 +20,24 @@ const ResetPassword = () => {
         }
 
         setError('');
+        setMsg('');
 
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/reset-password`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, new_password: newPassword })
-        });
-
-        const data = await res.json();
-        setMsg(data.msg || 'Password updated');
+        userServices.requestPasswordReset(token, newPassword)
+            .then(data => {
+                if (data.msg === "Password updated successfully") {
+                    setMsg("Password updated successfully");
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 3000);
+                } else {
+                    setError(data.msg || "Error updating password");
+                }
+            })
+            .catch(() => {
+                setError("Error connecting to server");
+            });
     };
+
 
     return (
         <div className='row'>
