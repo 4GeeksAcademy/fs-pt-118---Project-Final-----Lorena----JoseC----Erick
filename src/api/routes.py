@@ -8,6 +8,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
+from .utils import verify_reset_token, send_reset_email
+
 
 api = Blueprint('api', __name__)
 
@@ -218,3 +220,44 @@ def delete_user(id):
     except:
         db.session.rollback()
     return jsonify({"error": "Internal server error"}), 500
+
+
+
+
+@api.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"msg": "Email required"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    send_reset_email(user)
+    return jsonify({"msg": "Recovery email sent"}), 200
+
+
+@api.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    token = data.get("token")
+    new_password = data.get("new_password")
+
+    if not token or not new_password:
+        return jsonify({"msg": "Missing fields"}), 400
+
+    email = verify_reset_token(token)
+    if not email:
+        return jsonify({"msg": "The token is invalid or has expired"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    user.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({"msg": "Password updated successfully"}), 200
