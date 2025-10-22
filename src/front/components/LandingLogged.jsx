@@ -3,7 +3,8 @@ import EventsServices from "../Services/EventsServices";
 
 const LandingLogged = () => {
 
-
+    const [errorMsg, setErrorMsg] = useState("");
+    const [okMsg, setOkMsg] = useState("");
 
     const [formData, setFormData] = useState({
         name: "",
@@ -19,7 +20,20 @@ const LandingLogged = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        EventsServices.PostEvents(formData).then(data => console.log(data))
+        EventsServices.PostEvents(formData).then(data => {
+            if (data?.success) {
+                setOkMsg("event created successfully")
+                setTimeout(() => {
+                    setOkMsg("")
+                }, 3000);
+            } else {
+                setErrorMsg("error event created")
+                setTimeout(() => {
+                    setErrorMsg("")
+                }, 3000);
+            }
+
+        })
     }
 
 
@@ -42,45 +56,92 @@ const LandingLogged = () => {
                     <h1 className="p-5 text-shadow">You can send us requests for all kinds of <br /> sporting events</h1>
                 </div>
             </div>
-            <div className="p-5 formgroup m-auto my-5 row">
-                <div className="col-sm-12 col-md-8 col-lg-5 container colorform p-3 border border-black rounded-5">
-                    <h1 className="text-center">New Event</h1>
-                    <h4 className="text-center">Your request</h4>
-                    <form method="POST" action="/create-event row col-12"
-                        onSubmit={handleSubmit}
-                        className="container border border-black rounded-5 p-3 form">
-                        <div className="col-sm-12 col-md-12 col-lg-12">
 
-                            <label htmlFor="name" className="form-label">Name</label>
-                            <input type="text" className="form-control"
-                                id="name" name="name"
-                                placeholder="Name" required
-                                value={formData.name}
+            <div className="row mx-2">
+                <form
+                    method="POST"
+                    action="/create-event"
+                    onSubmit={handleSubmit}
+                    className="mx-auto my-5 p-4 rounded-4 shadow-lg bg-gradient bg-light form modal-content colorModals col-12"
+                    style={{ maxWidth: "600px", background: "linear-gradient(135deg, #f8f9fa, #e9ecef)" }}
+                >
+                    <h1 className="text-center">New Event</h1>
+                    {okMsg && <div className="alert alert-success">{okMsg}</div>}
+                    {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
+                    <h2 className="text-center mb-4 fw-bold text-primary">
+                        🗓️ Create Event
+                    </h2>
+
+                    <div className="mb-3">
+                        <label htmlFor="name" className="form-label fw-semibold">Event Name</label>
+                        <input
+                            type="text"
+                            className="form-control border-primary shadow-sm"
+                            id="name"
+                            name="name"
+                            placeholder="e.g. Team Sync"
+                            required
+                            value={formData.name}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="start_time" className="form-label fw-semibold">Start</label>
+                            <input
+                                type="datetime-local"
+                                className="form-control border-success shadow-sm"
+                                id="start_time"
+                                name="start_time"
+                                required
+                                value={formData.start_time}
                                 onChange={handleChange}
                             />
                         </div>
-                        <label htmlFor="start_time" className="form-label">Start time</label>
-                        <input type="datetime-local" className="form-control"
-                            id="start_time" name="start_time" required
-                            value={formData.start_time}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="end_time" className="form-label">End time</label>
-                        <input type="datetime-local" className="form-control"
-                            id="end_time" name="end_time" required
-                            value={formData.end_time}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="description" className="form-label">Description</label>
-                        <textarea className="form-control" id="description"
-                            name="description" placeholder="Description"
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="end_time" className="form-label fw-semibold">End</label>
+                            <input
+                                type="datetime-local"
+                                className="form-control border-danger shadow-sm"
+                                id="end_time"
+                                name="end_time"
+                                required
+                                value={formData.end_time}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="description" className="form-label fw-semibold">Details</label>
+                        <textarea
+                            className="form-control border-info shadow-sm"
+                            id="description"
+                            name="description"
+                            rows="3"
+                            placeholder="Add a short description..."
                             value={formData.description}
                             onChange={handleChange}
                         ></textarea>
-                        <input type="submit" value="Send" className="my-3 w-100 rounded bg-dark text-white" />
-                    </form>
-                </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="btn w-100 py-2 fw-bold text-white"
+                        style={{
+                            background: "linear-gradient(90deg, #0d6efd, #6610f2)",
+                            border: "none",
+                            transition: "transform 0.2s ease-in-out"
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
+                        onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                    >
+                        🚀 Submit Event
+                    </button>
+                </form>
             </div>
+
         </>
     )
 }

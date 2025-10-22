@@ -289,7 +289,8 @@ def create_event():
             end_time=end_time,
             creator_id=creator_id,
         )
-
+        db.session.flush()
+        #generar registro de nuevo evento y usuario en user_event
         db.session.add(new_event)
         db.session.commit()
         return jsonify({"success": True, "data": "user create event"}), 201

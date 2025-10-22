@@ -150,7 +150,7 @@ class Groups(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     avatar: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    descriptionG: Mapped[Optional[str]] = mapped_column(Text, nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id',ondelete="CASCADE"),  nullable=False)  # un usuario crea el equipo
@@ -170,7 +170,7 @@ class Groups(db.Model):
             "name": self.name,
             "user_id": self.user_id,
             "avatar": self.avatar,
-            "descriptionG": self.descriptionG,
+            "description": self.description,
             "owner_name": self.owner.user_name if self.owner else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "members_count": len(self.members or []),

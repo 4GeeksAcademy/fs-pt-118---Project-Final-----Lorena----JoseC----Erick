@@ -46,9 +46,9 @@ def seed_data():
     db.session.commit()
 
     # --- Groups ---
-    g1 = Groups(name="Team Alpha", user_id=u2.id)
-    g2 = Groups(name="Team Bravo", user_id=u3.id)
-    g3 = Groups(name="Team Omega", user_id=u4.id)
+    g1 = Groups(name="Team Alpha", user_id=u2.id, description="descripcion 1")
+    g2 = Groups(name="Team Bravo", user_id=u3.id, description="descripcion 1")
+    g3 = Groups(name="Team Omega", user_id=u4.id, description="descripcion 1")
 
     db.session.add_all([g1, g2, g3])
     db.session.commit()

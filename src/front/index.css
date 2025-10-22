@@ -72,15 +72,18 @@
 }
 
 .formgroup{
-  
   width: 80%;
 }
 .form{
   background-color: #3333336b;
 }
+.colorevent {
+  background-color: rgba(216, 216, 216, 0.756);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
 
 .colorform{
-background-color: #6753aa4a;
+background: linear-gradient(145deg, #1E2A47 0%, #2C4576 100%)
 }
 /* inputs DENTRO del modal */
 .colorModals .form-control {
@@ -395,4 +398,9 @@ background-color: #6753aa4a;
 }
 .text-shadow {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/*estilo del icono de estadisticas*/
+.fa-chart-line{
+    font-size: 3rem;
 }
