@@ -47,11 +47,12 @@
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
-  backdrop-filter: blur(6px);                           
+  -webkit-backdrop-filter-: blur(6px);                           
   transition: all 0.3s ease;
   min-width: 160px;
   margin-top: 10px;
 }
+
 .btn-transparente:hover {
   background-color: rgba(255, 255, 255, 0.5); 
   color: #333333;                             
