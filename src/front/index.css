@@ -10,6 +10,78 @@
   padding: 2rem 1rem;
 }
 
+/*fondo del div principal del landing*/
+.backgroundimg{
+  background-image: url("https://img.freepik.com/foto-gratis/herramientas-deportivas_53876-138077.jpg?t=st=1760846561~exp=1760850161~hmac=8005ddfa91b70064320c7d9c9190402ca39abd7d2176e32282d9628a7e0c1416&w=1480");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;     
+  text-align: center;
+}
+.backgroundimgLogged{
+  background-image: url("https://media.istockphoto.com/id/1141191007/es/vector/deportes-conjunto-de-deportistas-de-diversas-disciplinas-deportivas-siluetas-vectoriales.jpg?s=2048x2048&w=is&k=20&c=YyBX-jcAYWNYLkeErwG7el8ymclr2BuZfjBnq337SkI=");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;     
+  text-align: center;
+}
+
+/*botones dentro del landing*/
+.btn-transparente {
+  background-color: rgba(255, 255, 255, 0.32);
+  color: #0D0C0C;                             
+  border: 2px solid #A58B8B;                  
+  border-radius: 10px;                       
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  backdrop-filter: blur(6px);                           
+  transition: all 0.3s ease;
+  min-width: 160px;
+  margin-top: 10px;
+}
+.btn-transparente:hover {
+  background-color: rgba(255, 255, 255, 0.5); 
+  color: #333333;                             
+  border-color: #333333;                              
+}
+
+/*estilos emojis landing*/
+.emoji{
+  font-size: 15vh;
+}
+.text-shadow {
+  text-shadow: 2px 2px 4px rgb(0, 0, 0);
+}
+.title {
+  font-weight: 900;
+  font-size: 2.8rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.formgroup{
+  
+  width: 80%;
+}
+.form{
+  background-color: #3333336b;
+}
+
+.colorform{
+background-color: #6753aa4a;
+}
 /* inputs DENTRO del modal */
 .colorModals .form-control {
   background-color: rgba(255, 255, 255, 0.10); 
