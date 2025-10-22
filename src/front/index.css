@@ -1,8 +1,323 @@
-.newpassword{
-    max-width: 400px; 
-    margin: auto; 
-    padding: 20px;
-    background: #2c457683;
-    border-radius: 20px;
+/* ------------------------------solo aplica a modal-content------------------------------------------------- */
+.modal-content.colorModals {
+  max-width: 25rem;
+  margin: auto;
+  background: linear-gradient(145deg, #1E2A47 0%, #2C4576 100%) !important;
+  border: none !important;
+  border-radius: 18px !important;
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  padding: 2rem 1rem;
 }
 
+/* inputs DENTRO del modal */
+.colorModals .form-control {
+  background-color: rgba(255, 255, 255, 0.10); 
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  color: #fff;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+}
+
+/* placeholder SOLO dentro del modal */
+.colorModals .form-control::placeholder {
+  color: #C7D3ED;
+  opacity: 0.8;
+}
+
+/* focus SOLO dentro del modal */
+.colorModals .form-control:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #00A8E8;
+  box-shadow: 0 0 0 0.2rem rgba(0, 168, 232, 0.25);
+  color: #fff;
+}
+
+/* boton principal SOLO dentro del modal */
+.colorModals .btn-dark {
+  background-color: #00A8E8;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.colorModals .btn-dark:hover {
+  background-color: #0090CC;
+}
+
+/* links / textos SOLO dentro del modal */
+.colorModals .btn-link,
+.colorModals .form-text,
+.colorModals .alert {
+  color: #C7D3ED !important;
+}
+
+/* -------------------------------estilos paguina de restablecer contraseña----------------------------------------------------*/
+
+/* contenedor centrado a pantalla completa */
+.authShell {
+  min-height: calc(100dvh - 120px); 
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+/* “card” con el mismo estilo que .colorModals  */
+.authCard {
+  width: 100%;
+  max-width: 25rem;
+  background: linear-gradient(145deg, #1E2A47 0%, #2C4576 100%);
+  border: none;
+  border-radius: 18px;
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  padding: 1.25rem;
+}
+
+/* titulo */
+.authCard .title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+/* mensajes */
+.authCard .alert {
+  margin-bottom: 1rem;
+}
+
+/* inputs (mismo estilo que .colorModals .form-control) */
+.authCard .form-control {
+  background-color: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.20);
+  color: #fff;
+  border-radius: 10px;
+  padding: .6rem 1rem;
+}
+
+.authCard .form-control::placeholder {
+  color: #C7D3ED;
+  opacity: .8;
+}
+
+.authCard .form-control:focus {
+  background-color: rgba(255,255,255,.15);
+  border-color: #00A8E8;
+  box-shadow: 0 0 0 .2rem rgba(0,168,232,.25);
+  color: #fff;
+}
+
+/* boton */
+.authCard .btn-dark {
+  background-color: #00A8E8;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all .3s ease;
+}
+
+.authCard .btn-dark:hover {
+  background-color: #0090CC;
+}
+
+/* Link inferior */
+.authCard .btn-link {
+  color: #C7D3ED !important;
+  padding: 0;
+  text-decoration: underline;
+}
+/*------------------------------------------------------- alertas----------------------------------------------------- */
+.alert {
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.9rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  -webkit-backdrop-filter-: blur(6px);
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+.alert-success {
+  background: rgba(46, 204, 112, 0.6); 
+  color: #2ecc71; 
+  border: 1px solid rgba(46, 204, 113, 0.25);
+  box-shadow: 0 2px 12px rgba(46, 204, 113, 0.15);
+}
+.alert-danger {
+  background: rgba(144, 19, 5, 0.491); 
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.25);
+  box-shadow: 0 2px 12px rgba(231, 76, 60, 0.15);
+}
+.alert button.btn-close {
+  filter: invert(1) brightness(2);
+  opacity: 0.7;
+}
+.alert button.btn-close:hover {
+  opacity: 1;
+}
+.alert {
+  animation: fadeInAlert 0.4s ease-in-out;
+}
+.alert-fade {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.alert-fade.hidden {
+  opacity: 0;
+}
+
+/* ---------------------------------- NAVBAR ESTADOS-ESTILOS ---------------------------------- */
+/* Home sin scroll → transparente */
+.navbar-transparent {
+  background: transparent !important;
+  box-shadow: none !important;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 10;
+  transition: background-color .3s ease, box-shadow .3s ease;
+}
+
+/* En navbar transparente, los textos deben ser claros */
+.navbar-transparent .navbar-brand,
+.navbar-transparent .nav-link,
+.navbar-transparent .btn,
+.navbar-transparent .brand-text {
+  color: #fff !important;
+}
+
+.navbar-transparent .nav-link:hover {
+  color: #00A8E8 !important;
+}
+
+/* Home con scroll o rutas */
+.navbar-solid {
+  background: rgba(255, 255, 255, 0.92) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+  transition: background-color .3s ease, box-shadow .3s ease;
+}
+.navbar-solid .brand-text { color: #1E2A47; }
+
+/* ---------- LINKS MODERNOS (Teams / Events) ---------- */
+.nav-modern {
+  position: relative;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  padding-bottom: 4px;
+  transition: color .25s ease, opacity .25s ease;
+}
+/* Subrayado animado gradiente siempre */
+.nav-modern::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px; width: 0%;
+  background: linear-gradient(90deg, rgba(5,3,136,1) 32%, rgba(244,51,55,1) 100%);
+  transition: width .25s ease;
+}
+
+/* En HOME sin scroll → links blancos */
+.navbar-transparent .nav-modern {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff; /* por si algún navegador clipea texto */
+  background: none;
+}
+.navbar-transparent .nav-modern:hover { opacity: .9; }
+.navbar-transparent .nav-modern.active::after,
+.navbar-transparent .nav-modern:hover::after { width: 100%; }
+
+/* Marca */
+.brand-text {
+  font-size: 1.2rem;
+  color: #1E2A47;
+}
+
+/*--links--*/
+.nav-modern {
+  position: relative;
+  font-weight: 600;
+  color: #1E2A47 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding-bottom: 4px;
+  transition: color 0.25s ease;
+}
+
+.nav-modern::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background: #00A8E8;
+  transition: width 0.25s ease;
+}
+
+.nav-modern:hover {
+  color: #00A8E8 !important;
+}
+
+.nav-modern:hover::after {
+  width: 100%;
+}
+
+.nav-modern.active {
+  color: #00A8E8 !important;
+}
+
+.nav-modern.active::after {
+  width: 100%;
+}
+/*---------------------------------           --------------------------------------*/
+/* Tamaños y animaciones del brand */
+.navbar .navbar-brand .brand-logo {
+  /* tamaño por defecto (se sobreescribe más abajo vía variables) */
+  width: var(--logo-size, 40px);
+  height: auto;
+  transition: width .25s ease, filter .25s ease, transform .25s ease;
+  display: block;
+}
+
+.navbar .navbar-brand .brand-text {
+  font-size: 1.2rem;
+  transition: opacity .25s ease, transform .25s ease, color .25s ease;
+  /* por defecto visible (en sólido) — lo sobreescribimos en transparente */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Home sin scroll → navbar transparente ===== */
+/* Logo más grande, texto oculto */
+.navbar-transparent .navbar-brand .brand-logo {
+  --logo-size: 72px; /* 👈 tamaño grande en home top */
+}
+.navbar-transparent .navbar-brand .brand-text {
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+/* ===== Home con scroll u otras rutas → navbar sólido ===== */
+/* Logo pequeño, texto visible */
+.navbar-solid .navbar-brand .brand-logo {
+  --logo-size: 40px; /* 👈 tamaño compacto */
+}
+.navbar-solid .navbar-brand .brand-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Opcional: efecto hover sutil en el logo */
+.navbar .navbar-brand:hover .brand-logo {
+  transform: translateY(-1px);
+}
