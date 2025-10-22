@@ -1,12 +1,16 @@
 import React from "react";
 import Statistics from "../components/Statistics.jsx";
-
+import Landing from "../components/Landing.jsx";
+import WhoWeAre from "../components/WhoWeAre.jsx";
+import LandingLogged from "../components/LandingLogged.jsx";
 export const Home = () => {
 
 
 	return (
-		<div className="contiainer mt-5 text-center">
+		<div>
+			<Landing/>
 			<Statistics/>
+			<LandingLogged/>
 		</div>
 	);
 }; 
