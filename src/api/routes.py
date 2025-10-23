@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from sqlalchemy import select, func
-from api.models import db, User, Events, Groups, Reservations
+from api.models import db, User, Events, Groups, Reservations, UsersEvents
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -289,9 +289,16 @@ def create_event():
             end_time=end_time,
             creator_id=creator_id,
         )
-        db.session.flush()
-        #generar registro de nuevo evento y usuario en user_event
         db.session.add(new_event)
+        db.session.flush()
+
+        user_event = UsersEvents(
+            user_id=creator_id,
+            event_id=new_event.id
+        )
+        db.session.add(user_event)
+
+        #generar registro de nuevo evento y usuario en user_event
         db.session.commit()
         return jsonify({"success": True, "data": "user create event"}), 201
 
