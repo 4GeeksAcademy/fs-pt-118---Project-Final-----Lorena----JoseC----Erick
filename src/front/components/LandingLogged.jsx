@@ -40,6 +40,7 @@ const LandingLogged = () => {
 
     return (
         <>
+        
             <div className="backgroundimg">
                 <div className="row">
                     <h1 className="text-white col-12 text-center fw-bolder text-shadow">Your league starts here</h1>
@@ -51,12 +52,12 @@ const LandingLogged = () => {
                     <button className="col-sm-12 col-lg-4 mx-2 btn-transparente">Teams</button>
                 </div>
             </div>
-            <div className="backgroundimgLogged container-fluid">
+            <div id="hero" className="backgroundimgLogged container-fluid">
                 <div className="rounded-5 formgroup">
                     <h1 className="p-5 text-shadow">You can send us requests for all kinds of <br /> sporting events</h1>
                 </div>
             </div>
-
+          
             <div className="row mx-2">
                 <form
                     method="POST"

@@ -1,0 +1,103 @@
+/* ================= NAVBAR MODULE ================= */
+
+/* Contenedor base del navbar  */
+.nav {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 100%;
+  z-index: 1000;
+  transition: background-color .45s ease, box-shadow .25s ease;
+}
+
+/* Estados */
+.transparent {
+  background: rgba(0, 2, 6, 0.32) !important;
+  box-shadow: rgba(231, 228, 228, 0.669) !important;
+}
+
+.solid {
+  background: rgba(245, 247, 250, 0.345) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.06) !important;
+  border-bottom: 1px solid rgba(0,0,0,.04);
+}
+
+/* Altura del NAV por estado (encoge al hacer scroll) */
+.containerH {
+  /* set via CSS var so we can animate height smoothly */
+  height: var(--nav-h, 72px);
+  transition: height .25s ease;
+}
+.transparent .containerH { --nav-h: 120px; } /* grande en hero */
+.solid .containerH { --nav-h: 64px; }        /* compacto en scroll/rutas */
+
+/* Marca */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  text-decoration: none;
+}
+
+.logo {
+  /* control por ALTURA para evitar romper layout */
+  height: var(--logo-h, 44px);
+  width: auto;
+  display: block;
+  transition: height .25s ease, transform .25s ease;
+  max-height: 96px; /* seguridad si el SVG viene con mucho “aire” */
+}
+
+/* tamaños del logo por estado */
+.transparent .logo { --logo-h: 96px; }  /* grande en hero */
+.solid .logo { --logo-h: 36px; }        /* pequeño en scroll */
+
+/* Texto de marca: oculto en transparente, visible en sólido */
+.brandText {
+  font-size: 1.1rem;
+  color: #1E2A47;
+  transition: opacity .2s ease, transform .2s ease, color .2s ease;
+}
+.transparent .brandText {
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+.solid .brandText {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Links con subrayado animado */
+.navLink {
+  position: relative;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  padding-bottom: 4px;
+  transition: color .25s ease, opacity .25s ease;
+  color: #1E2A47 !important;
+
+  &::after{
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 2px; width: 0%;
+    background: linear-gradient(90deg, rgba(5,3,136,1) 32%, rgba(244,51,55,1) 100%);
+    transition: width .25s ease;
+  }
+}
+.navLink:hover { opacity: .9; }
+.navLink:hover::after, .navLinkActive::after { width: 100%; }
+
+/* En transparente los links y textos se ven blancos */
+.transparent :global(.nav-link),
+.transparent .brandText {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+}
+
+.transparent :global(.nav-link:hover) {
+  color: #00A8E8 !important;
+}
