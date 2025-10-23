@@ -70,7 +70,7 @@ const LandingLogged = () => {
                     {okMsg && <div className="alert alert-success">{okMsg}</div>}
                     {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
                     <h2 className="text-center mb-4 fw-bold text-primary">
-                        🗓️ Create Event
+                        Create Event
                     </h2>
 
                     <div className="mb-3">
@@ -129,20 +129,14 @@ const LandingLogged = () => {
 
                     <button
                         type="submit"
-                        className="btn w-100 py-2 fw-bold text-white"
-                        style={{
-                            background: "linear-gradient(90deg, #0d6efd, #6610f2)",
-                            border: "none",
-                            transition: "transform 0.2s ease-in-out"
-                        }}
+                        className="btn w-100 py-2 fw-bold text-white colorbotoneven"
                         onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
                         onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                     >
-                        🚀 Submit Event
+                        Submit Event
                     </button>
                 </form>
             </div>
-
         </>
     )
 }

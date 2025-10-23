@@ -1,18 +1,22 @@
 import React from "react";
-import Statistics from "../components/Statistics.jsx";
 import Landing from "../components/Landing.jsx";
-import WhoWeAre from "../components/WhoWeAre.jsx";
+import Statistics from "../components/Statistics.jsx";
 import LandingLogged from "../components/LandingLogged.jsx";
-
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const Home = () => {
+  const { store } = useGlobalReducer();
 
-
-	return (
-		<div>
-			<Landing/>
-			<Statistics/>
-			<LandingLogged/>
-		</div>
-	);
-}; 
+  return (
+    <div>
+      {store.isAuth ? (
+        <LandingLogged />
+      ) : (
+        <>
+          <Landing />
+          <Statistics />
+        </>
+      )}
+    </div>
+  );
+};
