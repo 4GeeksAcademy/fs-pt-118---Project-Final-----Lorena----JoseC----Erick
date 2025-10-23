@@ -26,7 +26,7 @@ const ForgotPasswordModal = () => {
                     // deja ver la alerta 1seg y cierra modal
                     setTimeout(() => {
                         forceCloseModalById("forgotModal", () => navigate("/"));
-                    }, 1200);
+                    }, 1500);
                 } else {
                     setErrorMsg("Email does not exist");
                 }

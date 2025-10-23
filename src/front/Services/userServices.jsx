@@ -1,13 +1,13 @@
 const userServices = {};
 const url = import.meta.env.VITE_BACKEND_URL;
 
-async function handleResponse(resp) {
+const handleResponse = async (resp) => {
   let data = {};
   try {
     data = await resp.json();
   } catch (_) {}
   if (!resp.ok) {
-    const err = new Error(data?.error || `HTTP ${resp.status}`);
+    const err = new Error(data?.msg || `HTTP ${resp.status}`);
     err.status = resp.status;
     err.data = data;
     throw err;
