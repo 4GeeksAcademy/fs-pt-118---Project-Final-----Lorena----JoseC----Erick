@@ -9,12 +9,15 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
 from .utils import verify_reset_token, send_reset_email
+from datetime import datetime
 
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
+# -----------------------------------------------Statistics---------------------------------------------------
 
 
 @api.route('/stats/users', methods=['GET'])
@@ -56,6 +59,7 @@ def get_general_stats():
     }), 200
 
 
+# --------------------------------------------------------Register-----------------------------------------------
 @api.route('/register', methods=['POST'])
 def register_user():
     body = request.get_json()
@@ -112,6 +116,7 @@ def register_user():
     }), 201
 
 
+# ------------------------------------------------------Login----------------------------------------------------
 @api.route('/login', methods=['POST'])
 def login_user():
     body = request.get_json()
@@ -144,6 +149,8 @@ def login_user():
         "token": token
     }), 200
 
+# --------------------------------------------------------Users--------------------------------------------------
+
 
 @api.route('/users', methods=['GET'])
 def get_users():
@@ -173,14 +180,14 @@ def edit_user(id):
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    
     if "email" in body:
         email = body["email"]
         user.email = email
 
     if "user_name" in body and body["user_name"] != user.user_name:
         existing = db.session.execute(
-            select(User).where(User.user_name == body["user_name"], User.id != id)
+            select(User).where(User.user_name ==
+                               body["user_name"], User.id != id)
         ).scalar_one_or_none()
         if existing:
             return jsonify({"error": "Username already taken"}), 409
@@ -206,7 +213,7 @@ def delete_user(id):
 
     if current_user_id != id and claims.get("role") != "admin":
         return jsonify({"error": "Unauthorized"}), 403
-    
+
     if claims.get("role") == "admin" and current_user_id == id:
         return jsonify({"error": "Admins cannot delete themselves"}), 403
 
@@ -220,6 +227,7 @@ def delete_user(id):
     except:
         db.session.rollback()
     return jsonify({"error": "Internal server error"}), 500
+
 
 @api.route('/forgot-password', methods=['POST'])
 def forgot_password():
@@ -237,6 +245,7 @@ def forgot_password():
     return jsonify({"msg": "Recovery email sent"}), 200
 
 
+# -------------------------------------------------Password-----------------------------------------------------
 @api.route('/reset-password', methods=['POST'])
 def reset_password():
     data = request.get_json()
@@ -258,3 +267,12 @@ def reset_password():
     db.session.commit()
 
     return jsonify({"msg": "Password updated successfully"}), 200
+
+# -----------------------------------------------------Events----------------------------------------------------
+
+
+@api.route('/events', methods=['GET'])
+def get_events():
+    events = Events.query.all()
+    return jsonify([event.serialize() for event in events]), 200
+
