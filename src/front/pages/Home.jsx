@@ -8,7 +8,7 @@ export const Home = () => {
   const { store } = useGlobalReducer();
 
   return (
-    <div container-fluid>
+    <div className="container-fluid">
       {store.isAuth ? (
         <LandingLogged />
       ) : (
