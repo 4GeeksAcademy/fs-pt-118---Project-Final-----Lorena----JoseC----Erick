@@ -80,6 +80,7 @@ class Events(db.Model):
     __tablename__ = 'events'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+    imagen: Mapped[Optional[str]] = mapped_column(Text, nullable=False)
     description: Mapped[str]= mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
@@ -109,6 +110,7 @@ class Events(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "imagen": self.imagen,
             "description": self.description,
             "status": self.status.value,
             "created_at": self.created_at.isoformat() if self.created_at else None,
@@ -173,6 +175,7 @@ class Groups(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "members_count": len(self.members or []),
             "members": [{"id": u.id, "user_name": u.user_name} for u in (self.members or [])],
+            "events": [e.serialize() for e in self.events]
         }
 
 # Tabla intermedia para la relación muchos a muchos entre usuarios y grupos
