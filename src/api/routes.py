@@ -3,13 +3,16 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from sqlalchemy import select, func
-from api.models import db, User, Events, Groups, Reservations
+from api.models import db, User, Events, Groups, Reservations, UsersEvents
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt, get_jwt_identity
 from .utils import verify_reset_token, send_reset_email
 from datetime import datetime
+from flask import Flask, request, redirect, url_for, flash
+
+
 
 
 api = Blueprint('api', __name__)
@@ -187,7 +190,8 @@ def edit_user(id):
     if "user_name" in body and body["user_name"] != user.user_name:
         existing = db.session.execute(
             select(User).where(User.user_name ==
-                               body["user_name"], User.id != id)
+                              
+                   body["user_name"], User.id != id)
         ).scalar_one_or_none()
         if existing:
             return jsonify({"error": "Username already taken"}), 409
@@ -276,3 +280,47 @@ def get_events():
     events = Events.query.all()
     return jsonify([event.serialize() for event in events]), 200
 
+
+
+
+@api.route("/create-event", methods=["POST"])
+@jwt_required()
+def create_event():
+    try:
+        data = request.get_json()
+        name = data.get("name")
+        description = data.get("description")
+        start_str = data.get("start_time")
+        end_str = data.get("end_time")
+
+        creator_id = get_jwt_identity()
+
+        # Convertir fechas
+        start_time = datetime.strptime(start_str, "%Y-%m-%dT%H:%M")
+        end_time = datetime.strptime(end_str, "%Y-%m-%dT%H:%M")
+
+        # Crear evento
+        new_event = Events(
+            name=name,
+            description=description,
+            start_time=start_time,
+            end_time=end_time,
+            creator_id=creator_id,
+        )
+        db.session.add(new_event)
+        db.session.flush()
+
+        user_event = UsersEvents(
+            user_id=creator_id,
+            event_id=new_event.id
+        )
+        db.session.add(user_event)
+
+        #generar registro de nuevo evento y usuario en user_event
+        db.session.commit()
+        return jsonify({"success": True, "data": "user create event"}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al crear el evento: {str(e)}", "error")
+        return jsonify({"success": False, "error": str(e)}), 500

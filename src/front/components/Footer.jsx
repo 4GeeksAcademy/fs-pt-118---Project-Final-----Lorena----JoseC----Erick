@@ -15,9 +15,6 @@ export const Footer = () => (
 				<span className="navbar-brand mb-0 fw-medium text-black text-shadow">WHO WE ARE</span>
 			</Link>
 
-
-
-
 			<div className="d-flex">
 				<a href="https://youtube.com" target="_blank" rel="">
 					<i className="fa-brands fa-youtube text-black mx-2"></i>

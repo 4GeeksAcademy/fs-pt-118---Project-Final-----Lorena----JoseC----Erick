@@ -18,7 +18,6 @@ const ResetPassword = () => {
             setError("Passwords do not match");
             return;
         }
-
         setError('');
         setMsg('');
 
@@ -26,40 +25,59 @@ const ResetPassword = () => {
             .then(data => {
                 if (data.msg === "Password updated successfully") {
                     setMsg("Password updated successfully");
-                    setTimeout(() => {
-                        navigate('/');
-                    }, 3000);
+                    setTimeout(() => navigate('/'), 1500);
                 } else {
                     setError(data.msg || "Error updating password");
                 }
             })
-            .catch(() => {
-                setError("Error connecting to server");
-            });
+            .catch(() => setError("Error connecting to server"));
     };
 
-
     return (
-        <div className='row'>
-            <div className='container newpassword col-sm-12 col-md-6 col-lg-12'>
-                <h2 className='d-flex justify-content-center'>New password</h2>
+        <div className="authShell">
+            <div className="authCard">
+                <h2 className="title">New password</h2>
+
+                {msg && <div className="alert alert-success">{msg}</div>}
+                {error && <div className="alert alert-danger">{error}</div>}
+
                 <form onSubmit={handleSubmit}>
-                    <div className='py-1'>
-                        <label htmlFor="new-password" className='form-label'>Enter new password</label>
-                        <input className='form-control' id="new-password" type="password"
-                            placeholder="Enter new password"
-                            value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+                    <div className="mb-3">
+                        <label htmlFor="new-password" className="form-label">Enter new password</label>
+                        <input
+                            id="new-password"
+                            type="password"
+                            className="form-control"
+                            placeholder="New password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                            autoFocus
+                            autoComplete="new-password"
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="confirm-password" className="form-label">Confirm password</label>
+                        <input
+                            id="confirm-password"
+                            type="password"
+                            className="form-control"
+                            placeholder="Confirm password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            autoComplete="new-password"
+                        />
                     </div>
                     <div className='py-2'>
-                        <label htmlFor='confirm-password' className='form-label'>Confirm password</label>
-                        <input className='form-control' id='confirm-password' type="password" placeholder="Confirm password"
-                            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                    <button type="submit" className="btn btn-dark w-100">Save</button>
                     </div>
-                    <button type="submit" className='btn btn-dark w-100'>Save</button>
                 </form>
-                {error && <p className='alert alert-danger my-3'>{error}</p>}
-                {msg && <p className='alert alert-success my-3'>{msg}</p>}
-                <Link to="/" className='text-dark'>Home</Link>
+
+                <div className="mt-2">
+                    <Link to="/" className="btn btn-link link-dark link-underline-primary p-0">Home</Link>
+                </div>
             </div>
         </div>
     );

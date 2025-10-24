@@ -39,7 +39,7 @@ const Statistics = () => {
                 <div style={overlayStyle}>
                     <div className="card-header text-center bg-transparent border-0">
                         <h2 className="text-white display-5"> STATISTICS</h2>
-                        <i className="fa-solid fa-chart-line display-5"></i>
+                        <i className="fa-solid fa-chart-line"></i>
                     </div>
 
                     <div className="card-body fs-3">
