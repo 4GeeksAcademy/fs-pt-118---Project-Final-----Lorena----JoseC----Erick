@@ -9,7 +9,7 @@ export const Home = () => {
 
 
 	return (
-		<div>
+		<div className="container-fluid">
 			<Landing/>
 			<Statistics/>
 			<LandingLogged/>

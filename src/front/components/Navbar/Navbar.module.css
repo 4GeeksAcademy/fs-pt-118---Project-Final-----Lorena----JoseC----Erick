@@ -6,7 +6,7 @@
   inset: 0 auto auto 0;
   width: 100%;
   z-index: 1000;
-  transition: background-color .45s ease, box-shadow .25s ease;
+  transition: background-color .45s ease, box-shadow .25s ease, transform .2s ease;
 }
 
 /* Estados */
@@ -24,50 +24,61 @@
 }
 
 /* Altura del NAV por estado (encoge al hacer scroll) */
-.containerH {
-  /* set via CSS var so we can animate height smoothly */
+.containerH{
+  /* display: grid;
+  grid-template-columns: var(--brand-slot, 100px) 1fr auto; /*slot fijo para brand */ 
+  align-content: center; 
   height: var(--nav-h, 72px);
   transition: height .25s ease;
 }
 .transparent .containerH { --nav-h: 120px; } /* grande en hero */
 .solid .containerH { --nav-h: 64px; }        /* compacto en scroll/rutas */
 
-/* Marca */
-.brand {
+.navCenter{
+  display:flex;
+  justify-self: center;
+}
+
+/* El brand ocupa su slot fijo */
+.brand{
   display: flex;
   align-items: center;
-  gap: .5rem;
   text-decoration: none;
 }
 
-.logo {
-  /* control por ALTURA para evitar romper layout */
-  height: var(--logo-h, 44px);
+/* LOGO: scale (no cambia layout) */
+.logo{
+  max-height: 96px;
+  min-height: 44px;             
   width: auto;
+  transform-origin: left center;  
+  transform: scale(var(--logo-scale, 1));
+  transition: transform .25s ease;
   display: block;
   transition: height .25s ease, transform .25s ease;
-  max-height: 96px; /* seguridad si el SVG viene con mucho “aire” */
+  max-height: 96px;
 }
 
-/* tamaños del logo por estado */
-.transparent .logo { --logo-h: 96px; }  /* grande en hero */
-.solid .logo { --logo-h: 36px; }        /* pequeño en scroll */
+/* Escalas según estado */
+.transparent .logo { --logo-scale:1.50; }     /* grande en hero */
+.solid .logo { --logo-scale: 0.90; }        /* compacto en scroll*/
 
 /* Texto de marca: oculto en transparente, visible en sólido */
 .brandText {
   font-size: 1.1rem;
   color: #1E2A47;
   transition: opacity .2s ease, transform .2s ease, color .2s ease;
+  margin: 0 !important;
 }
 .transparent .brandText {
   opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
-}
+   transform: translateY(-4px);
+    pointer-events: none;
+   }
 .solid .brandText {
-  opacity: 1;
-  transform: translateY(0);
-}
+   opacity: 1; 
+   transform: translateY(0);
+   }
 
 /* Links con subrayado animado */
 .navLink {
@@ -101,3 +112,123 @@
 .transparent :global(.nav-link:hover) {
   color: #00A8E8 !important;
 }
+
+/* ==================== TEXTO DEL USUARIO (DROPDOWN) ==================== */
+
+/* color claro cuando el nav está transparente */
+.textLight {
+  color: #fff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+/* color oscuro cuando el nav está solido */
+.textDark {
+  color: #1E2A47 !important;
+  transition: color 0.25s ease;
+}
+/* ====== Responsive ====== */
+@media (max-width: 767.98px) {
+  .containerH{
+    margin-top: 1rem;
+    height: var(--nav-h, 64px);
+    align-content: center;
+    padding-inline: .5rem;     /* respiración lateral */
+  }
+   /* Logo más contenido en movil */
+  .logo{
+    max-height: 70px;
+    min-height: 40px;
+  }
+   .navCenter{
+    gap: .75rem;
+  }
+   .navLink{
+    font-size: .95rem;
+    
+    padding: 0 !important;
+  }
+    /* Oculta nombre y caret del user en móvil */
+  .hideOnMobile{
+    display: none !important;
+  }
+  /* Texto de marca: opcionalmente ocúltalo siempre en móvil para no desbordar */
+  .brandText{
+    display: none;
+  }
+}
+/* ===================== DROPDOWN ===================== */
+
+/* contenedor del dropdown */
+.dropdownMenu {
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.338);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.409);
+  border-radius: 12px;
+  overflow: hidden;
+  min-width: 170px;
+  animation: fadeIn .60s ease;
+}
+
+/* items */
+.dropdownItem {
+  font-weight: 500;
+  color: #1E2A47;
+  padding: 0.65rem 1rem;
+  transition: all 0.25s ease;
+}
+
+.dropdownItem:hover {
+  background: linear-gradient(90deg, rgba(5,3,136,0.1) 0%, rgba(244,51,55,0.15) 100%);
+  color: #050388;
+  padding-left: 1.2rem;
+}
+
+/* separadores mas suaves */
+.dropdownDivider {
+  margin: 0.3rem 0;
+  border-top: 1px solid rgba(0,0,0,0.07);
+}
+
+/* botón logout */
+.dropdownLogout {
+  color: #f44336 !important;
+  font-weight: 600;
+}
+
+.dropdownLogout:hover {
+  background: rgba(244,51,55,0.12);
+}
+
+/* animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tema oscuro si navbar transparente */
+.transparent .dropdownMenu {
+  background: rgba(12, 18, 33, 0.7);
+  color: #fff;
+  border-color: rgba(255,255,255,0.15);
+}
+
+.transparent .dropdownItem {
+  color: #fff;
+}
+
+.transparent .dropdownItem:hover {
+  background: linear-gradient(90deg, rgba(5,3,136,0.25) 0%, rgba(244,51,55,0.25) 100%);
+  color: #fff;
+}
+
+.transparent .dropdownDivider {
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.transparent .dropdownLogout {
+  color: #ff6b6b !important;
+}
+
