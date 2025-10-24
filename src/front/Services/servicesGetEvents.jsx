@@ -1,8 +1,8 @@
-const servicesEvents = {}
+const servicesGetEvents = {}
 
 const url = import.meta.env.VITE_BACKEND_URL
 
-servicesEvents.getAllEvents = async () => {
+servicesGetEvents.getAllEvents = async () => {
 
     try {
         const resp = await fetch(`${url}/api/events`)
@@ -15,4 +15,4 @@ servicesEvents.getAllEvents = async () => {
     }
 }
 
-export default servicesEvents
+export default servicesGetEvents
