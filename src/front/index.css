@@ -20,7 +20,7 @@
    ======================================================================================= */
 
 /* Fondo del hero (página de inicio sin sesión) */
-.backgroundimg {
+.backgroundimg   {
   background-image: url("https://img.freepik.com/foto-gratis/herramientas-deportivas_53876-138077.jpg?t=st=1760846561~exp=1760850161~hmac=8005ddfa91b70064320c7d9c9190402ca39abd7d2176e32282d9628a7e0c1416&w=1480");
   background-size: cover;
   background-position: center;
@@ -35,7 +35,7 @@
 }
 
 /* Fondo de landing cuando hay sesión iniciada */
-.backgroundimgLogged {
+.backgroundimgLogged   {
   background-image: url("https://media.istockphoto.com/id/1141191007/es/vector/deportes-conjunto-de-deportistas-de-diversas-disciplinas-deportivas-siluetas-vectoriales.jpg?s=2048x2048&w=is&k=20&c=YyBX-jcAYWNYLkeErwG7el8ymclr2BuZfjBnq337SkI=");
   background-size: cover;
   background-position: center;
@@ -51,9 +51,9 @@
 /* Botón translúcido del hero */
 .btn-transparente {
   background-color: rgba(255, 255, 255, 0.32);
-  color: #0D0C0C;                             
-  border: 2px solid #A58B8B;                  
-  border-radius: 10px;                       
+  color: #0d0c0c;
+  border: 2px solid #a58b8b;
+  border-radius: 10px;
   padding: 0.6rem 1.2rem;
   font-weight: bold;
   font-size: 1rem;
@@ -65,9 +65,9 @@
   margin-top: 10px;
 }
 .btn-transparente:hover {
-  background-color: rgba(255, 255, 255, 0.5); 
-  color: #333333;                             
-  border-color: #333333;                              
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #333333;
+  border-color: #333333;
 }
 
 /* Extras del landing */
@@ -98,39 +98,39 @@
 
 /* Inputs dentro del modal */
 .colorModals .form-control {
-  background-color: rgba(255, 255, 255, 0.10); 
-  border: 1px solid rgba(255, 255, 255, 0.20);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   border-radius: 10px;
   padding: 0.6rem 1rem;
 }
 .colorModals .form-control::placeholder {
-  color: #C7D3ED;
+  color: #c7d3ed;
   opacity: 0.8;
 }
 .colorModals .form-control:focus {
   background-color: rgba(255, 255, 255, 0.15);
-  border-color: #00A8E8;
+  border-color: #00a8e8;
   box-shadow: 0 0 0 0.2rem rgba(0,168,232,0.25);
   color: #fff;
 }
 
 /* Botón principal del modal */
 .colorModals .btn-dark {
-  background-color: #00A8E8;
+  background-color: #00a8e8;
   border: none;
   color: #fff;
   font-weight: 600;
   border-radius: 10px;
   transition: all 0.3s ease;
 }
-.colorModals .btn-dark:hover { background-color: #0090CC; }
+.colorModals .btn-dark:hover { background-color: #0090cc; }
 
 /* Enlaces y textos dentro del modal */
 .colorModals .btn-link,
 .colorModals .form-text,
 .colorModals .alert {
-  color: #C7D3ED !important;
+  color: #c7d3ed !important;
 }
 /* .modal-open { padding-right: 0 !important; }  */
 
@@ -140,7 +140,7 @@
 
 /* Contenedor centrado a pantalla completa */
 .authShell {
-  min-height: calc(100dvh - 120px); 
+  min-height: calc(100dvh - 120px);
   display: grid;
   place-items: center;
   padding: 2rem 1rem;
@@ -150,50 +150,50 @@
 .authCard {
   width: 100%;
   max-width: 25rem;
-  background: linear-gradient(145deg, #1E2A47 0%, #2C4576 100%);
+  background: linear-gradient(145deg, #1e2a47 0%, #2c4576 100%);
   border: none;
   border-radius: 18px;
   color: #fff;
-  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   padding: 1.25rem;
 }
 .authCard .title {
   text-align: center;
   font-weight: 700;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 .authCard .alert { margin-bottom: 1rem; }
 
 /* Inputs (mismo estilo que en modal) */
 .authCard .form-control {
-  background-color: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.20);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   border-radius: 10px;
-  padding: .6rem 1rem;
+  padding: 0.6rem 1rem;
 }
-.authCard .form-control::placeholder { color: #C7D3ED; opacity: .8; }
+.authCard .form-control::placeholder { color: #c7d3ed; opacity: 0.8; }
 .authCard .form-control:focus {
-  background-color: rgba(255,255,255,.15);
-  border-color: #00A8E8;
-  box-shadow: 0 0 0 .2rem rgba(0,168,232,.25);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #00a8e8;
+  box-shadow: 0 0 0 0.2rem rgba(0, 168, 232, 0.25);
   color: #fff;
 }
 
 /* Botón principal de auth */
 .authCard .btn-dark {
-  background-color: #00A8E8;
+  background-color: #00a8e8;
   border: none;
   color: #fff;
   font-weight: 600;
   border-radius: 10px;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
-.authCard .btn-dark:hover { background-color: #0090CC; }
+.authCard .btn-dark:hover { background-color: #0090cc; }
 
 /* Link inferior */
 .authCard .btn-link {
-  color: #C7D3ED !important;
+  color: #c7d3ed !important;
   padding: 0;
   text-decoration: underline;
 }
@@ -216,13 +216,13 @@
   animation: fadeInAlert 0.4s ease-in-out;
 }
 .alert-success {
-  background: rgba(46, 204, 112, 0.6); 
-  color: #2ecc71; 
+  background: rgba(46, 204, 112, 0.6);
+  color: #2ecc71;
   border: 1px solid rgba(46, 204, 113, 0.25);
   box-shadow: 0 2px 12px rgba(46, 204, 113, 0.15);
 }
 .alert-danger {
-  background: rgba(144, 19, 5, 0.491); 
+  background: rgba(144, 19, 5, 0.491);
   color: #e74c3c;
   border: 1px solid rgba(231, 76, 60, 0.25);
   box-shadow: 0 2px 12px rgba(231, 76, 60, 0.15);
