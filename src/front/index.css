@@ -140,6 +140,7 @@
 .colorModals .alert {
   color: #c7d3ed !important;
 }
+/* .modal-open { padding-right: 0 !important; }  */
 
 /* =======================================================================================
    AUTH PAGES (RESET / LOGIN / REGISTER)

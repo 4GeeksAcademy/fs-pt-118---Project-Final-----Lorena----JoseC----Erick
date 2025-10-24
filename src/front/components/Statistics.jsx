@@ -10,7 +10,6 @@ const Statistics = () => {
         reservationsCount: 0,
     })
 
-
     const cardStyle = {
         backgroundImage: "url('https://www.shutterstock.com/image-photo/footballer-prepares-kick-soccer-ball-600nw-2624252413.jpg')",
         backgroundSize: "cover",
@@ -25,49 +24,63 @@ const Statistics = () => {
         position: "relative",
     };
 
-    useEffect (()=>{
-        servicesStats.getStats().then(data=> setStats(data))
-    },[])
+    useEffect(() => {
+        servicesStats.getStats().then(data => setStats(data))
+    }, [])
 
 
 
     return (
 
-        <div className="container mt-5">
+        <div className="container-fluid">
             <div className="card shadow" style={cardStyle}>
-
                 <div style={overlayStyle}>
                     <div className="card-header text-center bg-transparent border-0">
-                        <h2 className="text-white display-5"> STATISTICS</h2>
-                        <i className="fa-solid fa-chart-line"></i>
+                        <h2 className="text-white display-5 mb-1">STATISTICS</h2>
+                        <i className="fa-solid fa-chart-line text-white"></i>
                     </div>
 
-                    <div className="card-body fs-3">
-                        <div className="row">
-                            <div className="col-sm-12 col-md-6 col-lg-3 "><span className="list-group-item bg-transparent text-white ">
-                                <i className="fa-solid fa-users"></i><p className="fw-bold text-white"> Users</p> {stats.usersRegistered}
-                            </span>
+                    <div className="card-body text-white">
+                        <div className="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-3 g-lg-4">
+
+                            <div className="col">
+                                <div className="h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3  bg-transparent text-center">
+                                    <i className="fa-solid fa-users fa-2x mb-2"></i>
+                                    <span className="fw-semibold">Users</span>
+                                    <span className="fs-3 fw-bold">{stats?.usersRegistered ?? 0}</span>
+                                </div>
                             </div>
-                            <div className="col-sm-12 col-md-6 col-lg-3">
-                                <span className="list-group-item bg-transparent text-white">
-                                    <i className="fa-solid fa-calendar-days"></i> <p className="fw-bold text-white"> Events:</p> {stats.eventsCount}
-                                </span>
+
+                            <div className="col">
+                                <div className="h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3  bg-transparent text-center">
+                                    <i className="fa-solid fa-calendar-days fa-2x mb-2"></i>
+                                    <span className="fw-semibold">Events</span>
+                                    <span className="fs-3 fw-bold">{stats?.eventsCount ?? 0}</span>
+                                </div>
                             </div>
-                            <div className="col-sm-12 col-md-6 col-lg-3">
-                                <span className="list-group-item bg-transparent text-white">
-                                    <i className="fa-solid fa-user-group"></i> <p className="fw-bold text-white"> Groups:</p> {stats.groupsCount}
-                                </span>
+
+                            <div className="col">
+                                <div className="h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3  bg-transparent text-center">
+                                    <i className="fa-solid fa-user-group fa-2x mb-2"></i>
+                                    <span className="fw-semibold">Groups</span>
+                                    <span className="fs-3 fw-bold">{stats?.groupsCount ?? 0}</span>
+                                </div>
                             </div>
-                            <div className="col-sm-12 col-md-6 col-lg-3">
-                                <span className="list-group-item bg-transparent text-white">
-                                    <i className="fa-solid fa-calendar-check"></i> <p className="fw-bold text-white"> Reservations:</p> {stats.reservationsCount}
-                                </span>
+
+                            <div className="col">
+                                <div className="h-100 d-flex flex-column align-items-center justify-content-center p-3 rounded-3  bg-transparent text-center">
+                                    <i className="fa-solid fa-calendar-check fa-2x mb-2"></i>
+                                    <span className="fw-semibold">Reservations</span>
+                                    <span className="fs-3 fw-bold">{stats?.reservationsCount ?? 0}</span>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     )
 }
 
