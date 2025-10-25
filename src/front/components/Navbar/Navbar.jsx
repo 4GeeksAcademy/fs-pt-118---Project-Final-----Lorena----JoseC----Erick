@@ -4,8 +4,9 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 import Avatar from "../Avatar";
 import logo from "../../assets/img/sportBar-.png";
 import styles from "./Navbar.module.css";
+import { randomAvatarBg } from "../../utils/PaletteColors";
 
-export const Navbar =() => {
+export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { store, dispatch } = useGlobalReducer();
@@ -19,9 +20,11 @@ export const Navbar =() => {
   const isHome = location.pathname === "/";
   const [solid, setSolid] = useState(!isHome);
 
+  const [avatarBg] = useState(() => randomAvatarBg());
+
   useEffect(() => {
     if (!isHome) { setSolid(true); return; }
-    const onScroll = () => setSolid(window.scrollY > 100);
+    const onScroll = () => setSolid(window.scrollY > 900);
     window.addEventListener("scroll", onScroll);
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
@@ -33,22 +36,20 @@ export const Navbar =() => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     dispatch({ type: "logout" });
+    window.location.reload();
     navigate("/");
   };
 
   return (
     <nav className={`navbar navbar-expand-lg ${styles.nav} ${navState}`}>
-      {/* Usa este contenedor para controlar la altura animada */}
-      <div className={`container ${styles.containerH} d-flex align-items-center justify-content-between`}>
+      <div className={`container ${styles.containerH}`}>
         {/* Brand */}
         <Link to="/" className={`navbar-brand ${styles.brand}`}>
-          {/* IMPORTANTE: no pongas w-50/h-auto de Bootstrap aquí */}
           <img src={logo} alt="SportBar League" className={styles.logo} />
           <span className={`fw-bold ${styles.brandText}`}>SportBar League</span>
         </Link>
-
         {/* Links centro */}
-        <ul className="nav gap-4 mx-auto d-none d-md-flex">
+        <ul className={`nav gap-3 ${styles.navCenter}`}>
           <li className="nav-item">
             <Link
               to="/teams"
@@ -80,23 +81,33 @@ export const Navbar =() => {
         ) : (
           <div className="dropdown">
             <button className="btn d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-              <Avatar src={avatarUrl} name={displayName} />
-              <span className="fw-semibold">{displayName}</span>
-              <span className="badge bg-secondary text-uppercase" style={{ letterSpacing: ".5px" }}>
-                {role}
+              {/* Avatar redondo (se vera en movil) */}
+              <Avatar src={avatarUrl} name={displayName} bgClass={avatarBg} />
+
+              {/* Nombre: lo ocultamos en mOvil */}
+              <span className={`fw-semibold text-capitalize ${styles.hideOnMobile} ${solid ? styles.textDark : styles.textLight}`}>
+                {displayName}
               </span>
-              <i className="bi bi-caret-down-fill" aria-hidden="true" />
+
+              {/* caret: también oculto en móvil */}
+              <i className={`bi bi-caret-down-fill ${styles.hideOnMobile}`} aria-hidden="true" />
             </button>
-            <ul className="dropdown-menu dropdown-menu-end shadow">
-              <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
-              <li><Link className="dropdown-item" to="/my-teams">My Teams</Link></li>
-              <li><Link className="dropdown-item" to="/my-events">My Events</Link></li>
-              {role === "admin" && (<>
-                <li><hr className="dropdown-divider" /></li>
-                <li><Link className="dropdown-item" to="/admin">Admin Panel</Link></li>
-              </>)}
-              <li><hr className="dropdown-divider" /></li>
-              <li><button className="dropdown-item text-danger" onClick={logout}>Logout</button></li>
+            <ul className={`dropdown-menu dropdown-menu-end ${styles.dropdownMenu}`}>
+              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/profile">Profile</Link></li>
+              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/my-teams">My Teams</Link></li>
+              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/my-events">My Events</Link></li>
+              {role === "admin" && (
+                <>
+                  <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>
+                  <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/admin">Admin Panel</Link></li>
+                </>
+              )}
+              <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>
+              <li>
+                <button className={`dropdown-item ${styles.dropdownItem} ${styles.dropdownLogout}`} onClick={logout}>
+                  Logout
+                </button>
+              </li>
             </ul>
           </div>
         )}

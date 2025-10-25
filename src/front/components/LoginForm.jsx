@@ -33,11 +33,13 @@ const LoginModal = () => {
         localStorage.setItem("user", JSON.stringify(data.data));
         dispatch({ type: "auth", payload: { user: data.data } });
         // Cerrar modal y luego navegar a Home
-        forceCloseModalById("loginModal", () => navigate("/"));
+        forceCloseModalById("loginModal")
+        window.location.reload()
+        navigate("/")
       })
       .catch((err) => {
         console.error("Error login:", err);
-        setErrorMsg("Error trying to log in");
+        setErrorMsg(err.msg || "Error trying to log in");
         setTimeout(() => setErrorMsg(""), 3000);
       })
       .finally(() => setLoading(false));
@@ -88,6 +90,7 @@ const LoginModal = () => {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
+                    minLength={8}
                     required
                     autoComplete="current-password"
                   />

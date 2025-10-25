@@ -1,13 +1,15 @@
-export const initialStore=()=>{
-  return{
+export const initialStore = () => {
+  return {
     isAuth: !!localStorage.getItem("user"),
-    user: JSON.parse(localStorage.getItem("user")) || null
-  }
-}
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    activeGroup: null,
+    editMode: false,
+    groups: [],
+  };
+};
 
 export default function storeReducer(store, action = {}) {
-  switch(action.type){
-
+  switch (action.type) {
     case "logout":
       return {
         ...store,
@@ -20,8 +22,23 @@ export default function storeReducer(store, action = {}) {
         isAuth: true,
         user: action.payload.user,
       };
-      
+    case "toggleGroup":
+      return {
+        ...store,
+        activeGroup: action.payload.group,
+      };
+      case "removeGroup":
+      return {
+        ...store,
+        groups: store.groups.filter(g => g.id !== action.payload),
+      };
+    case "setEditMode":
+      return {
+        ...store,
+        editMode: action.payload,
+      };
+
     default:
-      throw Error('Unknown action.');
-  }    
+      throw Error("Unknown action.");
+  }
 }

@@ -3,16 +3,15 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from sqlalchemy import select, func
-from api.models import db, User, Events, Groups, Reservations, UsersEvents
+from api.models import db, User, Events, Groups, Reservations, UsersEvents, UsersGroups
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, get_jwt, get_jwt_identity, current_user
 from .utils import verify_reset_token, send_reset_email
 from datetime import datetime
 from flask import Flask, request, redirect, url_for, flash
-
-
+import traceback
 
 
 api = Blueprint('api', __name__)
@@ -144,7 +143,8 @@ def login_user():
         return jsonify({"error": "Invalid password"}), 401
 
     # Generar token JWT
-    token = create_access_token(identity=str(user.id))
+    token = create_access_token(identity=str(user.id), additional_claims={"user_name": user.user_name}
+                                )
 
     return jsonify({
         "success": True,
@@ -316,7 +316,7 @@ def create_event():
         )
         db.session.add(user_event)
 
-        #generar registro de nuevo evento y usuario en user_event
+        # generar registro de nuevo evento y usuario en user_event
         db.session.commit()
         return jsonify({"success": True, "data": "user create event"}), 201
 
@@ -324,3 +324,139 @@ def create_event():
         db.session.rollback()
         flash(f"Error al crear el evento: {str(e)}", "error")
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@api.route('/groups', methods=['GET'])
+def get_groups():
+
+    groups = db.session.execute(select(Groups)).scalars().all()
+    groups = [group.serialize() for group in groups]
+
+    return jsonify({"success": True, "data": groups}), 200
+
+
+@api.route('/groups', methods=['POST'])
+@jwt_required()
+def create_group():
+    try:
+        data = request.get_json()
+        print("DATA RECIBIDA:", data)
+
+        new_group = Groups(
+            name=data["name"],
+            description=data.get("description"),
+            avatar=data.get("avatar"),
+            user_id=get_jwt_identity(),
+        )
+
+        new_group.members.append(current_user)
+
+        db.session.add(new_group)
+        db.session.commit()
+
+        return jsonify(success=True, data=new_group.serialize()), 201
+
+    except Exception as e:
+        print("ERROR AL CREAR GRUPO:", e)
+        return jsonify(success=False, message=str(e)), 500
+
+
+@api.route("/groups/<int:group_id>", methods=["PUT"])
+@jwt_required()
+def update_group(group_id):
+    user_name = get_jwt().get("user_name")
+    data = request.get_json()
+
+    if not data:
+        return jsonify(success=False, message="No data provided"), 400
+
+    group = Groups.query.get(group_id)
+    if not group:
+        return jsonify(success=False, message="Group not found"), 404
+
+    if not group.owner or group.owner.user_name != user_name:
+        return jsonify(success=False, message="You are not the owner of this group"), 403
+
+    try:
+        if "name" in data and not data["name"].strip():
+            return jsonify(success=False, message="Group name cannot be empty"), 400
+
+        group.name = data.get("name", group.name)
+        group.description = data.get("description", group.description)
+        group.avatar = data.get("avatar", group.avatar)
+
+        db.session.commit()
+        return jsonify(success=True, data=group.serialize()), 200
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        db.session.rollback()
+        return jsonify(success=False, message="Internal server error", detail=str(e)), 500
+
+
+@api.route("/groups/<int:group_id>", methods=["DELETE"])
+@jwt_required()
+def delete_group(group_id):
+    user_name = get_jwt().get("user_name")
+    group = db.session.get(Groups, group_id)
+
+    if not group:
+        return jsonify(success=False, message="Group not found"), 404
+
+    if not group.owner or group.owner.user_name != user_name:
+        return jsonify(success=False, message="You are not the owner of this group"), 403
+
+    try:
+        group.members.clear()
+        group.events.clear()
+        db.session.delete(group)
+        db.session.commit()
+
+        return jsonify(success=True, message="Group deleted successfully"), 200
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        db.session.rollback()
+        return jsonify(success=False, message="Internal server error", detail=str(e)), 500
+
+
+@api.route("groups/<int:group_id>/join", methods=["POST"])
+@jwt_required()
+def join_group(group_id):
+    current_user_id = get_jwt_identity()
+    group = db.session.get(Groups, group_id)
+
+    if not group:
+        return jsonify({"message": "Group not found"}), 404
+
+    user = db.session.get(User, current_user_id)
+
+    if user in group.members:
+        return jsonify({"message": "Already a member"}), 400
+
+    group.members.append(user)
+    db.session.commit()
+
+    return jsonify({"message": "Joined group successfully", "group": group.serialize()}), 200
+
+
+@api.route("/groups/<int:group_id>/leave", methods=["POST"])
+@jwt_required()
+def leave_group(group_id):
+    current_user_id = get_jwt_identity()
+    group = db.session.get(Groups, group_id)
+
+    if not group:
+        return jsonify({"message": "Group not found"}), 404
+
+    user = db.session.get(User, current_user_id)
+
+    if user not in group.members:
+        return jsonify({"message": "Not a member"}), 400
+
+    group.members.remove(user)
+    db.session.commit()
+
+    return jsonify({"message": "Left group successfully", "group": group.serialize()}), 200

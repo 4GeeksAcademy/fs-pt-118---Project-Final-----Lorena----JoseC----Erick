@@ -15,8 +15,7 @@ const RegisterForm = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [okMsg, setOkMsg] = useState("");
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
 
   const closeRegisterAndOpenLogin = () => {
     forceCloseModalById("registerModal", () => openModalById("loginModal"));
@@ -29,17 +28,37 @@ const RegisterForm = () => {
     setOkMsg("");
     setLoading(true);
 
-    //limpiar espacios en los input's
-    const payload = {
-      user_name: formData.user_name.trim(),
-      email: formData.email.trim(),
-      password: formData.password,
-    };
+    // validaciones 
+    if (!formData.user_name.trim() || !formData.email.trim() || !formData.password.trim()) {
+      setErrorMsg("All fields are required");
+      setTimeout(() => {
+        setErrorMsg("")
+      }, 3000);
+      setLoading(false);
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrorMsg("Please enter a valid email address");
+      setLoading(false);
+        setTimeout(() => {
+        setErrorMsg("")
+      }, 3000);
+      return;
+    }
+    if (formData.password.length <= 5) {
+      setErrorMsg("The password must have more than 5 characters");
+      setLoading(false)
+        setTimeout(() => {
+        setErrorMsg("")
+      }, 3000);
+      return;
+    }
 
-    userServices.registerUser(payload).then((data) => {
+    userServices.registerUser(formData).then((data) => {
       if (data?.success) {
-        setOkMsg("Registration successful. You can now log in.", 1200);
-        setTimeout(closeRegisterAndOpenLogin, 1200);
+        setOkMsg("Registration successful. You can now log in.");
+        setTimeout(closeRegisterAndOpenLogin, 2500);
       }
     })
       .catch((err) => {
@@ -67,7 +86,7 @@ const RegisterForm = () => {
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content colorModals">
-          
+
           <p className="modal-title fs-2 p-2 text-center" id="registerModalLabel">Register</p>
 
           <div className="modal-body">
@@ -101,7 +120,6 @@ const RegisterForm = () => {
                     value={formData.user_name}
                     onChange={handleChange}
                     required
-                    pattern="^[A-Za-z0-9_.-]{3,20}$"
                     title="De 3 a 20 caracteres: letras, números, _ . -"
                     autoComplete="username"
                     autoFocus
@@ -136,11 +154,11 @@ const RegisterForm = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    minLength={8}
+                    minLength={5}
                     autoComplete="new-password"
                     disabled={loading}
                   />
-                  <div className="form-text">Minimum 8 characters.</div>
+                  <div className="form-text">Minimum 5 characters.</div>
                 </div>
 
                 <button type="submit" className="btn btn-dark w-100 fw-bold" disabled={loading}>
