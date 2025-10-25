@@ -24,7 +24,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     if (!isHome) { setSolid(true); return; }
-    const onScroll = () => setSolid(window.scrollY > 900);
+    const onScroll = () => setSolid(window.scrollY > 500);
     window.addEventListener("scroll", onScroll);
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
