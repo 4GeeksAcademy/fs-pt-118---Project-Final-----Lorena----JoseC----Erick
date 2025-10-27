@@ -1,6 +1,13 @@
 const GroupsServices = {}
 const url = import.meta.env.VITE_BACKEND_URL
 
+const getAuthHeaders = (extraHeaders = {}) => ({
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem("token"),
+  ...extraHeaders,
+});
+
+
 GroupsServices.getAll = async () => {
   try {
     const resp = await fetch(`${url}/api/groups`)
@@ -23,10 +30,7 @@ GroupsServices.newGroup = async (groupData, token) => {
   try {
     const res = await fetch(`${url}/api/groups`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(groupData)
     });
 
@@ -47,10 +51,7 @@ GroupsServices.updateGroup = async (groupId, groupData, token) => {
   try {
     const res = await fetch(`${url}/api/groups/${groupId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` })
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(groupData)
     });
 
@@ -70,10 +71,7 @@ GroupsServices.updateGroup = async (groupId, groupData, token) => {
 GroupsServices.joinGroup = async (groupId, token) => {
   const resp = await fetch(`${url}/api/groups/${groupId}/join`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const data = await resp.json();
@@ -91,10 +89,7 @@ GroupsServices.joinGroup = async (groupId, token) => {
 GroupsServices.leaveGroup = async (groupId, token) => {
   const resp = await fetch(`${url}/api/groups/${groupId}/leave`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const data = await resp.json();
@@ -113,10 +108,7 @@ GroupsServices.leaveGroup = async (groupId, token) => {
 GroupsServices.deleteGroup = async (groupId, token) => {
   const resp = await fetch(`${url}/api/groups/${groupId}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders({}),
   });
 
   const data = await resp.json();
