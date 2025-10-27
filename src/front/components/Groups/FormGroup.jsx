@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Cloudinary from "../../Services/Cloudinary";
+import CloudinaryServices from "../../Services/Cloudinary";
 import GroupsServices from "../../Services/GroupsServices";
 import { Navigate } from "react-router-dom";
 
@@ -27,7 +27,7 @@ const FormGroup = () => {
             let avatarUrl = "";
 
             if (groupData.imageFile) {
-                avatarUrl = await Cloudinary(groupData.imageFile);
+                avatarUrl = await CloudinaryServices.uploadGroupImage(groupData.imageFile);
             }
 
             const payload = {

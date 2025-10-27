@@ -274,20 +274,20 @@ def create_event():
         description = data.get("description")
         start_str = data.get("start_time")
         end_str = data.get("end_time")
+        imagen = data.get("imagen")
 
         creator_id = get_jwt_identity()
 
-        # Convertir fechas
         start_time = datetime.strptime(start_str, "%Y-%m-%dT%H:%M")
         end_time = datetime.strptime(end_str, "%Y-%m-%dT%H:%M")
 
-        # Crear evento
         new_event = Events(
             name=name,
             description=description,
             start_time=start_time,
             end_time=end_time,
             creator_id=creator_id,
+            imagen=imagen,
         )
         db.session.add(new_event)
         db.session.flush()
@@ -298,14 +298,13 @@ def create_event():
         )
         db.session.add(user_event)
 
-        # generar registro de nuevo evento y usuario en user_event
         db.session.commit()
-        return jsonify({"success": True, "data": "user create event"}), 201
+        return jsonify({"success": True, "event_id": new_event.id}), 201
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error al crear el evento: {str(e)}", "error")
         return jsonify({"success": False, "error": str(e)}), 500
+
 
 
 @api.route('/groups', methods=['GET'])
