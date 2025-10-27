@@ -1,14 +1,19 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import userServices from "../../Services/userServices";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import styles from "./UserProfile.module.css";
 import FormGroup from "../../components/Groups/FormGroup"
 import Avatar, { AVATAR_MAP, inferNumberFromUrl } from "../../components/Avatar";
+import Teams from "../../components/Groups/Teams";
+import GroupDetailsEdit from "../../components/Groups/GroupsDetailsEdit";
+import GroupDetails from "../../components/Groups/GroupsDetails";
+import EventForm from "../../components/EventForm";
 
 
-const Profile = () => {
+const Profile = ({ scrollRef }) => {
   const { store, dispatch } = useGlobalReducer();
+  const detailsRef = useRef(null);
   const token = localStorage.getItem("token");
 
   const [form, setForm] = useState({
@@ -23,22 +28,47 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [okMsg, setOkMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [showCreateGroup, setShowCreateGroup] = useState("");
-  const [showCreateEvent, setShowCreateEvent] = useState("");
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
+
+  const activeGroup = store.activeGroup;
+  const isEditMode = store.editMode;
+
+  const handleShowCreateGroup = () => {
+    setShowCreateGroup((prev) => !prev);
+    if (!showCreateGroup) {
+      setShowCreateEvent(false);
+      dispatch({ type: "toggleGroup", payload: { group: null } });
+      dispatch({ type: "setEditMode", payload: false });
+    }
+  };
+
+  const handleShowCreateEvent = () => {
+    setShowCreateEvent((prev) => !prev);
+     if (!showCreateEvent) {
+       setShowCreateGroup(false);
+       dispatch({ type: "toggleGroup", payload: { group: null } });
+       dispatch({ type: "setEditMode", payload: false });
+     }
+  };
+  
+useEffect(() => {
+  if (activeGroup || isEditMode) {
+    setShowCreateGroup(false);
+    setShowCreateEvent(false);
+  }
+}, [activeGroup, isEditMode]);
 
 
   useEffect(() => {
     setLoading(true);
 
-    userServices
-      .getProfile(token)
-      .then((resp) => {
+    userServices.getProfile(token).then((resp) => {
         if (!resp?.success) {
           setErrorMsg("Error loading profile");
           return;
         }
-
-        const { user, groups = [], events = [] } = resp;
+        const { user, groups, events } = resp;
 
         // slect
         const num = inferNumberFromUrl(user?.avatar);
@@ -52,7 +82,7 @@ const Profile = () => {
 
         setEvents(events);
         setGroups(groups);
-
+        
         dispatch({ type: "setUserEvents", payload: events });
         dispatch({ type: "setUserGroups", payload: groups });
         dispatch({ type: "auth", payload: { user } });
@@ -146,7 +176,7 @@ const Profile = () => {
 
               <div className="d-flex justify-content-between" >
                 <h2 className={styles.title}>Edit Profile</h2>
-                <button className={`btn p-2 mt-2 ${styles.cta}`} onClick={handleSave}>
+                <button className="btn p-2 mt-2 cta" onClick={handleSave}>
                   Save Changes
                 </button>
               </div>
@@ -215,8 +245,8 @@ const Profile = () => {
                 )}
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
-                    className={`btn w-75 ${styles.cta}`}
-                    onClick={() => setShowCreateGroup((prev) => !prev)}
+                    className="btn w-75 cta"
+                    onClick={handleShowCreateEvent}
                   >
                     {showCreateEvent ? "Close Event" : "Create Event"}
                   </button>
@@ -227,23 +257,20 @@ const Profile = () => {
             {tab === "groups" && (
               <div className={styles.panel}>
                 <h6 className="fw-bold mb-2">Your Groups</h6>
-
-                {groups.length ? (
-                  <ul className={styles.list}>
-                    {groups.map((g, idx) => (
-                      <li key={g.id ?? idx} className={styles.item}>
-                        <i className="fa-solid fa-users me-2" />
-                        <span className="me-auto">{g.name}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className={styles.empty}>No groups yet.</p>
-                )}
+                <div className="overflow-y-auto" style={{ maxHeight: '400px', paddingBottom: '60px' }}>
+                  {groups?.length > 0 &&
+                    groups?.map((group) => (
+                      <Teams key={group.id} group={group} scrollRef={scrollRef} />
+                    ))
+                  }
+                  {groups?.length === 0 && (
+                    <p className={styles.empty}>No groups yet.</p>
+                  )}
+                </div>
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
-                    className={`btn w-75  ${styles.cta}`}
-                    onClick={() => setShowCreateGroup((prev) => !prev)}
+                    className="btn w-75 cta"
+                    onClick={handleShowCreateGroup}
                   >
                     {showCreateGroup ? "Close Form" : "Create Group"}
                   </button>
@@ -254,15 +281,23 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="container">
+      <div className="d-flex justify-content-center w-100">
         {showCreateGroup && (
           <FormGroup />
         )}
         {showCreateEvent && (
-          <FormGroup />
+          <EventForm />
+        )}
+        {activeGroup && (
+          <div
+            className="group-details w-100 mt-4"
+            style={{ maxWidth: "800px" }}
+            ref={detailsRef}
+          >
+            {isEditMode ? <GroupDetailsEdit /> : <GroupDetails />}
+          </div>
         )}
       </div>
-
     </>
   );
 };

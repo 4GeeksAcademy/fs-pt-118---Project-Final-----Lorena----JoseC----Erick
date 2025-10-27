@@ -132,11 +132,17 @@
 
 
 
-.colorbotoneven {
-  background: linear-gradient(90deg, #0d6efd, #6610f2);
+
+.cta, .colorbotoneven {
+  background: linear-gradient(90deg, rgba(5,3,136,1) 0%, rgba(244,51,55,1) 100%);
+  color: #fff;
+  font-weight: 700;
   border: none;
-  transition: transform 0.2s ease-in-out;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  
 }
+.cta:hover { filter: brightness(1.02); transform: translateY(-1px); }
 
 /* =======================================================================================
    MODALS (ESTILO OSCURO)

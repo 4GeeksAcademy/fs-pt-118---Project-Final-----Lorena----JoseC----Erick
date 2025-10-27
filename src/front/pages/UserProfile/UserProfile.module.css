@@ -1,11 +1,10 @@
 
 .shell {
   width: 100vh; 
-  min-height: 100vh; 
-  display: flex;
-  align-items: center;   
-  justify-content: center; 
+  min-height: 50vh; 
+  align-content: center;
   padding: 2rem;
+  margin-top: 5rem;
 }
 
 .card {
@@ -89,16 +88,6 @@
   overflow-y: auto;
 }
 
-.list { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
-.item {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .6rem .75rem;
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 12px;
-  background: rgba(0,0,0,.02);
-}
 .status {
   font-size: .75rem;
   padding: .2rem .5rem;
@@ -125,17 +114,6 @@
   background: rgba(255,255,255,.85);
   color: #1E2A47;
 }
-
-.cta {
-  background: linear-gradient(90deg, rgba(5,3,136,1) 0%, rgba(244,51,55,1) 100%);
-  color: #fff;
-  font-weight: 700;
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.12);
-  
-}
-.cta:hover { filter: brightness(1.02); transform: translateY(-1px); }
 
 
 @keyframes fadeIn {
