@@ -5,7 +5,7 @@ const handleResponse = async (resp) => {
   let data = {};
   try {
     data = await resp.json();
-  } catch (_) {}
+  } catch (_) { }
   if (!resp.ok) {
     const err = new Error(data?.msg || `HTTP ${resp.status}`);
     err.status = resp.status;
@@ -50,5 +50,27 @@ userServices.forgotPassword = async (email) => {
   });
   return handleResponse(resp);
 };
+
+userServices.getProfile = async (token) => {
+  const resp = await fetch(`${url}/api/profile`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse(resp);
+}
+
+userServices.updateProfile = async (payload, token) => {
+  const resp = await fetch(`${url}/api/profile`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse(resp);
+}
 
 export default userServices;

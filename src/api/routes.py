@@ -19,6 +19,8 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+# -----------------------------------------------Statistics---------------------------------------------------
+
 
 @api.route('/stats/users', methods=['GET'])
 def get_user_count():
@@ -59,6 +61,7 @@ def get_general_stats():
     }), 200
 
 
+# --------------------------------------------------------Register-----------------------------------------------
 @api.route('/register', methods=['POST'])
 def register_user():
     body = request.get_json()
@@ -115,6 +118,7 @@ def register_user():
     }), 201
 
 
+# ------------------------------------------------------Login----------------------------------------------------
 @api.route('/login', methods=['POST'])
 def login_user():
     body = request.get_json()
@@ -147,6 +151,8 @@ def login_user():
         "data": user.serialize(),
         "token": token
     }), 200
+
+# --------------------------------------------------------Users--------------------------------------------------
 
 
 @api.route('/users', methods=['GET'])
@@ -184,6 +190,7 @@ def edit_user(id):
     if "user_name" in body and body["user_name"] != user.user_name:
         existing = db.session.execute(
             select(User).where(User.user_name ==
+
                                body["user_name"], User.id != id)
         ).scalar_one_or_none()
         if existing:
@@ -242,6 +249,7 @@ def forgot_password():
     return jsonify({"msg": "Recovery email sent"}), 200
 
 
+# -------------------------------------------------Password-----------------------------------------------------
 @api.route('/reset-password', methods=['POST'])
 def reset_password():
     data = request.get_json()
@@ -263,6 +271,14 @@ def reset_password():
     db.session.commit()
 
     return jsonify({"msg": "Password updated successfully"}), 200
+
+# -----------------------------------------------------Events----------------------------------------------------
+
+
+@api.route('/events', methods=['GET'])
+def get_events():
+    events = Events.query.all()
+    return jsonify([event.serialize() for event in events]), 200
 
 
 @api.route("/create-event", methods=["POST"])
@@ -441,3 +457,102 @@ def leave_group(group_id):
     db.session.commit()
 
     return jsonify({"message": "Left group successfully", "group": group.serialize()}), 200
+
+# --------------------------------------------- Perfil ---------------------------------------------
+
+
+@api.route('/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+
+    try:
+        user_id = get_jwt_identity()
+        user = db.session.get(User, user_id)
+
+        if not user:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        # Eventos creados por el usuario
+        user_events = Events.query.filter_by(creator_id=user_id).all()
+
+        # Grupos creados por el usuario
+        user_groups = Groups.query.filter_by(user_id=user_id).all()
+
+        # Datos del usuario
+        user_data = {
+            "id": user.id,
+            "user_name": user.user_name,
+            "email": user.email,
+            "avatar": getattr(user, "avatar", None),
+        }
+
+        # Serializar eventos y grupos
+        events_data = [
+            {"id": e.id, "name": e.name, "description": e.description}
+            for e in user_events
+        ]
+
+        groups_data = [
+            {"id": g.id, "name": g.name, "description": g.description}
+            for g in user_groups
+        ]
+
+        return jsonify({
+            "success": True,
+            "user": user_data,
+            "events": events_data,
+            "groups": groups_data
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    
+
+@api.route('/profile', methods=['PUT'])
+@jwt_required()
+def update_profile():
+    try:
+        user_id = get_jwt_identity()
+        user = db.session.get(User, user_id)
+        if not user:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        data = request.get_json() or {}
+
+        # --- user_name (único) ---
+        new_username = data.get("user_name")
+        if new_username and new_username != user.user_name:
+            exists = db.session.query(User.id)\
+                .filter(User.user_name == new_username, User.id != user.id)\
+                .first()
+            if exists:
+                return jsonify({"success": False, "message": "Username already taken"}), 409
+            user.user_name = new_username
+
+        # --- email (único) ---
+        new_email = data.get("email")
+        if new_email and new_email != user.email:
+            exists = db.session.query(User.id)\
+                .filter(User.email == new_email, User.id != user.id)\
+                .first()
+            if exists:
+                return jsonify({"success": False, "message": "Email already registered"}), 409
+            user.email = new_email
+
+        new_avatar = data.get("avatar")
+        if new_avatar is not None:
+            user.avatar = new_avatar
+
+        new_password = data.get("password")
+        if new_password:
+            user.password_hash = generate_password_hash(new_password)
+
+        db.session.commit()
+
+        return jsonify({"success": True, "data": user.serialize()}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+

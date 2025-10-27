@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 
 // Bootstrap desde npm (CSS + bundle JS) — chicos no instales CDN Bootstrap (el <script> )
 import "bootstrap/dist/css/bootstrap.min.css"; //Boostrap global para utilizar funcionalidades JS
+import 'bootstrap-icons/font/bootstrap-icons.css'; // iconos Bootstrap
 import * as bootstrap from "bootstrap"
 
 
@@ -18,7 +19,7 @@ import { BackendURL } from './components/BackendURL';
 window.bootstrap = bootstrap;
 
 // --- Pequeño bridge para encadenar modales ---
-function FocusGuard() {
+const FocusGuard= () =>{
   React.useEffect(() => {
     const blurActive = () => {
       const ae = document.activeElement;

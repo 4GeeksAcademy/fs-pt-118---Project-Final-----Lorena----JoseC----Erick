@@ -5,6 +5,8 @@ export const initialStore = () => {
     activeGroup: null,
     editMode: false,
     groups: [],
+    userEvents: [],
+    userGroups: [],
   };
 };
 
@@ -27,15 +29,27 @@ export default function storeReducer(store, action = {}) {
         ...store,
         activeGroup: action.payload.group,
       };
-      case "removeGroup":
+    case "removeGroup":
       return {
         ...store,
         groups: store.groups.filter(g => g.id !== action.payload),
       };
+      
     case "setEditMode":
       return {
         ...store,
         editMode: action.payload,
+      };
+    case "setUserEvents":
+      return {
+        ...store,
+        userEvents: action.payload
+      };
+
+    case "setUserGroups":
+      return {
+        ...store,
+        userGroups: action.payload
       };
 
     default:

@@ -3,8 +3,6 @@ import userServices from "../Services/userServices";
 import { useNavigate } from "react-router-dom";
 import { forceCloseModalById } from "../utils/modalUtils"
 
-
-
 const ForgotPasswordModal = () => {
 
     const navigate = useNavigate()
@@ -12,18 +10,17 @@ const ForgotPasswordModal = () => {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [okMsg, setOkMsg] = useState("");
-
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         setOkMsg("");
         setErrorMsg("");
         setLoading(true);
-
         userServices.forgotPassword({ email })
             .then((data) => {
                 if (data?.msg === "Recovery email sent" || data?.ok) {
                     setOkMsg("Recovery email sent");
-                    // deja ver la alerta 1seg y cierra modal
+    
                     setTimeout(() => {
                         forceCloseModalById("forgotModal", () => navigate("/"));
                     }, 1500);
@@ -38,14 +35,13 @@ const ForgotPasswordModal = () => {
             })
             .finally(() => setLoading(false));
     };
-
     return (
         <>
             <div
                 id="forgotModal"
                 className="modal"
                 aria-labelledby="forgotModalLabel"
-                tabIndex="-1" 
+                tabIndex="-1"
             >
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content colorModals">
@@ -53,7 +49,6 @@ const ForgotPasswordModal = () => {
                         <div className="modal-body">
                             {okMsg && <div className="alert alert-success">{okMsg}</div>}
                             {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-
                             <form onSubmit={handleSubmit} noValidate>
                                 <div className="mb-3">
                                     <label htmlFor="resetEmail" className="form-label">Your_Email</label>
@@ -71,11 +66,9 @@ const ForgotPasswordModal = () => {
                                         disabled={loading}
                                     />
                                 </div>
-
                                 <button type="submit" className="btn btn-dark w-100" disabled={loading}>
                                     {loading ? "Sending..." : "Send"}
                                 </button>
-
                                 <div className="mt-3">
                                     <button
                                         type="button"
@@ -94,5 +87,4 @@ const ForgotPasswordModal = () => {
         </>
     );
 }
-
 export default ForgotPasswordModal

@@ -8,10 +8,10 @@ def seed_data():
     db.create_all()
 
     # --- Users ---
-    u1 = User(email="ana@example.com", password_hash="hashed_ana", user_name="ana", role=RoleEnum.ADMIN)
-    u2 = User(email="bob@example.com", password_hash="hashed_bob", user_name="bob")
-    u3 = User(email="carla@example.com", password_hash="hashed_carla", user_name="carla")
-    u4 = User(email="david@example.com", password_hash="hashed_david", user_name="david")
+    u1 = User(email="ana@example.com", password_hash="hashed_ana", user_name="ana", avatar="https://i.pravatar.cc/240?img=2", role=RoleEnum.ADMIN)
+    u2 = User(email="bob@example.com", password_hash="hashed_bob", avatar="https://i.pravatar.cc/240?img=2", user_name="bob")
+    u3 = User(email="carla@example.com", password_hash="hashed_carla",avatar="https://i.pravatar.cc/240?img=2", user_name="carla")
+    u4 = User(email="david@example.com", password_hash="hashed_david",avatar="https://i.pravatar.cc/240?img=2", user_name="david")
 
     db.session.add_all([u1, u2, u3, u4])
     db.session.commit()
@@ -23,7 +23,8 @@ def seed_data():
         start_time=datetime.utcnow() + timedelta(days=5),
         end_time=datetime.utcnow() + timedelta(days=6),
         status=EventsStatus.ACTIVE,
-        creator_id=u1.id
+        creator_id=u1.id,
+        imagen="imagen"
     )
     e2 = Events(
         name="Noche de Juegos",
@@ -31,7 +32,8 @@ def seed_data():
         start_time=datetime.utcnow() + timedelta(days=10),
         end_time=datetime.utcnow() + timedelta(days=10, hours=4),
         status=EventsStatus.PENDING,
-        creator_id=u2.id
+        creator_id=u2.id,
+        imagen="imagen"
     )
     e3 = Events(
         name="Torneo de Invierno",
@@ -39,7 +41,8 @@ def seed_data():
         start_time=datetime.utcnow() + timedelta(days=20),
         end_time=datetime.utcnow() + timedelta(days=21),
         status=EventsStatus.PAUSED,
-        creator_id=u1.id
+        creator_id=u1.id,
+        imagen="imagen"
     )
 
     db.session.add_all([e1, e2, e3])

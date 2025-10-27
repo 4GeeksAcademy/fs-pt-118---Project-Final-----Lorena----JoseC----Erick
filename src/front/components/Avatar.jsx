@@ -1,22 +1,56 @@
 import React from "react";
 
-const Avatar = ({ src, name }) => {
-  if (src) {
+// --- Avatares predefinidos ---
+export const AVATAR_MAP = {
+  "1": "https://i.pravatar.cc/240?img=12",
+  "2": "https://i.pravatar.cc/240?img=2",
+  "3": "https://i.pravatar.cc/240?img=3",
+  "4": "https://i.pravatar.cc/240?img=4",
+  "5": "https://i.pravatar.cc/240?img=5",
+  "6": "https://i.pravatar.cc/240?img=6",
+  "7": "https://i.pravatar.cc/240?img=7",
+  "8": "https://i.pravatar.cc/240?img=8",
+  "9": "https://i.pravatar.cc/240?img=9",
+  "10": "https://i.pravatar.cc/240?img=10",
+};
+
+// --- Utilidad para deducir el número desde la URL ---
+export const inferNumberFromUrl = (url) => {
+  if (!url) return "5";
+  const match = url.match(/img=(\d+)/);
+  return match?.[1] || "5";
+};
+
+// --- Componente principal ---
+const Avatar = ({ src, name, bgClass, size = 36 }) => {
+  // Si hay una URL válida o una clave de avatar
+  const resolvedSrc = AVATAR_MAP[src] || src;
+
+  if (resolvedSrc) {
     return (
       <img
-        src={src}
+        src={resolvedSrc}
         alt={name || "User avatar"}
-        className="rounded-circle object-fit-cover"
-        style={{ width: 36, height: 36 }}
+        className="rounded-circle object-fit-cover border border-light shadow-sm"
+        style={{ width: size, height: size }}
       />
     );
   }
 
+  // Si no hay imagen, mostramos iniciales
   const initials = (name || "U").trim().slice(0, 2).toUpperCase();
+
+  const isLightBg =
+    bgClass?.includes("warning") ||
+    bgClass?.includes("light") ||
+    bgClass?.includes("info") ||
+    bgClass?.includes("secondary");
+
+  const textColor = isLightBg ? "text-dark" : "text-white";
+
   return (
     <div
-      className="rounded-circle d-flex align-items-center justify-content-center bg-secondary text-white"
-      style={{ width: 36, height: 36, fontSize: 12, fontWeight: 700 }}
+      className={`rounded-circle d-flex align-items-center justify-content-center ${bgClass || "bg-secondary"} ${textColor}`}
       aria-hidden="true"
     >
       {initials}
