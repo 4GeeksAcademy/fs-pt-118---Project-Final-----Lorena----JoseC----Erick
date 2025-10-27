@@ -322,7 +322,6 @@ def create_event():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
-
 @api.route('/groups', methods=['GET'])
 def get_groups():
 
@@ -472,30 +471,30 @@ def get_profile():
         if not user:
             return jsonify({"success": False, "message": "User not found"}), 404
 
-        # Eventos creados por el usuario
-        user_events = Events.query.filter_by(creator_id=user_id).all()
-
-        # Grupos creados por el usuario
-        user_groups = Groups.query.filter_by(user_id=user_id).all()
-
         # Datos del usuario
-        user_data = {
-            "id": user.id,
-            "user_name": user.user_name,
-            "email": user.email,
-            "avatar": getattr(user, "avatar", None),
-        }
+        user_data = user.serialize()
 
-        # Serializar eventos y grupos
-        events_data = [
-            {"id": e.id, "name": e.name, "description": e.description}
-            for e in user_events
-        ]
+        seen_event_ids = set()
+        events_data = []
+        for e in (user.events_created or []):
+            if e.id not in seen_event_ids:
+                events_data.append(e.serialize())
+                seen_event_ids.add(e.id)
+        for e in (user.events_joined or []):
+            if e.id not in seen_event_ids:
+                events_data.append(e.serialize())
+                seen_event_ids.add(e.id)
 
-        groups_data = [
-            {"id": g.id, "name": g.name, "description": g.description}
-            for g in user_groups
-        ]
+        seen_group_ids = set()
+        groups_data = []
+        for g in (user.groups_created or []):
+            if g.id not in seen_group_ids:
+                groups_data.append(g.serialize())
+                seen_group_ids.add(g.id)
+        for g in (user.groups_joined or []):
+            if g.id not in seen_group_ids:
+                groups_data.append(g.serialize())
+                seen_group_ids.add(g.id)
 
         return jsonify({
             "success": True,
@@ -507,7 +506,7 @@ def get_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
-    
+
 
 @api.route('/profile', methods=['PUT'])
 @jwt_required()
@@ -555,4 +554,3 @@ def update_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
-

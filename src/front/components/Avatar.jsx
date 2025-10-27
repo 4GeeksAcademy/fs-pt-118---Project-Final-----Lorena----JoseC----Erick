@@ -22,7 +22,7 @@ export const inferNumberFromUrl = (url) => {
 };
 
 // --- Componente principal ---
-const Avatar = ({ src, name, bgClass, size = 36 }) => {
+const Avatar = ({ src, name, bgClass, size = 50 }) => {
   // Si hay una URL válida o una clave de avatar
   const resolvedSrc = AVATAR_MAP[src] || src;
 
@@ -51,6 +51,15 @@ const Avatar = ({ src, name, bgClass, size = 36 }) => {
   return (
     <div
       className={`rounded-circle d-flex align-items-center justify-content-center ${bgClass || "bg-secondary"} ${textColor}`}
+      style={{
+        width: size,
+        height: size,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: size / 2,
+        fontWeight: "semibold",
+      }}  
       aria-hidden="true"
     >
       {initials}

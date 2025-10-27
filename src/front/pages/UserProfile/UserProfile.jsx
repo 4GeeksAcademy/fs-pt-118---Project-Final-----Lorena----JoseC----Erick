@@ -5,9 +5,10 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 import styles from "./UserProfile.module.css";
 import FormGroup from "../../components/Groups/FormGroup"
 import Avatar, { AVATAR_MAP, inferNumberFromUrl } from "../../components/Avatar";
+import Teams from "../../components/Groups/Teams";
 
 
-const Profile = () => {
+const Profile = ({ scrollRef }) => {
   const { store, dispatch } = useGlobalReducer();
   const token = localStorage.getItem("token");
 
@@ -33,13 +34,13 @@ const Profile = () => {
     userServices
       .getProfile(token)
       .then((resp) => {
+         console.log("Profile:", resp)
         if (!resp?.success) {
           setErrorMsg("Error loading profile");
           return;
         }
-
-        const { user, groups = [], events = [] } = resp;
-
+        const { user, groups , events } = resp;
+        
         // slect
         const num = inferNumberFromUrl(user?.avatar);
 
@@ -52,7 +53,7 @@ const Profile = () => {
 
         setEvents(events);
         setGroups(groups);
-
+        console.log("USER PROFILE DATA:", groups);
         dispatch({ type: "setUserEvents", payload: events });
         dispatch({ type: "setUserGroups", payload: groups });
         dispatch({ type: "auth", payload: { user } });
@@ -216,7 +217,7 @@ const Profile = () => {
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
                     className={`btn w-75 ${styles.cta}`}
-                    onClick={() => setShowCreateGroup((prev) => !prev)}
+                    onClick={() => setShowCreateEvent((prev) => !prev)}
                   >
                     {showCreateEvent ? "Close Event" : "Create Event"}
                   </button>
@@ -225,21 +226,21 @@ const Profile = () => {
             )}
 
             {tab === "groups" && (
-              <div className={styles.panel}>
+              <div className= {styles.panel}>
                 <h6 className="fw-bold mb-2">Your Groups</h6>
-
-                {groups.length ? (
-                  <ul className={styles.list}>
-                    {groups.map((g, idx) => (
-                      <li key={g.id ?? idx} className={styles.item}>
-                        <i className="fa-solid fa-users me-2" />
-                        <span className="me-auto">{g.name}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
+                <div className="overflow-y-auto" style={{ maxHeight: '400px', paddingBottom: '60px' }}>
+                {groups?.length > 0 &&
+                  groups?.map((group) => (
+                    <Teams key={group.id} group={group} scrollRef={scrollRef} />
+                  ))
+                  
+                }
+                {groups?.length === 0 && (
                   <p className={styles.empty}>No groups yet.</p>
                 )}
+                </div>
+
+
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
                     className={`btn w-75  ${styles.cta}`}
