@@ -1,6 +1,6 @@
 const WhoWeAre = () => {
     return (
-        <div className="d-flex flex-column gap-4 text-center w-50 container mt-5">
+        <div className="container d-flex flex-column gap-4 text-center my-5">
             <h1 className="title">Who We Are?</h1>
             <p className="fs-3 text-shadow">
                 We are a digital platform designed for sports lovers. <br />
@@ -10,7 +10,7 @@ const WhoWeAre = () => {
                 Our goal is to connect players and spectators in one place,
                 making it easy to create, find, book, and follow sporting events in real time.
             </p>
-            <div className="d-flex justify-content-center row gap-3">
+            <div className="row justify-content-center gap-2">
                 <div className="border border-black rounded-5 p-4 col-sm-12 col-md-6 col-lg-3">
                     <span className="fa-solid fa-user text-danger title"></span>
                     <p className="fs-3 m-0 title">Erick Estrada</p>
@@ -18,7 +18,7 @@ const WhoWeAre = () => {
                 </div>
                 <div className="border border-black rounded-5 p-4 col-sm-12 col-md-6 col-lg-3">
                     <span className="fa-solid fa-user text-primary title"></span>
-                    <p className="fs-3 m-0 title">Jose Gonzales</p>
+                    <p className="fs-3 m-0 title">Jose Gonzalez</p>
                     <div className="form-text">Ceo Admin</div>
                 </div>
                 <div className="border border-black rounded-5 p-4 col-sm-12 col-md-6 col-lg-3">

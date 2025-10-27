@@ -5,6 +5,7 @@ import Avatar from "../Avatar";
 import logo from "../../assets/img/sportBar-.png";
 import styles from "./Navbar.module.css";
 import { randomAvatarBg } from "../../utils/PaletteColors";
+import { openModalById } from "../../utils/modalUtils";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     if (!isHome) { setSolid(true); return; }
-    const onScroll = () => setSolid(window.scrollY > 900);
+    const onScroll = () => setSolid(window.scrollY > 500);
     window.addEventListener("scroll", onScroll);
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
@@ -36,9 +37,17 @@ export const Navbar = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     dispatch({ type: "logout" });
-    window.location.reload();
     navigate("/");
+   /*  window.location.reload(); */
   };
+
+  const goToLogin = (e, to) => {
+    if (!isAuth) {
+      e.preventDefault();
+      openModalById("loginModal");
+      return;
+    }
+  }
 
   return (
     <nav className={`navbar navbar-expand-lg ${styles.nav} ${navState}`}>
@@ -53,6 +62,7 @@ export const Navbar = () => {
           <li className="nav-item">
             <Link
               to="/teams"
+              onClick={(e) => goToLogin(e, "/teams")}
               className={`nav-link ${styles.navLink} ${location.pathname === "/teams" ? styles.navLinkActive : ""}`}
             >
               Teams
@@ -61,6 +71,7 @@ export const Navbar = () => {
           <li className="nav-item">
             <Link
               to="/events"
+              onClick={(e) => goToLogin(e, "/events")}
               className={`nav-link ${styles.navLink} ${location.pathname === "/events" ? styles.navLinkActive : ""}`}
             >
               Events

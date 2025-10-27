@@ -5,6 +5,7 @@ import Statistics from "../components/Statistics.jsx";
 
 import LandingLogged from "../components/LandingLogged.jsx";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import WhoWeAre from "../components/WhoWeAre.jsx";
 
 export const Home = () => {
   const { store } = useGlobalReducer();
@@ -17,6 +18,7 @@ export const Home = () => {
         <>
           <Landing />
           <Statistics />
+          <WhoWeAre />
         </>
       )}
 
