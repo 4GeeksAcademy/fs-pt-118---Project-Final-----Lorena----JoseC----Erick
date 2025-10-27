@@ -20,7 +20,7 @@ const ForgotPasswordModal = () => {
             .then((data) => {
                 if (data?.msg === "Recovery email sent" || data?.ok) {
                     setOkMsg("Recovery email sent");
-                    // deja ver la alerta 1seg y cierra modal
+    
                     setTimeout(() => {
                         forceCloseModalById("forgotModal", () => navigate("/"));
                     }, 1500);

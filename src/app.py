@@ -13,6 +13,7 @@ from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_cors import CORS
+from datetime import timedelta
 
 # from models import Person
 
@@ -35,6 +36,8 @@ mail.init_app(app)
 
 #jwt config
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") 
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=6) 
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30) 
 jwt = JWTManager(app)
 
 

@@ -35,6 +35,7 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255),nullable=False)  
     user_name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    avatar: Mapped[Optional[str]] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Definimos el campo 'role' como un Enum con valores 'user' y 'admin'
@@ -68,9 +69,14 @@ class User(db.Model):
             "email": self.email,
             "role": self.role.value,
             "user_name": self.user_name,
+            "avatar": self.avatar,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+
             "events_created": [event.serialize() for event in self.events_created] if self.events_created else [],
+            "events_joined": [e.serialize() for e in self.events_joined] if self.events_joined else [],
             "groups_created": [group.serialize() for group in self.groups_created] if self.groups_created else [],
+            "groups_joined": [g.serialize() for g in self.groups_joined] if self.groups_joined else [],  
+            
             "comments": [comment.serialize() for comment in self.comments] if self.comments else [],
             "reservations": [reservation.serialize() for reservation in self.reservations] if self.reservations else [],
             "favorite_events": [event.serialize() for event in self.favorite_events] if self.favorite_events else []
