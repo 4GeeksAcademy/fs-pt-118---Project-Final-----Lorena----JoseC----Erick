@@ -14,11 +14,10 @@
 
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); 
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,13 +25,18 @@
 }
 
 .modal-confirm {
-  background-color: #fff;
+ position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 92vw);
+  max-height: 85vh;
+  overflow: auto;
+  background: #fff;
   border-radius: 12px;
-  padding: 2rem;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  animation: fadeInScale 0.3s ease-out;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 1051; /* por encima del backdrop */
 }
 
 

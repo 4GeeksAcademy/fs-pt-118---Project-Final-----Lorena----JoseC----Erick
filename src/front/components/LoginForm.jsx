@@ -34,7 +34,7 @@ const LoginModal = () => {
         dispatch({ type: "auth", payload: { user: data.data } });
         // Cerrar modal y luego navegar a Home
         forceCloseModalById("loginModal")
-        window.location.reload()
+        /* window.location.reload() */
         navigate("/")
       })
       .catch((err) => {
