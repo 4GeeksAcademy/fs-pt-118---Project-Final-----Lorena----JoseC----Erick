@@ -111,15 +111,14 @@ const GroupDetails = () => {
                 onClick={handleLeave}
                 disabled={loading}
               >
-                <i className="fa-solid fa-right-from-bracket me-2"></i> Leave Group
+                <i className="fa-solid fa-right-from-bracket me-2"></i> Leave
               </button>
             ) : (
               <button
                 className="btn btn-outline-success"
                 onClick={handleJoin}
-                disabled={loading}
-              >
-                <i className="fa-solid fa-user-plus me-2"></i> Join Group
+                disabled={loading}>
+                <i className="fa-solid fa-user-plus me-2"></i> Join
               </button>
             )}
           </div>
