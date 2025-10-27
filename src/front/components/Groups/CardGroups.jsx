@@ -20,8 +20,7 @@ const CardGroups = ({ scrollRef }) => {
   return (
     <div
       className="container py-4 d-flex flex-column align-items-center shadow"
-      style={{ maxWidth: "800px" }}
-    >
+      style={{ maxWidth: "800px" }}>
       {loading ? (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status">
