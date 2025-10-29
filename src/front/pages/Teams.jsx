@@ -2,7 +2,7 @@ import Groups from "../components/Groups/Groups"
 
 const Teams = () => {
     return (
-        <div>
+        <div className="container pageShell">
          <Groups/>
         </div>
     )

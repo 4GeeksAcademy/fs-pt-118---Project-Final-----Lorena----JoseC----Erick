@@ -9,7 +9,8 @@ import Teams from "../../components/Groups/Teams";
 import GroupDetailsEdit from "../../components/Groups/GroupsDetailsEdit";
 import GroupDetails from "../../components/Groups/GroupsDetails";
 import EventForm from "../../components/EventForm";
-
+import { openModalById, forceCloseModalById } from "../../utils/modalUtils";
+import AvatarModal from "../../components/AvatarModal";
 
 const Profile = ({ scrollRef }) => {
   const { store, dispatch } = useGlobalReducer();
@@ -45,49 +46,49 @@ const Profile = ({ scrollRef }) => {
 
   const handleShowCreateEvent = () => {
     setShowCreateEvent((prev) => !prev);
-     if (!showCreateEvent) {
-       setShowCreateGroup(false);
-       dispatch({ type: "toggleGroup", payload: { group: null } });
-       dispatch({ type: "setEditMode", payload: false });
-     }
+    if (!showCreateEvent) {
+      setShowCreateGroup(false);
+      dispatch({ type: "toggleGroup", payload: { group: null } });
+      dispatch({ type: "setEditMode", payload: false });
+    }
   };
-  
-useEffect(() => {
-  if (activeGroup || isEditMode) {
-    setShowCreateGroup(false);
-    setShowCreateEvent(false);
-  }
-}, [activeGroup, isEditMode]);
+
+  useEffect(() => {
+    if (activeGroup || isEditMode) {
+      setShowCreateGroup(false);
+      setShowCreateEvent(false);
+    }
+  }, [activeGroup, isEditMode]);
 
 
   useEffect(() => {
     setLoading(true);
 
     userServices.getProfile(token).then((resp) => {
-        if (!resp?.success) {
-          setErrorMsg("Error loading profile");
-          return;
-        }
-        const { user, groups, events } = resp;
+      if (!resp?.success) {
+        setErrorMsg("Error loading profile");
+        return;
+      }
+      const { user, groups, events } = resp;
 
-        // slect
-        const num = inferNumberFromUrl(user?.avatar);
+      // slect
+      const num = inferNumberFromUrl(user?.avatar);
 
-        setForm({
-          user_name: user?.user_name || "",
-          email: user?.email || "",
-          avatar: AVATAR_MAP[num],
-        });
-        setAvatarNumber(num);
+      setForm({
+        user_name: user?.user_name || "",
+        email: user?.email || "",
+        avatar: AVATAR_MAP[num],
+      });
+      setAvatarNumber(num);
 
-        setEvents(events);
-        setGroups(groups);
-        
-        dispatch({ type: "setUserEvents", payload: events });
-        dispatch({ type: "setUserGroups", payload: groups });
-        dispatch({ type: "auth", payload: { user } });
-        localStorage.setItem("user", JSON.stringify(user));
-      })
+      setEvents(events);
+      setGroups(groups);
+
+      dispatch({ type: "setUserEvents", payload: events });
+      dispatch({ type: "setUserGroups", payload: groups });
+      dispatch({ type: "auth", payload: { user } });
+      localStorage.setItem("user", JSON.stringify(user));
+    })
       .catch(() => setErrorMsg("Error loading profile"))
       .finally(() => setLoading(false));
   }, [dispatch, token]);
@@ -127,23 +128,23 @@ useEffect(() => {
       .catch(() => setErrorMsg("Error updating profile"));
   };
 
-  const handleAvatarChange = (e) => {
-    const value = e.target.value;
-    setAvatarNumber(value);
-    setForm((prev) => ({ ...prev, avatar: AVATAR_MAP[value] }));
-  };
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+  const handleOnSelect = (id) => {
+    setAvatarNumber(id);
+    setForm((prev) => ({ ...prev, avatar: AVATAR_MAP[id] }));
+  }
+
+
 
 
   return (
     <>
-      <div className={`container ${styles.shell}`}>
+      <div className={`container py-4 py-md-5 mt-5  ${styles.shell}`}>
         <div className={styles.card}>
           {/* HEADER */}
-          <div className="row g-5 align-items-center ">
+          <div className="row g-5 mt-1 align-items-center ">
             <div className="col-12 col-md-4 text-center">
               <div className={styles.avatarWrap}>
                 <Avatar
@@ -154,19 +155,16 @@ useEffect(() => {
                 />
               </div>
               <div className="mt-3">
-                <label className="form-label fw-bold">Select Profile-IMG </label>
-                <select
-                  className={`form-select ${styles.input}`}
-                  value={avatarNumber}
-                  onChange={handleAvatarChange}
+                <label className="form-label px-1 fw-bold">Select Avatar </label>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm cta-small"
+                  onClick={() => openModalById("avatarModal")}
                 >
-                  {Array.from({ length: 10 },
-                    (_, i) => String(i + 1)).map((n) => (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    ))}
-                </select>
+                  Change Avatar
+                </button>
+                <small className="text-muted ms-2">Current: #{avatarNumber}</small>
+
               </div>
             </div>
             <div className="col-12 col-md-8">
@@ -224,7 +222,7 @@ useEffect(() => {
           <div className="container mt-4">
             {tab === "events" && (
               <div className={styles.panel}>
-                <h6 className="fw-bold mb-2">Your Events</h6>
+                <h6 className="fw-bold m-2">Your Events</h6>
 
                 {events.length ? (
                   <ul className={styles.list}>
@@ -256,7 +254,7 @@ useEffect(() => {
 
             {tab === "groups" && (
               <div className={styles.panel}>
-                <h6 className="fw-bold mb-2">Your Groups</h6>
+                <h6 className="fw-bold m-2">Your Teams</h6>
                 <div className="overflow-y-auto" style={{ maxHeight: '400px', paddingBottom: '60px' }}>
                   {groups?.length > 0 &&
                     groups?.map((group) => (
@@ -298,6 +296,11 @@ useEffect(() => {
           </div>
         )}
       </div>
+      <AvatarModal
+        id="avatarModal"
+        current={avatarNumber}
+        onSelect={handleOnSelect}
+      />
     </>
   );
 };

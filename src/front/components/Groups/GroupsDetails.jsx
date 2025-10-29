@@ -54,7 +54,7 @@ const GroupDetails = () => {
 
       <div className="card border rounded-4 p-5 my-3 mx-2 w-75 shadow">
         <button
-          className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3"
+          className="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-3"
           onClick={handleClose}
           title="Close details"
           aria-label="Close details"
