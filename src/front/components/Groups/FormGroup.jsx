@@ -144,7 +144,7 @@ const FormGroup = () => {
         <div className="d-grid mt-4">
           <input
             type="submit"
-            className="colorbotoneven btn w-100 py-2 fw-bold text-white"
+            className="cta btn w-100 py-2 fw-bold text-white"
             value="Create team"
             disabled={isUploading}
           />

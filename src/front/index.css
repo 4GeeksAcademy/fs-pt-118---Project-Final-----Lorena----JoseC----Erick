@@ -3,24 +3,28 @@
    ======================================================================================= */
 
 /* Sombra de texto reutilizable */
-.text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,.5); }
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, .5);
+}
 
 /* Titulares destacados */
 .title {
   font-weight: 900;
   font-size: 2.8rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,.4);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
 }
 
 /* Contenedor principal cuando el navbar es fixed (ajusta si hace falta) */
-.main-with-fixed-nav { padding-top: 72px; }
+.main-with-fixed-nav {
+  padding-top: 72px;
+}
 
 /* =======================================================================================
    LANDING / HERO
    ======================================================================================= */
 
 /* Fondo del hero (página de inicio sin sesión) */
-.backgroundimg   {
+.backgroundimg {
   background-image: url("https://img.freepik.com/foto-gratis/herramientas-deportivas_53876-138077.jpg?t=st=1760846561~exp=1760850161~hmac=8005ddfa91b70064320c7d9c9190402ca39abd7d2176e32282d9628a7e0c1416&w=1480");
   background-size: cover;
   background-position: center;
@@ -29,7 +33,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   text-align: center;
 }
@@ -74,18 +78,19 @@
     font-size: clamp(1rem, 4vw, 1.25rem);
   }
 }
-  .club-subscription h2 {
-    font-size: clamp(1.5rem, 6vw, 2.25rem);
-  }
 
-  .club-subscription p {
-    font-size: clamp(1rem, 4vw, 1.25rem);
-  }
+.club-subscription h2 {
+  font-size: clamp(1.5rem, 6vw, 2.25rem);
+}
+
+.club-subscription p {
+  font-size: clamp(1rem, 4vw, 1.25rem);
+}
 
 
 
 /* Fondo de landing cuando hay sesión iniciada */
-.backgroundimgLogged   {
+.backgroundimgLogged {
   background-image: url("https://res.cloudinary.com/ddvyou4tf/image/upload/v1761568645/rectangle_12_rmrumb.png");
   background-size: cover;
   background-position: center;
@@ -93,7 +98,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   text-align: center;
 }
@@ -114,6 +119,7 @@
   min-width: 160px;
   margin-top: 10px;
 }
+
 .btn-transparente:hover {
   background-color: rgba(255, 255, 255, 0.5);
   color: #333333;
@@ -121,31 +127,50 @@
 }
 
 /* Extras del landing */
-.emoji { font-size: 15vh; }
-.formgroup { width: 80%; }
-.form { background-color: #3333336b; }
+.emoji {
+  font-size: 15vh;
+}
+
+.formgroup {
+  width: 80%;
+}
+
+.form {
+  background-color: #3333336b;
+}
+
 .colorevent {
   background-color: rgba(216, 216, 216, 0.756);
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
 }
-.colorform { background: linear-gradient(145deg, #1E2A47 0%, #2C4576 100%); }
 
+.colorform {
+  background: linear-gradient(145deg, #1E2A47 0%, #2C4576 100%);
+}
 
-
-
-.cta, .colorbotoneven {
-  background: linear-gradient(90deg, rgba(5,3,136,1) 0%, rgba(244,51,55,1) 100%);
+.cta,
+.colorbotoneven {
+background: linear-gradient(90deg, rgba(5,3,136,1) 0%, rgba(244,51,55,1) 100%);
   color: #fff;
   font-weight: 700;
   border: none;
   border-radius: 12px;
   box-shadow: 0 6px 16px rgba(0,0,0,.12);
-  
+  transition: background 0.3s ease, transform 0.2s ease;
 }
-.cta:hover { filter: brightness(1.02); transform: translateY(-1px); }
+.cta:hover, .cta-small:hover {
+ background: linear-gradient(90deg, rgba(5,3,136,1) 0%, rgba(244,51,55,1) 100%);
+  transform: translateY(-1px);
+  color: rgb(220, 220, 220);
+}
+.cta-small-cancel:hover{
+background: linear-gradient(90deg, rgb(152,152,152) 0%, rgba(235, 39, 39, 0.64) 100%);
+  transform: translateY(-1px);
+  color: rgb(0, 0, 0);
+}
 
 /* =======================================================================================
-   MODALS (ESTILO OSCURO)
+                      MODALS (ESTILO OSCURO)
    ======================================================================================= */
 
 /* Solo aplica al contenido del modal con la clase .colorModals */
@@ -156,7 +181,7 @@
   border: none !important;
   border-radius: 18px !important;
   color: #fff;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   padding: 2rem 1rem;
 }
 
@@ -168,14 +193,16 @@
   border-radius: 10px;
   padding: 0.6rem 1rem;
 }
+
 .colorModals .form-control::placeholder {
   color: #c7d3ed;
   opacity: 0.8;
 }
+
 .colorModals .form-control:focus {
   background-color: rgba(255, 255, 255, 0.15);
   border-color: #00a8e8;
-  box-shadow: 0 0 0 0.2rem rgba(0,168,232,0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 168, 232, 0.25);
   color: #fff;
 }
 
@@ -188,7 +215,10 @@
   border-radius: 10px;
   transition: all 0.3s ease;
 }
-.colorModals .btn-dark:hover { background-color: #0090cc; }
+
+.colorModals .btn-dark:hover {
+  background-color: #0090cc;
+}
 
 /* Enlaces y textos dentro del modal */
 .colorModals .btn-link,
@@ -196,6 +226,7 @@
 .colorModals .alert {
   color: #c7d3ed !important;
 }
+
 /* .modal-open { padding-right: 0 !important; }  */
 
 /* =======================================================================================
@@ -221,12 +252,16 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   padding: 1.25rem;
 }
+
 .authCard .title {
   text-align: center;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
-.authCard .alert { margin-bottom: 1rem; }
+
+.authCard .alert {
+  margin-bottom: 1rem;
+}
 
 /* Inputs (mismo estilo que en modal) */
 .authCard .form-control {
@@ -236,7 +271,12 @@
   border-radius: 10px;
   padding: 0.6rem 1rem;
 }
-.authCard .form-control::placeholder { color: #c7d3ed; opacity: 0.8; }
+
+.authCard .form-control::placeholder {
+  color: #c7d3ed;
+  opacity: 0.8;
+}
+
 .authCard .form-control:focus {
   background-color: rgba(255, 255, 255, 0.15);
   border-color: #00a8e8;
@@ -253,7 +293,10 @@
   border-radius: 10px;
   transition: all 0.3s ease;
 }
-.authCard .btn-dark:hover { background-color: #0090cc; }
+
+.authCard .btn-dark:hover {
+  background-color: #0090cc;
+}
 
 /* Link inferior */
 .authCard .btn-link {
@@ -279,34 +322,68 @@
   letter-spacing: 0.3px;
   animation: fadeInAlert 0.4s ease-in-out;
 }
+
 .alert-success {
   background: rgba(46, 204, 112, 0.6);
   color: #2ecc71;
   border: 1px solid rgba(46, 204, 113, 0.25);
   box-shadow: 0 2px 12px rgba(46, 204, 113, 0.15);
 }
+
 .alert-danger {
   background: rgba(144, 19, 5, 0.491);
   color: #e74c3c;
   border: 1px solid rgba(231, 76, 60, 0.25);
   box-shadow: 0 2px 12px rgba(231, 76, 60, 0.15);
 }
+
 .alert button.btn-close {
   filter: invert(1) brightness(2);
   opacity: 0.7;
 }
-.alert button.btn-close:hover { opacity: 1; }
 
-.alert-fade { opacity: 1; transition: opacity 0.5s ease-in-out; }
-.alert-fade.hidden { opacity: 0; }
+.alert button.btn-close:hover {
+  opacity: 1;
+}
+
+.alert-fade {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.alert-fade.hidden {
+  opacity: 0;
+}
 
 @keyframes fadeInAlert {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =======================================================================================
    ICONOS
    ======================================================================================= */
 
-.fa-chart-line { font-size: 3rem; }
+.fa-chart-line {
+  font-size: 3rem;
+}
+
+/* =======================================================================================
+Teams
+   ======================================================================================= */
+.pageShell {
+  padding-top: 72px;
+}
+
+@media (max-width: 768px) {
+  .pageShell {
+    padding-top: 96px;
+  }
+}

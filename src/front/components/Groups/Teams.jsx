@@ -102,7 +102,7 @@ const Teams = ({ group, scrollRef }) => {
                                                         title={isActive ? "Hide group" : "Show group"}
                                                         aria-label={isActive ? "Hide group" : "Show group"}
                                                 >
-                                                        <i className={`fa-solid ${isActive ? "fa-eye-slash" : "fa-eye"} fs-4 text-primary`} />
+                                                        <i className={`fa-solid ${!isActive ? "fa-eye-slash" : "fa-eye"} fs-4 text-primary`} />
                                                 </button>
 
                                                 {isOwner && (
