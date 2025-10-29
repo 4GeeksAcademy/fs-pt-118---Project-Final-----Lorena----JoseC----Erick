@@ -1,5 +1,6 @@
 import Hero from "./Hero";
 import EventForm from "./EventForm";
+import TeamsAdmin from "./admin-teams/TeamsAdmin";
 
 const LandingLogged = () => {
     return (
@@ -15,6 +16,7 @@ const LandingLogged = () => {
             <div className="row mx-2">
                 <EventForm/>
             </div>
+            <TeamsAdmin/>
         </>
     );
 };
