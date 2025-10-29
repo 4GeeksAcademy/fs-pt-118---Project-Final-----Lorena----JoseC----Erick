@@ -147,7 +147,7 @@ const EventForm = () => {
                         />
                         <label
                             htmlFor="image"
-                            className="btn btn-outline-primary w-100"
+                            className="btn btn-outline-danger cta w-100"
                             style={{ cursor: "pointer" }}
                         >
                             {imageFile ? "Image selected ✅" : "Choose image"}
@@ -167,7 +167,7 @@ const EventForm = () => {
                 </div>
                 <button
                     type="submit"
-                    className="btn w-100 py-2 fw-bold text-white colorbotoneven"
+                    className="btn w-100 py-2 fw-bold text-white cta"
                     onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
                     onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                 >

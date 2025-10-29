@@ -69,7 +69,7 @@ const GroupDetailsEdit = () => {
         <div className="d-flex justify-content-center col-sm-12 col-md-12 col-lg-12">
             <div className="card border border-primary p-5 my-3 mx-2 w-75 bg-light shadow">
                 <button
-                    className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3"
+                    className="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-3"
                     onClick={handleClose}
                     title="Close editor"
                     aria-label="Close editor"
@@ -120,13 +120,13 @@ const GroupDetailsEdit = () => {
 
                 <div className="d-flex justify-content-end gap-3 mt-4">
                     <button
-                        className="btn btn-success"
+                        className="btn btn-outline-primary cta-small"
                         onClick={handleSave}
                         disabled={isSaving}
                     >
                         {isSaving ? "Saving..." : "Save"}
                     </button>
-                    <button className="btn btn-secondary" onClick={handleCancel}>Cancel</button>
+                    <button className="btn btn-outline-secondary cta-small-cancel" onClick={handleCancel}>Cancel</button>
                 </div>
             </div>
         </div>

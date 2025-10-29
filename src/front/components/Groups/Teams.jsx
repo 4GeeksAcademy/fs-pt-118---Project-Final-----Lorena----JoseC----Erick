@@ -102,7 +102,7 @@ const Teams = ({ group, scrollRef }) => {
                                                         title={isActive ? "Hide group" : "Show group"}
                                                         aria-label={isActive ? "Hide group" : "Show group"}
                                                 >
-                                                        <i className={`fa-solid ${isActive ? "fa-eye-slash" : "fa-eye"} fs-4 text-primary`} />
+                                                        <i className={`fa-solid ${!isActive ? "fa-eye-slash" : "fa-eye"} fs-4 text-primary`} />
                                                 </button>
 
                                                 {isOwner && (
@@ -116,33 +116,33 @@ const Teams = ({ group, scrollRef }) => {
                                                         </div>
                                                 )}
 
-                    </div>
-                </div>
-            </div>
-            {showConfirmModal && createPortal(
-                <div className="modal-backdrop">
-                    <div className="modal-confirm text-center">
-                        <h5 className="mb-3">Are you sure you want to delete this group?</h5>
-
-                        <img
-                            src="https://static.wikia.nocookie.net/gensin-impact/images/2/2d/Icon_Emoji_Paimon%27s_Paintings_01_Lumine_2.png/revision/latest?cb=20240303141251"
-                            alt="Lumine icon"
-                            style={{ width: 80, height: 80, objectFit: "contain", marginBottom: "1rem" }}
-                        />
-                        <div className="d-flex justify-content-center gap-3">
-                            <button className="btn btn-secondary" onClick={() => setShowConfirmModal(false)}>
-                                Cancel
-                            </button>
-                            <button className="btn btn-danger" onClick={handleDelete}>
-                                Confirm Delete
-                            </button>
+                                        </div>
+                                </div>
                         </div>
-                    </div>
-                </div>,
-                document.body
-            )}
-        </div>
-    );
+                        {showConfirmModal && createPortal(
+                                <div className="modal-backdrop">
+                                        <div className="modal-confirm text-center">
+                                                <h5 className="mb-3">Are you sure you want to delete this group?</h5>
+
+                                                <img
+                                                        src="https://static.wikia.nocookie.net/gensin-impact/images/2/2d/Icon_Emoji_Paimon%27s_Paintings_01_Lumine_2.png/revision/latest?cb=20240303141251"
+                                                        alt="Lumine icon"
+                                                        style={{ width: 80, height: 80, objectFit: "contain", marginBottom: "1rem" }}
+                                                />
+                                                <div className="d-flex justify-content-center gap-3">
+                                                        <button className="btn btn-secondary" onClick={() => setShowConfirmModal(false)}>
+                                                                Cancel
+                                                        </button>
+                                                        <button className="btn btn-danger" onClick={handleDelete}>
+                                                                Confirm Delete
+                                                        </button>
+                                                </div>
+                                        </div>
+                                </div>,
+                                document.body
+                        )}
+                </div>
+        );
 };
 
 export default Teams;

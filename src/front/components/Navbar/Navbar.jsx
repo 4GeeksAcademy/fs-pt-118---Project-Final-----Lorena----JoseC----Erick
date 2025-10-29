@@ -105,8 +105,7 @@ export const Navbar = () => {
             </button>
             <ul className={`dropdown-menu dropdown-menu-end ${styles.dropdownMenu}`}>
               <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/profile">Profile</Link></li>
-              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/my-teams">My Teams</Link></li>
-              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/my-events">My Events</Link></li>
+          
               {role === "admin" && (
                 <>
                   <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>
