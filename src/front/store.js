@@ -32,9 +32,9 @@ export default function storeReducer(store, action = {}) {
     case "removeGroup":
       return {
         ...store,
-        groups: store.groups.filter(g => g.id !== action.payload),
+        groups: store.groups.filter((g) => g.id !== action.payload),
       };
-      
+
     case "setEditMode":
       return {
         ...store,
@@ -43,13 +43,19 @@ export default function storeReducer(store, action = {}) {
     case "setUserEvents":
       return {
         ...store,
-        userEvents: action.payload
+        userEvents: action.payload,
       };
 
     case "setUserGroups":
       return {
         ...store,
-        userGroups: action.payload
+        userGroups: action.payload,
+      };
+
+    case "setGroups":
+      return {
+        ...store,
+        groups: action.payload,
       };
 
     default:

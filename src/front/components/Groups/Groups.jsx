@@ -14,7 +14,7 @@ const Groups = () => {
 
   return (
     <>
-      <div className="container py-4 d-flex flex-column align-items-center">
+      <div className="container py-4 d-flex flex-column align-items-center mt-5 mt-sm-0">
         <div className="card-groups w-100 border rounded-4 shadow-sm" style={{ maxWidth: "800px" }}>
           <h1 className="text-center fw-bold mb-4 my-2">Teams List</h1>
 

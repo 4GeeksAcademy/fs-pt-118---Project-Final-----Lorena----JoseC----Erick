@@ -1,8 +1,8 @@
 import Groups from "../components/Groups/Groups"
 
 const Teams = () => {
-    return (
-        <div className="container pageShell">
+    return (                 /* pageShell borrado del class*/
+        <div className="container">
          <Groups/>
         </div>
     )
