@@ -16,7 +16,6 @@ const LandingLogged = () => {
             <div className="row mx-2">
                 <EventForm/>
             </div>
-            <TeamsAdmin/>
         </>
     );
 };
