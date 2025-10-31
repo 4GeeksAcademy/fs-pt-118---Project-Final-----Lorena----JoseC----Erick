@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
 import userServices from "../../Services/userServices";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import styles from "./UserProfile.module.css";
 import FormGroup from "../../components/Groups/FormGroup"
-import Avatar, { AVATAR_MAP, inferNumberFromUrl } from "../../components/Avatar";
+import Avatar, { AVATAR_MAP, inferNumberFromUrl } from "../../components/Avatar/Avatar";
 import Teams from "../../components/Groups/Teams";
 import GroupDetailsEdit from "../../components/Groups/GroupsDetailsEdit";
 import GroupDetails from "../../components/Groups/GroupsDetails";
 import EventForm from "../../components/EventForm";
+import { openModalById, forceCloseModalById } from "../../utils/modalUtils";
+import AvatarModal from "../../components/Avatar/AvatarModal";
 
-
-const Profile = ({ scrollRef }) => {
+const Profile = () => {
   const { store, dispatch } = useGlobalReducer();
   const detailsRef = useRef(null);
   const token = localStorage.getItem("token");
@@ -34,60 +34,44 @@ const Profile = ({ scrollRef }) => {
   const activeGroup = store.activeGroup;
   const isEditMode = store.editMode;
 
-  const handleShowCreateGroup = () => {
-    setShowCreateGroup((prev) => !prev);
-    if (!showCreateGroup) {
-      setShowCreateEvent(false);
-      dispatch({ type: "toggleGroup", payload: { group: null } });
-      dispatch({ type: "setEditMode", payload: false });
-    }
-  };
 
-  const handleShowCreateEvent = () => {
-    setShowCreateEvent((prev) => !prev);
-     if (!showCreateEvent) {
-       setShowCreateGroup(false);
-       dispatch({ type: "toggleGroup", payload: { group: null } });
-       dispatch({ type: "setEditMode", payload: false });
-     }
-  };
-  
-useEffect(() => {
-  if (activeGroup || isEditMode) {
-    setShowCreateGroup(false);
-    setShowCreateEvent(false);
-  }
-}, [activeGroup, isEditMode]);
+
+  useEffect(() => {
+    if (activeGroup || isEditMode) {
+      setShowCreateGroup(false);
+      setShowCreateEvent(false);
+    }
+  }, [activeGroup, isEditMode]);
 
 
   useEffect(() => {
     setLoading(true);
 
     userServices.getProfile(token).then((resp) => {
-        if (!resp?.success) {
-          setErrorMsg("Error loading profile");
-          return;
-        }
-        const { user, groups, events } = resp;
+      if (!resp?.success) {
+        setErrorMsg("Error loading profile");
+        return;
+      }
+      const { user, groups, events } = resp;
 
-        // slect
-        const num = inferNumberFromUrl(user?.avatar);
+      const num = inferNumberFromUrl(user?.avatar);
+      const isPreset = num && AVATAR_MAP[num];
 
-        setForm({
-          user_name: user?.user_name || "",
-          email: user?.email || "",
-          avatar: AVATAR_MAP[num],
-        });
-        setAvatarNumber(num);
+      setForm({
+        user_name: user?.user_name || "",
+        email: user?.email || "",
+        avatar: isPreset ? AVATAR_MAP[num] : (user?.avatar || ""),
+      });
+      setAvatarNumber(isPreset ? String(num) : null);
 
-        setEvents(events);
-        setGroups(groups);
-        
-        dispatch({ type: "setUserEvents", payload: events });
-        dispatch({ type: "setUserGroups", payload: groups });
-        dispatch({ type: "auth", payload: { user } });
-        localStorage.setItem("user", JSON.stringify(user));
-      })
+      setEvents(events);
+      setGroups(groups);
+
+      dispatch({ type: "setUserEvents", payload: events });
+      dispatch({ type: "setUserGroups", payload: groups });
+      dispatch({ type: "auth", payload: { user } });
+      localStorage.setItem("user", JSON.stringify(user));
+    })
       .catch(() => setErrorMsg("Error loading profile"))
       .finally(() => setLoading(false));
   }, [dispatch, token]);
@@ -98,23 +82,28 @@ useEffect(() => {
 
     const payload = {
       user_name: form.user_name,
-      avatar: AVATAR_MAP[avatarNumber],
+      password: form.password,
+      avatar: (form.avatar || null),
     };
 
     userServices
       .updateProfile(payload, token)
       .then((resp) => {
+        console.log(resp);
         if (resp.success) {
           const user = resp.data;
+
+          const num = inferNumberFromUrl(user?.avatar);
+          const isPreset = num && AVATAR_MAP[num];
 
           setForm({
             user_name: user.user_name || "",
             email: user.email || "",
-            avatar: user.avatar || "",
+            avatar: isPreset ? AVATAR_MAP[num] : (user?.avatar || ""),
           });
-          const num = inferNumberFromUrl(user.avatar);
-          setAvatarNumber(num);
-
+          setAvatarNumber(isPreset ? String(num) : null);
+          console.log("numerooooooo->>>>>>:", num);
+          console.log("i->>>>>>:", isPreset);
           dispatch({ type: "auth", payload: { user } });
           localStorage.setItem("user", JSON.stringify(user));
 
@@ -127,23 +116,48 @@ useEffect(() => {
       .catch(() => setErrorMsg("Error updating profile"));
   };
 
-  const handleAvatarChange = (e) => {
-    const value = e.target.value;
-    setAvatarNumber(value);
-    setForm((prev) => ({ ...prev, avatar: AVATAR_MAP[value] }));
-  };
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const looksLikeUrl = (v) => typeof v === "string" && /^https?:\/\//i.test(v);
+
+  const handleOnSelect = (value) => {
+    if (looksLikeUrl(value)) {
+      // Selección personalizada (Cloudinary)
+      setAvatarNumber(null);
+      setForm((prev) => ({ ...prev, avatar: value }));
+    } else {
+      // select predefinida
+      setAvatarNumber(String(value));
+      setForm((prev) => ({ ...prev, avatar: AVATAR_MAP[value] }));
+    }
+  };
+
+  const handleShowCreateGroup = () => {
+    setShowCreateGroup((prev) => !prev);
+    if (!showCreateGroup) {
+      setShowCreateEvent(false);
+      dispatch({ type: "toggleGroup", payload: { group: null } });
+      dispatch({ type: "setEditMode", payload: false });
+    }
+  };
+
+  const handleShowCreateEvent = () => {
+    setShowCreateEvent((prev) => !prev);
+    if (!showCreateEvent) {
+      setShowCreateGroup(false);
+      dispatch({ type: "toggleGroup", payload: { group: null } });
+      dispatch({ type: "setEditMode", payload: false });
+    }
+  };
 
   return (
     <>
-      <div className={`container ${styles.shell}`}>
+      <div className={`container py-4 py-md-5 mt-5  ${styles.shell}`}>
         <div className={styles.card}>
-          {/* HEADER */}
-          <div className="row g-5 align-items-center ">
+
+          <div className="row g-5 mt-1 align-items-center ">
             <div className="col-12 col-md-4 text-center">
               <div className={styles.avatarWrap}>
                 <Avatar
@@ -154,19 +168,14 @@ useEffect(() => {
                 />
               </div>
               <div className="mt-3">
-                <label className="form-label fw-bold">Select Profile-IMG </label>
-                <select
-                  className={`form-select ${styles.input}`}
-                  value={avatarNumber}
-                  onChange={handleAvatarChange}
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm cta-small"
+                  onClick={() => openModalById("avatarModal")}
                 >
-                  {Array.from({ length: 10 },
-                    (_, i) => String(i + 1)).map((n) => (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    ))}
-                </select>
+                  Change Avatar
+                </button>
+
               </div>
             </div>
             <div className="col-12 col-md-8">
@@ -191,7 +200,7 @@ useEffect(() => {
                     onChange={handleChange}
                     placeholder="user name"
                   />
-                </div>
+                </div>        
                 <div className="col-12">
                   <label className="form-label fw-bold">Email</label>
                   <input
@@ -203,7 +212,6 @@ useEffect(() => {
                 </div>
               </div>
 
-              {/* Tabs */}
               <div className={`d-flex align-items-center justify-content-center gap-2 mt-3 ${styles.tabs}`}>
                 <button
                   className={`${styles.tabBtn} ${tab === "events" ? styles.active : ""}`}
@@ -224,7 +232,7 @@ useEffect(() => {
           <div className="container mt-4">
             {tab === "events" && (
               <div className={styles.panel}>
-                <h6 className="fw-bold mb-2">Your Events</h6>
+                <h6 className="fw-bold m-2">Your Events</h6>
 
                 {events.length ? (
                   <ul className={styles.list}>
@@ -256,11 +264,11 @@ useEffect(() => {
 
             {tab === "groups" && (
               <div className={styles.panel}>
-                <h6 className="fw-bold mb-2">Your Groups</h6>
+                <h6 className="fw-bold m-2">Your Teams</h6>
                 <div className="overflow-y-auto" style={{ maxHeight: '400px', paddingBottom: '60px' }}>
                   {groups?.length > 0 &&
                     groups?.map((group) => (
-                      <Teams key={group.id} group={group} scrollRef={scrollRef} />
+                      <Teams key={group.id} group={group} scrollRef={detailsRef} />
                     ))
                   }
                   {groups?.length === 0 && (
@@ -298,6 +306,11 @@ useEffect(() => {
           </div>
         )}
       </div>
+      <AvatarModal
+        id="avatarModal"
+        current={avatarNumber ?? form.avatar}
+        onSelect={handleOnSelect}
+      />
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import GroupsServices from "../../Services/GroupsServices";
+import { toast } from "react-toastify";
 
 const GroupDetailsEdit = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -28,29 +29,32 @@ const GroupDetailsEdit = () => {
 
     const handleSave = async () => {
         if (!formData.name.trim()) {
-            setErrorMsg("Group name is required");
+            toast.error("Group name is required");
             return;
         }
 
         setIsSaving(true);
         const token = localStorage.getItem("token");
-
-        const { success, error } = await GroupsServices.updateGroup(group.id, formData, token);
+        const { success, error, updatedGroup } = await GroupsServices.updateGroup(group.id, formData, token);
 
         if (success) {
-            setOkMsg("Group updated successfully ✅");
-            window.location.reload();
+            toast.success("Group updated successfully ✅");
+
+            const newGroup = updatedGroup || { ...group, ...formData };
+            dispatch({ type: "toggleGroup", payload: { group: newGroup } });
+
+            const updatedGroups = store.groups.map(g =>
+                g.id === group.id ? newGroup : g
+            );
+            dispatch({ type: "setGroups", payload: updatedGroups });
+            dispatch({ type: "setEditMode", payload: false });
         } else {
-            setErrorMsg(error || "Error updating group");
+            toast.error(error || "Error updating group");
         }
 
         setIsSaving(false);
-
-        setTimeout(() => {
-            setOkMsg("");
-            setErrorMsg("");
-        }, 3000);
     };
+
 
     const handleCancel = () => {
         dispatch({ type: "setEditMode", payload: false });
@@ -67,9 +71,9 @@ const GroupDetailsEdit = () => {
 
     return (
         <div className="d-flex justify-content-center col-sm-12 col-md-12 col-lg-12">
-            <div className="card border border-primary p-5 my-3 mx-2 w-75 bg-light shadow">
+            <div className="card border border-primary p-5 my-3 mx-2 w-100 bg-light shadow">
                 <button
-                    className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3"
+                    className="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-3"
                     onClick={handleClose}
                     title="Close editor"
                     aria-label="Close editor"
@@ -85,11 +89,18 @@ const GroupDetailsEdit = () => {
                     <label className="form-label fw-bold">Group Name</label>
                     <input
                         type="text"
+                        id="groupName"
+                        className="form-control border-primary"
+                        placeholder="Max 15 characters"
                         value={formData.name}
-                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        className="form-control"
-                        placeholder="Group name"
+                        maxLength={15}
+                        required
+                        onChange={e =>
+                            setFormData(prev => ({ ...prev, name: e.target.value }))
+                        }
                     />
+                    <small className="text-muted">{15 - formData.name.length} characters left</small>
+
                 </div>
 
                 <div className="mb-3">
@@ -120,13 +131,13 @@ const GroupDetailsEdit = () => {
 
                 <div className="d-flex justify-content-end gap-3 mt-4">
                     <button
-                        className="btn btn-success"
+                        className="btn btn-outline-primary cta-small"
                         onClick={handleSave}
                         disabled={isSaving}
                     >
                         {isSaving ? "Saving..." : "Save"}
                     </button>
-                    <button className="btn btn-secondary" onClick={handleCancel}>Cancel</button>
+                    <button className="btn btn-outline-secondary cta-small-cancel" onClick={handleCancel}>Cancel</button>
                 </div>
             </div>
         </div>

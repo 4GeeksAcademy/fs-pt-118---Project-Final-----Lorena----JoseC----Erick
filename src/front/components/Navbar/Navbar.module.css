@@ -1,6 +1,4 @@
-/* ================= NAVBAR MODULE ================= */
 
-/* Contenedor base del navbar  */
 .nav {
   position: fixed;
   inset: 0 auto auto 0;
@@ -16,7 +14,7 @@
 }
 
 .solid {
-  background: rgba(245, 247, 250, 0.345) !important;
+  background: rgba(223, 222, 229, 0.646) !important;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   box-shadow: 0 6px 18px rgba(0,0,0,.06) !important;
@@ -105,7 +103,7 @@
 /* En transparente los links y textos se ven blancos */
 .transparent :global(.nav-link),
 .transparent .brandText {
-  color: #fff !important;
+  color: #ffffffdf !important;
   -webkit-text-fill-color: #fff;
 }
 
@@ -127,17 +125,16 @@
   color: #1E2A47 !important;
   transition: color 0.25s ease;
 }
-/* ====== Responsive ====== */
+
 @media (max-width: 767.98px) {
   .containerH{
-    margin-top: 1rem;
     height: var(--nav-h, 64px);
     align-content: center;
-    padding-inline: .5rem;     /* respiración lateral */
+    padding-inline: .5rem; 
   }
    /* Logo más contenido en movil */
   .logo{
-    max-height: 70px;
+    max-height: 80px;
     min-height: 40px;
   }
    .navCenter{
@@ -145,18 +142,16 @@
   }
    .navLink{
     font-size: .95rem;
-    
     padding: 0 !important;
   }
-    /* Oculta nombre y caret del user en móvil */
   .hideOnMobile{
     display: none !important;
   }
-  /* Texto de marca: opcionalmente ocúltalo siempre en móvil para no desbordar */
   .brandText{
     display: none;
   }
 }
+
 /* ===================== DROPDOWN ===================== */
 
 /* contenedor del dropdown */

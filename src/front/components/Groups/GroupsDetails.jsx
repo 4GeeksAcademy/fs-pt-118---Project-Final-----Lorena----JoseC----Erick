@@ -15,17 +15,32 @@ const GroupDetails = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const updateGroupMembers = (newMembers) => {
+    const updatedGroup = { ...group, members: newMembers };
+
+    dispatch({ type: "toggleGroup", payload: { group: updatedGroup } });
+
+    const updatedGroups = store.groups.map(g =>
+      g.id === group.id ? updatedGroup : g
+    );
+    dispatch({ type: "setGroups", payload: updatedGroups });
+  };
+
   const handleJoin = async () => {
     setLoading(true);
     const token = localStorage.getItem("token");
-    const { success, error } = await GroupsServices.joinGroup(group.id, token);
+    const { success, error, newMember } = await GroupsServices.joinGroup(group.id, token);
 
     if (success) {
       toast.success("You've joined the group 🎉");
-      setTimeout(() => window.location.reload(), 2800);
+
+      // Simula que el backend devuelve el nuevo miembro
+      const updatedMembers = [...group.members, store.user];
+      updateGroupMembers(updatedMembers);
     } else {
       toast.error(error || "Error joining group");
     }
+
     setLoading(false);
   };
 
@@ -36,10 +51,13 @@ const GroupDetails = () => {
 
     if (success) {
       toast("You left the group 👋", { icon: "👋" });
-      setTimeout(() => window.location.reload(), 2800);
+
+      const updatedMembers = group.members.filter(m => m.id !== currentUserId);
+      updateGroupMembers(updatedMembers);
     } else {
       toast.error(error || "Error leaving group");
     }
+
     setLoading(false);
   };
 
@@ -48,13 +66,11 @@ const GroupDetails = () => {
     dispatch({ type: "setEditMode", payload: false });
   };
 
-
   return (
     <div className="d-flex justify-content-center col-sm-12 col-md-12 col-lg-12">
-
-      <div className="card border rounded-4 p-5 my-3 mx-2 w-75 shadow">
+      <div className="card border rounded-4 p-5 my-3 mx-2 w-100 shadow">
         <button
-          className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3"
+          className="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-3"
           onClick={handleClose}
           title="Close details"
           aria-label="Close details"
@@ -117,7 +133,8 @@ const GroupDetails = () => {
               <button
                 className="btn btn-outline-success"
                 onClick={handleJoin}
-                disabled={loading}>
+                disabled={loading}
+              >
                 <i className="fa-solid fa-user-plus me-2"></i> Join
               </button>
             )}

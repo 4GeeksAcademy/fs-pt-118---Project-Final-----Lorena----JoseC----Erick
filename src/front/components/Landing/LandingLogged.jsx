@@ -1,5 +1,5 @@
 import Hero from "./Hero";
-import EventForm from "./EventForm";
+import EventForm from "../EventForm";
 
 const LandingLogged = () => {
     return (
@@ -13,7 +13,7 @@ const LandingLogged = () => {
                 </div>
             </div>
             <div className="row mx-2">
-                <EventForm/>
+                <EventForm />
             </div>
         </>
     );

@@ -1,67 +1,63 @@
 import { useState } from "react";
 import CloudinaryServices from "../../Services/Cloudinary";
 import GroupsServices from "../../Services/GroupsServices";
-import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const FormGroup = () => {
-    const [errorMsg, setErrorMsg] = useState("");
-    const [okMsg, setOkMsg] = useState("");
-    const [isUploading, setIsUploading] = useState(false);
-    const [groupData, setGroupData] = useState({
-        name: "",
-        description: "",
-        imageFile: null,
-    });
+  const [errorMsg, setErrorMsg] = useState("");
+  const [okMsg, setOkMsg] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [groupData, setGroupData] = useState({
+    name: "",
+    description: "",
+    imageFile: null,
+  });
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        setGroupData(prev => ({ ...prev, imageFile: file }));
-    };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setGroupData(prev => ({ ...prev, imageFile: file }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsUploading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
 
-        try {
-            let avatarUrl = "";
+    try {
+      let avatarUrl = "";
 
-            if (groupData.imageFile) {
-                avatarUrl = await CloudinaryServices.uploadGroupImage(groupData.imageFile);
-            }
+      if (groupData.imageFile) {
+        avatarUrl = await CloudinaryServices.uploadGroupImage(groupData.imageFile);
+      }
 
-            const payload = {
-                name: groupData.name,
-                description: groupData.description,
-                avatar: avatarUrl
-            };
+      const payload = {
+        name: groupData.name,
+        description: groupData.description,
+        avatar: avatarUrl
+      };
 
-            const token = localStorage.getItem("token");
-            const { success, data, error } = await GroupsServices.newGroup(payload, token);
+      const token = localStorage.getItem("token");
+      const { success, data, error } = await GroupsServices.newGroup(payload, token);
 
-            if (success) {
-                setOkMsg("Group created successfully 🎉");
-                setGroupData({ name: "", description: "", imageFile: null });
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+      if (success) {
+        toast.success("Group created successfully 🎉");
+        setGroupData({ name: "", description: "", imageFile: null });
 
-            } else {
-                setErrorMsg(error || "Error creating group");
-            }
-        } catch (err) {
-            setErrorMsg("Unexpected error occurred");
-        } finally {
-            setIsUploading(false);
-            setTimeout(() => {
-                setOkMsg("");
-                setErrorMsg("");
-            }, 3000);
-        }
-    };
+        setTimeout(() => {
+          window.location.reload();
+        }, 4000);
+      } else {
+        toast.error(error || "Error creating group");
+      }
+    } catch (err) {
+      toast.error("Unexpected error occurred");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
-    return (
-        <div className="container my-4 d-flex justify-content-center">
+  return (
+    <div className="container my-4 d-flex justify-content-center">
       <form
         onSubmit={handleSubmit}
         className="p-4 rounded-4 shadow-lg bg-light border border-2 border-primary w-100"
@@ -72,7 +68,7 @@ const FormGroup = () => {
         {okMsg && <div className="alert alert-success">{okMsg}</div>}
         {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
 
-        {/* Group Name */}
+
         <div className="mb-3">
           <label htmlFor="groupName" className="form-label fw-bold">Group name</label>
           <input
@@ -88,7 +84,7 @@ const FormGroup = () => {
           <small className="text-muted">{15 - groupData.name.length} characters left</small>
         </div>
 
-        {/* Description */}
+
         <div className="mb-3">
           <label htmlFor="groupDescription" className="form-label fw-bold">Description</label>
           <textarea
@@ -101,7 +97,7 @@ const FormGroup = () => {
           />
         </div>
 
-        {/* Image Upload */}
+
         <div className="mb-3">
           <label htmlFor="groupAvatar" className="form-label fw-bold">Group image</label>
           <input
@@ -130,7 +126,7 @@ const FormGroup = () => {
           )}
         </div>
 
-        {/* Uploading Spinner */}
+
         {isUploading && (
           <div className="text-center mt-3">
             <div className="spinner-border text-primary" role="status">
@@ -140,11 +136,11 @@ const FormGroup = () => {
           </div>
         )}
 
-        {/* Submit */}
+
         <div className="d-grid mt-4">
           <input
             type="submit"
-            className="colorbotoneven btn w-100 py-2 fw-bold text-white"
+            className="cta btn w-100 py-2 fw-bold text-white"
             value="Create team"
             disabled={isUploading}
           />
@@ -152,7 +148,7 @@ const FormGroup = () => {
       </form>
     </div>
 
-    );
+  );
 };
 
 export default FormGroup;

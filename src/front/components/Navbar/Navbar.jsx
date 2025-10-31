@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
-import Avatar from "../Avatar";
+import Avatar from "../Avatar/Avatar";
 import logo from "../../assets/img/sportBar-.png";
 import styles from "./Navbar.module.css";
 import { randomAvatarBg } from "../../utils/PaletteColors";
@@ -52,12 +52,12 @@ export const Navbar = () => {
   return (
     <nav className={`navbar navbar-expand-lg ${styles.nav} ${navState}`}>
       <div className={`container ${styles.containerH}`}>
-        {/* Brand */}
+       
         <Link to="/" className={`navbar-brand ${styles.brand}`}>
           <img src={logo} alt="SportBar League" className={styles.logo} />
           <span className={`fw-bold ${styles.brandText}`}>SportBar League</span>
         </Link>
-        {/* Links centro */}
+        
         <ul className={`nav gap-3 ${styles.navCenter}`}>
           <li className="nav-item">
             <Link
@@ -78,8 +78,6 @@ export const Navbar = () => {
             </Link>
           </li>
         </ul>
-
-        {/* Auth derecha */}
         {!isAuth ? (
           <button
             className="btn btn-dark fw-bold px-3"
@@ -91,11 +89,8 @@ export const Navbar = () => {
           </button>
         ) : (
           <div className="dropdown">
-            <button className="btn d-flex align-items-center gap-2" data-bs-toggle="dropdown">
-              {/* Avatar redondo (se vera en movil) */}
+            <button className="btn d-flex align-items-center gap-2" data-bs-toggle="dropdown">  
               <Avatar src={avatarUrl} name={displayName} bgClass={avatarBg} />
-
-              {/* Nombre: lo ocultamos en mOvil */}
               <span className={`fw-semibold text-capitalize ${styles.hideOnMobile} ${solid ? styles.textDark : styles.textLight}`}>
                 {displayName}
               </span>
@@ -105,8 +100,7 @@ export const Navbar = () => {
             </button>
             <ul className={`dropdown-menu dropdown-menu-end ${styles.dropdownMenu}`}>
               <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/profile">Profile</Link></li>
-              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/my-teams">My Teams</Link></li>
-              <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/my-events">My Events</Link></li>
+          
               {role === "admin" && (
                 <>
                   <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>
