@@ -1,6 +1,5 @@
 import Hero from "./Hero";
-import EventForm from "./EventForm";
-import TeamsAdmin from "./admin-teams/TeamsAdmin";
+import EventForm from "../EventForm";
 
 const LandingLogged = () => {
     return (
