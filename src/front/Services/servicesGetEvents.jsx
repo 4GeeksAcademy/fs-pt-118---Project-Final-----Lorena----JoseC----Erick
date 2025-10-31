@@ -32,12 +32,18 @@ servicesGetEvents.getEventById = async (eventId) => {
 
 servicesGetEvents.getEventGroups = async (eventId) => {
     try {
-        const resp = await fetch(`${url}/api/events/${eventId}/groups`);
-        if (!resp.ok) throw new Error("Failed to fetch groups for event");
-        const data = await resp.json();
-        return data.data || [];
+        const resp = await fetch(`${url}/api/events/${eventId}/groups`)
+        if (!resp.ok) throw new Error("Failed to fetch groups for event")
+
+        const data = await resp.json()
+        if (data && Array.isArray(data.data)) {
+            return data.data
+        } else {
+            console.warn("Unexpected format", data)
+            return []
+        }
     } catch (error) {
-        console.error("Error fetching event groups:", error);
+        console.error("Error fetching event groups:", error)
         return [];
     }
 }
