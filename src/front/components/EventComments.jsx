@@ -109,7 +109,7 @@ const EventComments = ({ eventId }) => {
                         <div className="input-group">
                             <input
                                 type="text"
-                                className="form-control"
+                                className="form-control border border-dark "
                                 placeholder="Write a comment..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
@@ -118,7 +118,7 @@ const EventComments = ({ eventId }) => {
                                 }}
                             />
                             <button
-                                className="btn btn-outline-primary"
+                                className="btn btn-dark bg-gradient"
                                 type="button"
                                 onClick={handleAddComment}
                             >

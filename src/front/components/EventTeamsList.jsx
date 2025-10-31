@@ -71,7 +71,7 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
         </button>
       </div>
 
-      {groups.length === 0 ? (
+      {!Array.isArray(groups) || groups.length === 0 ? (
         <p className="text-center text-muted">No teams are linked to this event yet.</p>
       ) : (
         <div className="list-group">
