@@ -1,0 +1,70 @@
+.offer-section {
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  color: #1a1a1a;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #007bff, #00c4b4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.offer-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e9eef5;
+}
+
+.offer-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.1);
+}
+
+.offer-icon {
+  font-size: 2rem;
+  color: #00b4d8;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.offer-card:hover .offer-icon {
+  transform: rotate(10deg) scale(1.2);
+  color: #0077b6;
+}
+
+.subscription-card {
+  background: linear-gradient(135deg, #e0f7fa, #f8f9fa);
+  border: 2px solid #d0ebff;
+  transition: all 0.3s ease;
+}
+
+.subscription-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 15px 25px rgba(0, 119, 182, 0.2);
+}
+
+.btn-gradient {
+  background: linear-gradient(90deg, #007bff, #00c4b4);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(90deg, #00b4d8, #0077b6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.bounce {
+  animation: bounce 1.8s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}

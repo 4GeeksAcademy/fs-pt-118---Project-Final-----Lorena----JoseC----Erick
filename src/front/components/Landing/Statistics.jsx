@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import servicesStats from "../Services/servicesStats";
+import servicesStats from "../../Services/servicesStats";
 
 const Statistics = () => {
 

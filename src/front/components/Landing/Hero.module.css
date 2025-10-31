@@ -1,0 +1,124 @@
+:root {
+  --hero-fg: #ffffff;
+  --hero-shadow: rgba(0, 0, 0, .55);
+  --brand-1: #050388;
+  --brand-2: #f43337;
+  --glass: rgba(255, 255, 255, 0.052);
+  --glass-border: rgba(255, 255, 255, 0.35);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(92svh, 860px);
+  display: grid;
+  place-items: center;
+  padding: clamp(2rem, 4vw, 4rem) 1.25rem;
+  overflow: clip;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(180deg, rgba(4, 11, 24, .55), rgba(4, 11, 24, .55)),
+    url("https://img.freepik.com/foto-gratis/herramientas-deportivas_53876-138077.jpg?t=st=1760846561~exp=1760850161~hmac=8005ddfa91b70064320c7d9c9190402ca39abd7d2176e32282d9628a7e0c1416&w=1480");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+  will-change: transform;
+  background-attachment: scroll;
+}
+
+@media (min-width: 992px) {
+  .bg {
+    background-position: center 30%;
+    margin-top: auto;
+  }
+}
+.content {
+  max-width: 980px;
+  margin-inline: auto;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  color: var(--hero-fg);
+  text-shadow: 0 2px 8px var(--hero-shadow);
+  backdrop-filter: blur(2px);
+}
+@media (max-width: 768px) {
+  .content {
+    margin-top: 5rem ; 
+    padding-inline: 1rem; 
+    text-align: center;
+  }
+}
+
+.title {
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .2px;
+  font-size: clamp(2rem, 5.2vw, 3.6rem);
+  margin: 0;
+}
+
+.subtitle {
+  font-weight: 600;
+  opacity: .95;
+  margin-top: .75rem;
+  font-size: clamp(1.05rem, 2.8vw, 1.5rem);
+}
+
+.description {
+  max-width: 700px;
+  margin: 1.5rem auto 0;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #f2f2f2;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  gap: .9rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: clamp(1.25rem, 3.2vw, 2rem);
+}
+
+.btn {
+  --pad-y: .7rem;
+  --pad-x: 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: var(--pad-y) var(--pad-x);
+  font-weight: 700;
+  font-size: clamp(.95rem, 2.2vw, 1rem);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+  will-change: transform;
+}
+
+.btnPrimary {
+  background: linear-gradient(90deg, var(--brand-1) 0%, var(--brand-2) 100%);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.22);
+}
+
+.btnGhost {
+  background: var(--glass);
+  color: #f0f3f8;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(8px);
+}
+
+.btnGhost:hover {
+  background: rgba(255,255,255,.28);
+  transform: translateY(-2px);
+}

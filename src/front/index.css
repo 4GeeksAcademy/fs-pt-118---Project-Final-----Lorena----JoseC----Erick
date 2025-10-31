@@ -21,9 +21,9 @@
 
 /* =======================================================================================
    LANDING / HERO
-   ======================================================================================= */
+   ======================================================================================= 
 
-/* Fondo del hero (página de inicio sin sesión) */
+/* Fondo del hero (página de inicio sin sesión) *//*
 .backgroundimg {
   background-image: url("https://img.freepik.com/foto-gratis/herramientas-deportivas_53876-138077.jpg?t=st=1760846561~exp=1760850161~hmac=8005ddfa91b70064320c7d9c9190402ca39abd7d2176e32282d9628a7e0c1416&w=1480");
   background-size: cover;
@@ -86,7 +86,7 @@
 .club-subscription p {
   font-size: clamp(1rem, 4vw, 1.25rem);
 }
-
+*/
 
 
 /* Fondo de landing cuando hay sesión iniciada */
@@ -167,7 +167,7 @@ background: linear-gradient(90deg, rgba(5,3,136,1) 0%, rgba(244,51,55,1) 100%);
 background: linear-gradient(90deg, rgb(152,152,152) 0%, rgba(235, 39, 39, 0.64) 100%);
   transform: translateY(-1px);
   color: rgb(0, 0, 0);
-}
+} */*/
 
 /* =======================================================================================
                       MODALS (ESTILO OSCURO)
