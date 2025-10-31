@@ -4,9 +4,10 @@ export const initialStore = () => {
     user: JSON.parse(localStorage.getItem("user")) || null,
     activeGroup: null,
     editMode: false,
-    groups: [],
+    groups: {},
     userEvents: [],
     userGroups: [],
+    comments: [],
   };
 };
 
@@ -60,5 +61,58 @@ export default function storeReducer(store, action = {}) {
 
     default:
       throw Error("Unknown action.");
+
+    case "setEventGroups":
+      return {
+        ...store,
+        groups: {
+          ...store.groups,
+          [action.payload.eventId]: action.payload.groups,
+        },
+      };
+
+    case "setEventComments":
+      return {
+        ...store,
+        comments: {
+          ...store.comments,
+          [action.payload.eventId]: action.payload.comments,
+        },
+      };
+
+    case "addEventComment":
+      return {
+        ...store,
+        comments: {
+          ...store.comments,
+          [action.payload.eventId]: [
+            ...(store.comments[action.payload.eventId] || []),
+            action.payload.comment,
+          ],
+        },
+      };
+
+    case "updateEventComment":
+      return {
+        ...store,
+        comments: {
+          ...store.comments,
+          [action.payload.eventId]: store.comments[action.payload.eventId].map(
+            (c) =>
+              c.id === action.payload.comment.id ? action.payload.comment : c
+          ),
+        },
+      };
+
+    case "deleteEventComment":
+      return {
+        ...store,
+        comments: {
+          ...store.comments,
+          [action.payload.eventId]: store.comments[
+            action.payload.eventId
+          ].filter((c) => c.id !== action.payload.commentId),
+        },
+      };
   }
 }

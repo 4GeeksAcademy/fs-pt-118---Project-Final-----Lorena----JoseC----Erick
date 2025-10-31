@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from sqlalchemy import select, func
-from api.models import db, User, Events, Groups, Reservations, UsersEvents, UsersGroups
+from api.models import db, User, Events, Groups, Reservations, UsersEvents, UsersGroups, Favorites, Comments
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -286,6 +286,15 @@ def get_events():
     return jsonify([event.serialize() for event in events]), 200
 
 
+@api.route('/events/<int:event_id>', methods=['GET'])
+def get_event_by_id(event_id):
+    event = Events.query.get(event_id)
+    if not event:
+        return jsonify({"success": False, "message": "Event not found"}), 404
+
+    return jsonify({"success": True, "data": event.serialize()}), 200
+
+
 @api.route("/create-event", methods=["POST"])
 @jwt_required()
 def create_event():
@@ -327,6 +336,17 @@ def create_event():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+# -----------------------------------------------------Event Groups----------------------------------------------------
+@api.route('/events/<int:event_id>/groups', methods=['GET'])
+def get_groups_for_event(event_id):
+    event = Events.query.get(event_id)
+    if not event:
+        return jsonify({"success": False, "message": "Event not found"}), 404
+    groups = [group.serialize() for group in event.groups]
+    return jsonify({"success": True, "data": groups}), 200
+
+
+# -----------------------------------------------------Groups-----------------------------------------------------------------
 @api.route('/groups', methods=['GET'])
 def get_groups():
 
@@ -570,3 +590,129 @@ def update_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+# -----------------------------------------------------------Favorites--------------------------------------------------------------------------
+
+@api.route("/favorites", methods=["GET"])
+@jwt_required()
+def get_user_favorites():
+    user_id = get_jwt_identity()
+    favorites = Favorites.query.filter_by(user_id=user_id).all()
+    return jsonify({
+        "success": True,
+        "data": [fav.serialize() for fav in favorites]
+    }), 200
+
+
+@api.route("/favorites/<int:event_id>", methods=["POST"])
+@jwt_required()
+def toggle_favorite(event_id):
+    user_id = get_jwt_identity()
+
+    existing_fav = Favorites.query.filter_by(
+        user_id=user_id, event_id=event_id).first()
+
+    if existing_fav:
+        db.session.delete(existing_fav)
+        db.session.commit()
+        return jsonify({
+            "success": True,
+            "is_favorite": False
+        }), 200
+
+    new_fav = Favorites(user_id=user_id, event_id=event_id)
+    db.session.add(new_fav)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "is_favorite": True
+    }), 201
+
+# -----------------------------------------------------------Comments--------------------------------------------------------------------------
+
+
+@api.route("/events/<int:event_id>/comments", methods=["GET"])
+def get_event_comments(event_id):
+    comments = Comments.query.filter_by(event_id=event_id).order_by(
+        Comments.created_at.desc()).all()
+    return jsonify({
+        "success": True,
+        "data": [comment.serialize() for comment in comments]
+    }), 200
+
+
+@api.route("/events/<int:event_id>/comments", methods=["POST"])
+@jwt_required()
+def add_comment(event_id):
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    content = data.get("content", "").strip()
+    nick_name = data.get("nick_name", None)
+
+    if not content:
+        return jsonify({
+            "success": False,
+            "msg": "The comment cannot be empty."
+        }), 400
+    event = Events.query.get(event_id)
+    if not event:
+        return jsonify({"success": False, "msg": "Event not found"}), 404
+    new_comment = Comments(
+        content=content,
+        user_id=user_id,
+        event_id=event_id,
+        nick_name=nick_name
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "data": new_comment.serialize()
+    }), 201
+
+
+@api.route("/comments/<int:comment_id>", methods=["DELETE"])
+@jwt_required()
+def delete_comment(comment_id):
+    user_id = get_jwt_identity()
+    comment = Comments.query.get(comment_id)
+    if not comment:
+        return jsonify({"success": False, "msg": "Comment not found"}), 404
+    if comment.user_id != int(user_id):
+        return jsonify({"success": False, "msg": "Unauthorized"}), 403
+    db.session.delete(comment)
+    db.session.commit()
+    return jsonify({"success": True, "msg": "Comment successfully deleted"}), 200
+
+
+@api.route("/comments/<int:comment_id>", methods=["PUT"])
+@jwt_required()
+def edit_comment(comment_id):
+    data = request.get_json()
+    content = data.get("content", "").strip()
+    nick_name = data.get("nick_name", None)
+    comment = Comments.query.get(comment_id)
+    if not comment:
+        return jsonify({
+            "success": False,
+            "msg": "Comment not found"
+        }), 404
+    if not content:
+        return jsonify({
+            "success": False,
+            "msg": "The content cannot be empty."
+        }), 400
+
+    comment.content = content
+    if nick_name is not None:
+        comment.nick_name = nick_name
+    db.session.commit()
+    return jsonify({
+        "success": True,
+        "msg": "Comment successfully updated.",
+        "data": comment.serialize()
+    }), 200

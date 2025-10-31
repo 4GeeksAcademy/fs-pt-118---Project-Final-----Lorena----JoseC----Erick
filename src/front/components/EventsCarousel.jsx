@@ -18,13 +18,14 @@ const EventsCarousel = () => {
         {events.map((event, index) => (
           <div key={event.id} className={`carousel-item ${index === 0 ? "active" : ""}`}>
             <img
-              src={event.image_url || `https://picsum.photos/800/300?random=${event.id}`}
+              src={event.imagen || event.image_url}
               className="d-block w-100 object-fit-cover border rounded"
               alt={event.name}
             />
+
             <div className="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
               <h5>{event.name}</h5>
-              <p>{event.description?.substring(0, 80)}...</p>
+              <p>{event.description?.substring()}...</p>
             </div>
           </div>
         ))}
