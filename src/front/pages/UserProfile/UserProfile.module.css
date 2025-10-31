@@ -126,9 +126,8 @@
 /* Responsive */
 @media (max-width: 767.98px) {
   .tabs { margin-top: .75rem; }
-  .avatar { width: 160px; height: 160px; }
+  .avatar { width: 120px; height: 120px; }
 }
-
 .showBtn {
   background: transparent;
   border: none;

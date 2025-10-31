@@ -18,7 +18,7 @@ export const AVATAR_MAP = {
 export const inferNumberFromUrl = (url) => {
   if (!url) return "5";
   const match = url.match(/img=(\d+)/);
-  return match?.[1] || "5";
+  return match?.[1];
 };
 
 // --- Componente principal ---
