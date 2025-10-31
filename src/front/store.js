@@ -50,7 +50,13 @@ export default function storeReducer(store, action = {}) {
     case "setUserGroups":
       return {
         ...store,
-        userGroups: action.payload
+        userGroups: action.payload,
+      };
+
+    case "setGroups":
+      return {
+        ...store,
+        groups: action.payload,
       };
 
     default:
