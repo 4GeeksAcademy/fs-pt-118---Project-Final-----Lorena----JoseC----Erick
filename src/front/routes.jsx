@@ -8,6 +8,7 @@ import { Demo } from "./pages/Demo";
 import ResetPassword from './pages/ResetPassword';
 import Events from "./pages/Events";import Teams from "./pages/Teams";
 import UserProfile from "./pages/UserProfile/UserProfile";
+import EventDetails from "./pages/EventDetails";
 
 
 export const router = createBrowserRouter(
@@ -27,7 +28,8 @@ export const router = createBrowserRouter(
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/demo" element={<Demo />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/events" element={<Events />} />      
+      <Route path="/events" element={<Events />} />  
+      <Route path="/event/:id" element={<EventDetails />} />   
       <Route path="/teams" element={<Teams />} />
       <Route path="/profile" element={<UserProfile />} />
     </Route>

@@ -89,7 +89,7 @@ GroupsServices.joinGroup = async (groupId, token) => {
 GroupsServices.leaveGroup = async (groupId, token) => {
   const resp = await fetch(`${url}/api/groups/${groupId}/leave`, {
     method: "POST",
-    headers: getAuthHeaders(),
+    headers: getAuthHeaders (),
   });
 
   const data = await resp.json();
