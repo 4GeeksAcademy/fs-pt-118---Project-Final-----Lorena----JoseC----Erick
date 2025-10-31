@@ -91,6 +91,7 @@ const EventForm = () => {
                         required
                         value={formData.name}
                         onChange={handleChange}
+                        placeholder="Event Name"
                     />
                 </div>
 
@@ -130,6 +131,7 @@ const EventForm = () => {
                         rows="3"
                         value={formData.description}
                         onChange={handleChange}
+                        placeholder="What is the purpose of your event?"
                     ></textarea>
                 </div>
 

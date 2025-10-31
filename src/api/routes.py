@@ -123,13 +123,13 @@ def register_user():
 def login_user():
     body = request.get_json()
 
-    identifier = body.get("identifier")  # puede ser email o user_name
+    identifier = body.get("identifier")   
     password = body.get("password")
 
     if not identifier or not password:
         return jsonify({"error": "Identifier and password are required"}), 400
 
-    # Buscar usuario por email o user_name
+    
     query = select(User).where(
         (User.email == identifier) | (User.user_name == identifier)
     )
@@ -138,13 +138,18 @@ def login_user():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    # Verificar contraseña
+    
     if not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid password"}), 401
 
-    # Generar token JWT
-    token = create_access_token(identity=str(user.id), additional_claims={"user_name": user.user_name}
-                                )
+    
+    token = create_access_token(
+        identity=str(user.id),
+        additional_claims={
+            "user_name": user.user_name,
+            "role": user.role.value  
+        }
+    )
 
     return jsonify({
         "success": True,
@@ -360,9 +365,11 @@ def create_group():
 @api.route("/groups/<int:group_id>", methods=["PUT"])
 @jwt_required()
 def update_group(group_id):
-    user_name = get_jwt().get("user_name")
-    data = request.get_json()
+    jwt_data = get_jwt()
+    user_name = jwt_data.get("user_name")
+    user_role = jwt_data.get("role")
 
+    data = request.get_json()
     if not data:
         return jsonify(success=False, message="No data provided"), 400
 
@@ -370,8 +377,11 @@ def update_group(group_id):
     if not group:
         return jsonify(success=False, message="Group not found"), 404
 
-    if not group.owner or group.owner.user_name != user_name:
-        return jsonify(success=False, message="You are not the owner of this group"), 403
+    is_owner = group.owner and group.owner.user_name == user_name
+    is_admin = user_role == "admin"
+
+    if not is_owner and not is_admin:
+        return jsonify(success=False, message="You are not authorized to edit this group"), 403
 
     try:
         if "name" in data and not data["name"].strip():
@@ -394,14 +404,20 @@ def update_group(group_id):
 @api.route("/groups/<int:group_id>", methods=["DELETE"])
 @jwt_required()
 def delete_group(group_id):
-    user_name = get_jwt().get("user_name")
+    jwt_data = get_jwt()
+    user_name = jwt_data.get("user_name")
+    user_role = jwt_data.get("role") 
+
     group = db.session.get(Groups, group_id)
 
     if not group:
         return jsonify(success=False, message="Group not found"), 404
 
-    if not group.owner or group.owner.user_name != user_name:
-        return jsonify(success=False, message="You are not the owner of this group"), 403
+    is_owner = group.owner and group.owner.user_name == user_name
+    is_admin = user_role == "admin"
+
+    if not is_owner and not is_admin:
+        return jsonify(success=False, message="You are not authorized to delete this group"), 403
 
     try:
         group.members.clear()
