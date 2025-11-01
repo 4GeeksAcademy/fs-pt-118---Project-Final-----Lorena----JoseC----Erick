@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import CardGroups from './CardGroups';
 import FormGroup from './FormGroup';
 import GroupDetails from './GroupsDetails';
@@ -7,10 +7,13 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 import './Groups.css';
 
 const Groups = () => {
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const group = store.activeGroup;
   const isEditMode = store.editMode;
   const detailsRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
 
   return (
     <>
@@ -20,20 +23,25 @@ const Groups = () => {
 
           <CardGroups scrollRef={detailsRef} />
         </div>
+        <FormGroup show={showModal} onClose={() => setShowModal(false)} />
+        <button
+          className="btn cta position-fixed d-flex align-items-center gap-2 botonModal"
+          style={{ bottom: "30px", right: "30px", zIndex: 1040 }}
+          onClick={() => setShowModal(true)}
+        >
+          <span style={{ fontSize: "24px", lineHeight: "1" }}>+</span>
+          <span className="fw-bold">Create team</span>
+        </button>
+        <GroupDetails
+          show={store.showGroupDetails}
+          onClose={() => dispatch({ type: "setShowGroupDetails", payload: false })}
+        />
 
-        {store.activeGroup && (
-          <div
-            className="group-details w-100 mt-4"
-            style={{ maxWidth: "800px" }}
-            ref={detailsRef}
-          >
-            {isEditMode ? <GroupDetailsEdit /> : <GroupDetails />}
-          </div>
-        )}
+        <GroupDetailsEdit
+          show={store.showGroupEditor}
+          onClose={() => dispatch({ type: "setShowGroupEditor", payload: false })}
+        />
 
-        <div className="group-form w-100 mt-5" style={{ maxWidth: "600px" }}>
-          <FormGroup />
-        </div>
       </div>
     </>
   );

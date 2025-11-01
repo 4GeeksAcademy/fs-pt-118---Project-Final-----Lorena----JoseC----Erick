@@ -8,6 +8,8 @@ export const initialStore = () => {
     userEvents: [],
     userGroups: [],
     comments: [],
+    showGroupDetails: false,
+    showGroupEditor: false,
   };
 };
 
@@ -114,5 +116,17 @@ export default function storeReducer(store, action = {}) {
           ].filter((c) => c.id !== action.payload.commentId),
         },
       };
+
+    case "setShowGroupDetails":
+      return {
+        ...store,
+        showGroupDetails: action.payload,
+      };
+    case "setShowGroupEditor":
+      return {
+        ...store,
+        showGroupEditor: action.payload,
+      };
+      
   }
 }

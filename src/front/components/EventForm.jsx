@@ -1,183 +1,209 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EventsServices from "../Services/EventsServices";
 import CloudinaryServices from "../Services/Cloudinary";
 
-const EventForm = () => {
+const EventForm = ({ show, onClose }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [okMsg, setOkMsg] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
-    const [isUploading, setIsUploading] = useState(false);
-    const [errorMsg, setErrorMsg] = useState("");
-    const [okMsg, setOkMsg] = useState("");
-    const [imageFile, setImageFile] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    start_time: "",
+    end_time: "",
+  });
 
-    const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        start_time: "",
-        end_time: "",
-    });
+  // Limpia el formulario cuando se cierra
+  useEffect(() => {
+    if (!show) {
+      setFormData({ name: "", description: "", start_time: "", end_time: "" });
+      setImageFile(null);
+      setErrorMsg("");
+      setOkMsg("");
+    }
+  }, [show]);
 
-    const handleChange = e => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  if (!show) return null;
 
-    const handleImageChange = e => {
-        setImageFile(e.target.files[0]);
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsUploading(true);
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
 
-        try {
-            let imageUrl = "";
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
 
-            if (imageFile) {
-                imageUrl = await CloudinaryServices.uploadEventImage(imageFile);
-            }
+    try {
+      let imageUrl = "";
 
-            const payload = {
-                name: formData.name,
-                description: formData.description,
-                start_time: formData.start_time,
-                end_time: formData.end_time,
-                imagen: imageUrl,
-            };
+      if (imageFile) {
+        imageUrl = await CloudinaryServices.uploadEventImage(imageFile);
+      }
 
-            const { success, event_id, error } = await EventsServices.createEvent(payload);
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        start_time: formData.start_time,
+        end_time: formData.end_time,
+        imagen: imageUrl,
+      };
 
-            if (success) {
-                setOkMsg("Event created successfully 🎉");
-                setFormData({ name: "", description: "", start_time: "", end_time: "" });
-                setImageFile(null);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-            } else {
-                setErrorMsg(error || "Error creating event");
-            }
-        } catch (err) {
-            console.error("Error al crear el evento:", err);
-            setErrorMsg(err.message || "Unexpected error occurred");
-        } finally {
-            setIsUploading(false);
-            setTimeout(() => {
-                setOkMsg("");
-                setErrorMsg("");
-            }, 3000);
-        }
-    };
+      const { success, event_id, error } = await EventsServices.createEvent(payload);
 
+      if (success) {
+        setOkMsg("Event created successfully 🎉");
+        setTimeout(() => {
+          onClose(); // cerrar modal
+          window.location.reload();
+        }, 3000);
+      } else {
+        setErrorMsg(error || "Error creating event");
+      }
+    } catch (err) {
+      console.error("Error creating event:", err);
+      setErrorMsg(err.message || "Unexpected error occurred");
+    } finally {
+      setIsUploading(false);
+      setTimeout(() => {
+        setOkMsg("");
+        setErrorMsg("");
+      }, 3000);
+    }
+  };
 
-    return (
-        <div className="container my-4 d-flex justify-content-center">
-
-            <form
-                onSubmit={handleSubmit}
-                className="p-4 rounded-4 shadow-lg bg-light border border-2 border-primary w-100"
-                style={{ maxWidth: "600px" }}>
-                <h1 className="text-center">New Event</h1>
-                {okMsg && <div className="alert alert-success">{okMsg}</div>}
-                {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-                <h2 className="text-center mb-4 fw-bold text-primary">Create Event</h2>
-
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label fw-semibold">Event Name</label>
-                    <input
-                        type="text"
-                        className="form-control border-primary shadow-sm"
-                        id="name"
-                        name="name"
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Event Name"
-                    />
-                </div>
-
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <label htmlFor="start_time" className="form-label fw-semibold">Start</label>
-                        <input
-                            type="datetime-local"
-                            className="form-control border-success shadow-sm"
-                            id="start_time"
-                            name="start_time"
-                            required
-                            value={formData.start_time}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label htmlFor="end_time" className="form-label fw-semibold">End</label>
-                        <input
-                            type="datetime-local"
-                            className="form-control border-danger shadow-sm"
-                            id="end_time"
-                            name="end_time"
-                            required
-                            value={formData.end_time}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
-
-                <div className="mb-3">
-                    <label htmlFor="description" className="form-label fw-semibold">Details</label>
-                    <textarea
-                        className="form-control border-info shadow-sm"
-                        id="description"
-                        name="description"
-                        rows="3"
-                        value={formData.description}
-                        onChange={handleChange}
-                        placeholder="What is the purpose of your event?"
-                    ></textarea>
-                </div>
-
-                <div className="mb-4">
-                    <label htmlFor="image" className="form-label fw-semibold">Event Image</label>
-
-                    <div className="custom-file-wrapper">
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            style={{ display: "none" }}
-                        />
-                        <label
-                            htmlFor="image"
-                            className="btn btn-outline-danger cta w-100"
-                            style={{ cursor: "pointer" }}
-                        >
-                            {imageFile ? "Image selected ✅" : "Choose image"}
-                        </label>
-                    </div>
-
-                    {imageFile && (
-                        <div className="mt-3 text-center">
-                            <img
-                                src={URL.createObjectURL(imageFile)}
-                                alt="Preview"
-                                className="img-fluid rounded shadow-sm"
-                                style={{ maxHeight: "200px", objectFit: "cover" }}
-                            />
-                        </div>
-                    )}
-                </div>
-                <button
-                    type="submit"
-                    className="btn w-100 py-2 fw-bold text-white cta"
-                    onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
-                    onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
-                >
-                    Submit Event
-                </button>
-            </form>
+  return (
+    <div style={{
+      position: "fixed",
+      top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      zIndex: 1050,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }}>
+      <div style={{
+        background: "#fff",
+        borderRadius: "1rem",
+        padding: "2rem",
+        width: "600px",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        zIndex: 1060,
+        position: "relative"
+      }}>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h4 className="fw-bold">Create Event</h4>
+          <button className="btn-close" onClick={onClose}></button>
         </div>
-    )
-}
+
+        <form onSubmit={handleSubmit}>
+          {okMsg && <div className="alert alert-success">{okMsg}</div>}
+          {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
+
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label fw-semibold">Event Name</label>
+            <input
+              type="text"
+              className="form-control border-primary shadow-sm"
+              id="name"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Event Name"
+            />
+          </div>
+
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="start_time" className="form-label fw-semibold">Start</label>
+              <input
+                type="datetime-local"
+                className="form-control border-success shadow-sm"
+                id="start_time"
+                name="start_time"
+                required
+                value={formData.start_time}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-6 mb-3">
+              <label htmlFor="end_time" className="form-label fw-semibold">End</label>
+              <input
+                type="datetime-local"
+                className="form-control border-danger shadow-sm"
+                id="end_time"
+                name="end_time"
+                required
+                value={formData.end_time}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="description" className="form-label fw-semibold">Details</label>
+            <textarea
+              className="form-control border-info shadow-sm"
+              id="description"
+              name="description"
+              rows="3"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="What is the purpose of your event?"
+            ></textarea>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="image" className="form-label fw-semibold">Event Image</label>
+            <div className="custom-file-wrapper">
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+              <label
+                htmlFor="image"
+                className="btn btn-outline-danger cta w-100"
+                style={{ cursor: "pointer" }}
+              >
+                {imageFile ? "Image selected ✅" : "Choose image"}
+              </label>
+            </div>
+
+            {imageFile && (
+              <div className="mt-3 text-center">
+                <img
+                  src={URL.createObjectURL(imageFile)}
+                  alt="Preview"
+                  className="img-fluid rounded shadow-sm"
+                  style={{ maxHeight: "200px", objectFit: "cover" }}
+                />
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="btn w-100 py-2 fw-bold text-white cta"
+            disabled={isUploading}
+          >
+            {isUploading ? "Uploading..." : "Submit Event"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 export default EventForm;

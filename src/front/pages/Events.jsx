@@ -3,6 +3,7 @@ import servicesGetEvents from "../Services/servicesGetEvents";
 import EventCard from "../components/EventCard";
 import EventsCarousel from "../components/EventsCarousel";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import EventForm from "../components/EventForm";
 
 const Events = () => {
 
@@ -11,6 +12,8 @@ const Events = () => {
     const [loading, setLoading] = useState(true);
     const { store } = useGlobalReducer();
     const isAuth = !!store?.isAuth;
+    const [showForm, setShowForm] = useState(false);
+
 
     useEffect(() => {
         servicesGetEvents.getAllEvents()
@@ -52,6 +55,20 @@ const Events = () => {
                     <EventCard key={event.id} event={event} onFavorite={handleFavorite} />
                 ))}
             </div>
+            <button
+          className="btn cta position-fixed d-flex align-items-center gap-2 botonModal"
+          style={{ bottom: "30px", right: "30px", zIndex: 1040 }}
+          onClick={() => setShowForm(true)}
+        >
+          <span style={{ fontSize: "24px", lineHeight: "1" }}>+</span>
+          <span className="fw-bold">Create Event</span>
+        </button>
+
+        <EventForm
+        show={showForm}
+        onClose={() => setShowForm(false)}
+      />
+
         </div>
     )
 }

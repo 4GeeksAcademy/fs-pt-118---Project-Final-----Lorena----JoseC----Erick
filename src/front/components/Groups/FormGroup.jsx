@@ -2,8 +2,10 @@ import { useState } from "react";
 import CloudinaryServices from "../../Services/Cloudinary";
 import GroupsServices from "../../Services/GroupsServices";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const FormGroup = () => {
+const FormGroup = ({ show, onClose }) => {
+  const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState("");
   const [okMsg, setOkMsg] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -45,7 +47,7 @@ const FormGroup = () => {
 
         setTimeout(() => {
           window.location.reload();
-        }, 4000);
+        }, 3000);
       } else {
         toast.error(error || "Error creating group");
       }
@@ -56,98 +58,112 @@ const FormGroup = () => {
     }
   };
 
+  if (!show) return null;
+
   return (
-    <div className="container my-4 d-flex justify-content-center">
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 rounded-4 shadow-lg bg-light border border-2 border-primary w-100"
-        style={{ maxWidth: "600px" }}
-      >
-        <h4 className="text-center mb-4">Create your team.</h4>
-
-        {okMsg && <div className="alert alert-success">{okMsg}</div>}
-        {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
-
-
-        <div className="mb-3">
-          <label htmlFor="groupName" className="form-label fw-bold">Group name</label>
-          <input
-            type="text"
-            id="groupName"
-            className="form-control border-primary"
-            placeholder="Max 15 characters"
-            value={groupData.name}
-            maxLength={15}
-            onChange={e => setGroupData(prev => ({ ...prev, name: e.target.value }))}
-            required
-          />
-          <small className="text-muted">{15 - groupData.name.length} characters left</small>
+    <div style={{
+      position: "fixed",
+      top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      zIndex: 1050,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }}>
+      <div style={{
+        background: "#fff",
+        borderRadius: "1rem",
+        padding: "2rem",
+        width: "600px",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        zIndex: 1060,
+        position: "relative"
+      }}>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h5 className="fw-bold">Create your team</h5>
+          <button type="button" className="btn-close" onClick={onClose}></button>
         </div>
 
+        <form onSubmit={handleSubmit}>
+          {okMsg && <div className="alert alert-success">{okMsg}</div>}
+          {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
 
-        <div className="mb-3">
-          <label htmlFor="groupDescription" className="form-label fw-bold">Description</label>
-          <textarea
-            id="groupDescription"
-            className="form-control border-primary"
-            rows="3"
-            placeholder="What’s the purpose of this group?"
-            value={groupData.description}
-            onChange={e => setGroupData(prev => ({ ...prev, description: e.target.value }))}
-          />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="groupName" className="form-label fw-bold">Team name</label>
+            <input
+              type="text"
+              id="groupName"
+              className="form-control border-primary"
+              placeholder="Max 15 characters"
+              value={groupData.name}
+              maxLength={15}
+              onChange={e => setGroupData(prev => ({ ...prev, name: e.target.value }))}
+              required
+            />
+            <small className="text-muted">{15 - groupData.name.length} characters left</small>
+          </div>
 
+          <div className="mb-3">
+            <label htmlFor="groupDescription" className="form-label fw-bold">Description</label>
+            <textarea
+              id="groupDescription"
+              className="form-control border-primary"
+              rows="3"
+              placeholder="What’s the purpose of this group?"
+              value={groupData.description}
+              onChange={e => setGroupData(prev => ({ ...prev, description: e.target.value }))}
+            />
+          </div>
 
-        <div className="mb-3">
-          <label htmlFor="groupAvatar" className="form-label fw-bold">Group image</label>
-          <input
-            type="file"
-            id="groupAvatar"
-            className="form-control"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-          {groupData.imageFile && !isUploading && (
+          <div className="mb-3">
+            <label htmlFor="groupAvatar" className="form-label fw-bold">Group image</label>
+            <input
+              type="file"
+              id="groupAvatar"
+              className="form-control"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {groupData.imageFile && !isUploading && (
+              <div className="text-center mt-3">
+                <img
+                  src={URL.createObjectURL(groupData.imageFile)}
+                  alt="Preview"
+                  className="img-fluid rounded-circle border border-2 border-primary"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                    transition: "transform 0.3s ease"
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
+                  onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+                />
+              </div>
+            )}
+          </div>
+
+          {isUploading && (
             <div className="text-center mt-3">
-              <img
-                src={URL.createObjectURL(groupData.imageFile)}
-                alt="Preview"
-                className="img-fluid rounded-circle border border-2 border-primary"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  objectFit: "cover",
-                  transition: "transform 0.3s ease"
-                }}
-                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-              />
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Uploading...</span>
+              </div>
+              <p className="mt-2 text-muted">Uploading image…</p>
             </div>
           )}
-        </div>
 
-
-        {isUploading && (
-          <div className="text-center mt-3">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Uploading...</span>
-            </div>
-            <p className="mt-2 text-muted">Uploading image…</p>
+          <div className="d-grid mt-4">
+            <input
+              type="submit"
+              className="cta btn w-100 py-2 fw-bold text-white"
+              value="Create team"
+              disabled={isUploading}
+            />
           </div>
-        )}
-
-
-        <div className="d-grid mt-4">
-          <input
-            type="submit"
-            className="cta btn w-100 py-2 fw-bold text-white"
-            value="Create team"
-            disabled={isUploading}
-          />
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
-
   );
 };
 
