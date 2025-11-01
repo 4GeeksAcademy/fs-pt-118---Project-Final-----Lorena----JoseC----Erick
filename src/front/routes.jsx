@@ -9,6 +9,7 @@ import ResetPassword from './pages/ResetPassword';
 import Events from "./pages/Events";import Teams from "./pages/Teams";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import EventDetails from "./pages/EventDetails";
+import AdminPanel from "./pages/AdminPanel";
 
 
 export const router = createBrowserRouter(
@@ -32,6 +33,7 @@ export const router = createBrowserRouter(
       <Route path="/event/:id" element={<EventDetails />} />   
       <Route path="/teams" element={<Teams />} />
       <Route path="/profile" element={<UserProfile />} />
+      <Route path="/admin" element={<AdminPanel />} />
     </Route>
   )
 );

@@ -30,6 +30,9 @@ const Profile = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
+
 
   const activeGroup = store.activeGroup;
   const isEditMode = store.editMode;
@@ -200,7 +203,7 @@ const Profile = () => {
                     onChange={handleChange}
                     placeholder="user name"
                   />
-                </div>        
+                </div>
                 <div className="col-12">
                   <label className="form-label fw-bold">Email</label>
                   <input
@@ -254,7 +257,7 @@ const Profile = () => {
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
                     className="btn w-75 cta"
-                    onClick={handleShowCreateEvent}
+                    onClick={() => setShowEventModal(true)}
                   >
                     {showCreateEvent ? "Close Event" : "Create Event"}
                   </button>
@@ -278,7 +281,7 @@ const Profile = () => {
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
                     className="btn w-75 cta"
-                    onClick={handleShowCreateGroup}
+                    onClick={() => setShowModal(true)}
                   >
                     {showCreateGroup ? "Close Form" : "Create Group"}
                   </button>
@@ -290,27 +293,25 @@ const Profile = () => {
         </div>
       </div>
       <div className="d-flex justify-content-center w-100">
-        {showCreateGroup && (
-          <FormGroup />
-        )}
-        {showCreateEvent && (
-          <EventForm />
-        )}
-        {activeGroup && (
-          <div
-            className="group-details w-100 mt-4"
-            style={{ maxWidth: "800px" }}
-            ref={detailsRef}
-          >
-            {isEditMode ? <GroupDetailsEdit /> : <GroupDetails />}
-          </div>
-        )}
+        <FormGroup show={showModal} onClose={() => setShowModal(false)} />
+        <EventForm show={showEventModal} onClose={() => setShowEventModal(false)} />
+
+      
       </div>
       <AvatarModal
         id="avatarModal"
         current={avatarNumber ?? form.avatar}
         onSelect={handleOnSelect}
       />
+      <GroupDetails
+        show={store.showGroupDetails}
+        onClose={() => dispatch({ type: "setShowGroupDetails", payload: false })}
+      />
+      <GroupDetailsEdit
+        show={store.showGroupEditor}
+        onClose={() => dispatch({ type: "setShowGroupEditor", payload: false })}
+      />
+
     </>
   );
 };

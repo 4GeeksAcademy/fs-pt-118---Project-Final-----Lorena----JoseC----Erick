@@ -6,7 +6,6 @@ import { removeGroupAndCleanup } from "../../hooks/groupsActions";
 import { createPortal } from "react-dom";
 
 const Teams = ({ group, scrollRef }) => {
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const { store, dispatch } = useGlobalReducer();
   const token = localStorage.getItem("token");
@@ -14,7 +13,7 @@ const Teams = ({ group, scrollRef }) => {
   const currentUserId = currentUser?.user_name;
   const isAdmin = currentUser?.role === "admin";
   const isOwner = group.owner_name === currentUserId;
-  const isActive = store.activeGroup?.id === group.id;
+  const isActive = store.activeGroup?.id === group.id && store.showGroupDetails;
 
   const scrollToDetails = () => {
     const tryScroll = () => {
@@ -28,32 +27,38 @@ const Teams = ({ group, scrollRef }) => {
   };
 
   const handleToggle = () => {
-    const isSameGroup = store.activeGroup?.id === group.id;
     dispatch({ type: "toggleGroup", payload: { group: null } });
     dispatch({ type: "setEditMode", payload: false });
+    dispatch({ type: "setShowGroupDetails", payload: false });
+    dispatch({ type: "setShowGroupEditor", payload: false });
 
-    if (!isSameGroup || store.editMode) {
-      setTimeout(() => {
-        dispatch({ type: "toggleGroup", payload: { group } });
-        dispatch({ type: "setEditMode", payload: false });
-        scrollToDetails();
-      }, 0);
-    }
+    setTimeout(() => {
+      dispatch({ type: "toggleGroup", payload: { group } });
+      dispatch({ type: "setEditMode", payload: false });
+      dispatch({ type: "setShowGroupEditor", payload: false });
+      dispatch({ type: "setShowGroupDetails", payload: true });
+      scrollToDetails();
+    }, 0);
   };
+
 
   const handleEdit = () => {
     const isSameGroup = store.activeGroup?.id === group.id;
-    dispatch({ type: "toggleGroup", payload: { group: null } });
-    dispatch({ type: "setEditMode", payload: false });
 
-    if (!isSameGroup || !store.editMode) {
+    dispatch({ type: "setShowGroupDetails", payload: false });
+    dispatch({ type: "setShowGroupEditor", payload: false });
+
+    if (!isSameGroup || !store.editMode || !store.showGroupEditor) {
       setTimeout(() => {
         dispatch({ type: "toggleGroup", payload: { group } });
         dispatch({ type: "setEditMode", payload: true });
+        dispatch({ type: "setShowGroupEditor", payload: true });
         scrollToDetails();
       }, 0);
     }
   };
+
+
 
   const handleDelete = async () => {
     setShowConfirmModal(false);
