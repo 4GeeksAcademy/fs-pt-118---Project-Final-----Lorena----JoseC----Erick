@@ -319,6 +319,30 @@ background: linear-gradient(90deg, rgb(152,152,152) 0%, rgba(235, 39, 39, 0.64) 
 .carousel .object-fit-cover {
   height: 400px;     
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1060;
+  position: relative;
+}
 .min-heigth-80{
   min-height: 92vh !important;
 }

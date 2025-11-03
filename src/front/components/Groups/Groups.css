@@ -1,8 +1,8 @@
-.card-groups{
-    margin: 0 1rem;
-    margin-top: 9%;
-    border: 1px solid black;
-    padding: 1px;
+.card-groups {
+  margin: 0 1rem;
+  margin-top: 9%;
+  border: 1px solid black;
+  padding: 1px;
 }
 
 .transition {
@@ -25,7 +25,7 @@
 }
 
 .modal-confirm {
- position: fixed;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -35,10 +35,9 @@
   background: #fff;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   z-index: 1051; /* por encima del backdrop */
 }
-
 
 @keyframes fadeInScale {
   from {
@@ -83,8 +82,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-groups h1 {
@@ -101,22 +106,34 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.botonModal{
-          bottom: 30px;
-          right: 30px;
-          z-index: 1050;
-          padding: 12px 20px;
-          border-radius: 30px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+.botonModal {
+  bottom: 30px;
+  right: 30px;
+  z-index: 1050;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .group-modal-backdrop {
@@ -198,4 +215,78 @@
   border-radius: 50%;
   border: 2px solid var(--bs-primary);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1060;
+  position: relative;
+}
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: calc(2 * 80px + 0.75rem); 
+  overflow-y: auto;
+}
+@media (min-width: 900px) {
+  .event-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.event-item {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: calc(2 * 80px + 0.75rem); 
+  overflow-y: auto;
+}
+
+.member-item {
+  background-color: #f0f4f8;
+  border: 1px solid #ced4da;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .member-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

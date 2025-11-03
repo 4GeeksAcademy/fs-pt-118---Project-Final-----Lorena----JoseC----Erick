@@ -8,11 +8,8 @@ import './Groups.css';
 
 const Groups = () => {
   const { store, dispatch } = useGlobalReducer();
-  const group = store.activeGroup;
-  const isEditMode = store.editMode;
   const detailsRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
 
 
   return (
