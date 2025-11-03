@@ -1,10 +1,10 @@
 import React from "react";
-import TeamsAdmin from "../components/admin-teams/TeamsAdmin";
+import TeamsAdmin from "../components/Admin/TeamsAdmin";
 
-const AdminPanel = () =>{
-    return(
+const AdminPanel = () => {
+    return (
         <>
-        <TeamsAdmin/>
+            <TeamsAdmin />
         </>
     )
 }
