@@ -97,9 +97,9 @@ const GroupDetails = ({ show, onClose }) => {
         <div className="mb-4">
           <h5 className="fw-semibold">Events</h5>
           {group.events.length > 0 ? (
-            <ul className="list-group list-group-flush">
+            <ul className="event-grid">
               {group.events.map((e, i) => (
-                <li key={i} className="list-group-item">• {e.name}</li>
+                <li key={i} className="event-item">• {e.name}</li>
               ))}
             </ul>
           ) : (
@@ -111,14 +111,20 @@ const GroupDetails = ({ show, onClose }) => {
 
         <div>
           <h5 className="fw-semibold">Members</h5>
-          <ul className="list-group list-group-flush">
-            {group.members.map((m, i) => (
-              <li key={i} className="list-group-item">
-                {m.user_name === group.owner_name ? "👑 " : "• "}
-                {m.user_name}
-              </li>
-            ))}
-          </ul>
+          {group.members.length > 0 ? (
+            <ul className="member-grid">
+              {group.members.map((m, i) => (
+                <li key={i} className="member-item">
+                  {m.user_name === group.owner_name ? "👑 " : " "}
+                  {m.user_name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="alert alert-warning mt-2">
+              This group has no members yet.
+            </div>
+          )}
         </div>
 
         {!isOwner && (

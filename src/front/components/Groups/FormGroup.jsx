@@ -61,25 +61,8 @@ const FormGroup = ({ show, onClose }) => {
   if (!show) return null;
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      zIndex: 1050,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
-      <div style={{
-        background: "#fff",
-        borderRadius: "1rem",
-        padding: "2rem",
-        width: "600px",
-        maxHeight: "90vh",
-        overflowY: "auto",
-        zIndex: 1060,
-        position: "relative"
-      }}>
+    <div className="overlay">
+      <div className="modal-box mx-3">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className="fw-bold">Create your team</h5>
           <button type="button" className="btn-close" onClick={onClose}></button>
