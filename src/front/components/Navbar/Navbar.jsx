@@ -38,7 +38,7 @@ export const Navbar = () => {
     localStorage.removeItem("token");
     dispatch({ type: "logout" });
     navigate("/");
-   /*  window.location.reload(); */
+    /*  window.location.reload(); */
   };
 
   const goToLogin = (e, to) => {
@@ -52,12 +52,12 @@ export const Navbar = () => {
   return (
     <nav className={`navbar navbar-expand-lg ${styles.nav} ${navState}`}>
       <div className={`container ${styles.containerH}`}>
-       
+
         <Link to="/" className={`navbar-brand ${styles.brand}`}>
           <img src={logo} alt="SportBar League" className={styles.logo} />
           <span className={`fw-bold ${styles.brandText}`}>SportBar League</span>
         </Link>
-        
+
         <ul className={`nav gap-3 ${styles.navCenter}`}>
           <li className="nav-item">
             <Link
@@ -89,7 +89,7 @@ export const Navbar = () => {
           </button>
         ) : (
           <div className="dropdown">
-            <button className="btn d-flex align-items-center gap-2" data-bs-toggle="dropdown">  
+            <button className="btn d-flex align-items-center gap-2" data-bs-toggle="dropdown">
               <Avatar src={avatarUrl} name={displayName} bgClass={avatarBg} />
               <span className={`fw-semibold text-capitalize ${styles.hideOnMobile} ${solid ? styles.textDark : styles.textLight}`}>
                 {displayName}
@@ -100,7 +100,7 @@ export const Navbar = () => {
             </button>
             <ul className={`dropdown-menu dropdown-menu-end ${styles.dropdownMenu}`}>
               <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/profile">Profile</Link></li>
-          
+
               {role === "admin" && (
                 <>
                   <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>

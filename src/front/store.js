@@ -37,7 +37,6 @@ export default function storeReducer(store, action = {}) {
         ...store,
         groups: store.groups.filter((g) => g.id !== action.payload),
       };
-
     case "setEditMode":
       return {
         ...store,
@@ -48,21 +47,16 @@ export default function storeReducer(store, action = {}) {
         ...store,
         userEvents: action.payload,
       };
-
     case "setUserGroups":
       return {
         ...store,
         userGroups: action.payload,
       };
-
     case "setGroups":
       return {
         ...store,
         groups: action.payload,
       };
-
-    default:
-      throw Error("Unknown action.");
 
     case "setEventGroups":
       return {
@@ -116,7 +110,6 @@ export default function storeReducer(store, action = {}) {
           ].filter((c) => c.id !== action.payload.commentId),
         },
       };
-
     case "setShowGroupDetails":
       return {
         ...store,
@@ -128,5 +121,7 @@ export default function storeReducer(store, action = {}) {
         showGroupEditor: action.payload,
       };
       
+   default:
+      throw Error("Unknown action.");
   }
 }

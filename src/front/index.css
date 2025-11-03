@@ -19,76 +19,6 @@
   padding-top: 72px;
 }
 
-/* =======================================================================================
-   LANDING / HERO
-   ======================================================================================= 
-
-/* Fondo del hero (página de inicio sin sesión) *//*
-.backgroundimg {
-  background-image: url("https://img.freepik.com/foto-gratis/herramientas-deportivas_53876-138077.jpg?t=st=1760846561~exp=1760850161~hmac=8005ddfa91b70064320c7d9c9190402ca39abd7d2176e32282d9628a7e0c1416&w=1480");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.hero-section h1 {
-  font-size: clamp(1.8rem, 5vw, 3rem);
-}
-
-.hero-section h2 {
-  font-size: clamp(1.2rem, 4vw, 2rem);
-}
-
-.offer-section {
-  background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
-  border-radius: 1rem;
-}
-
-.text-shadow {
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.emoji {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@media (max-width: 576px) {
-  .emoji {
-    width: 36px;
-    height: 36px;
-    font-size: 1.5rem;
-  }
-
-  .offer-section h1 {
-    font-size: clamp(1.8rem, 6vw, 2.5rem);
-  }
-
-  .offer-section p {
-    font-size: clamp(1rem, 4vw, 1.25rem);
-  }
-}
-
-.club-subscription h2 {
-  font-size: clamp(1.5rem, 6vw, 2.25rem);
-}
-
-.club-subscription p {
-  font-size: clamp(1rem, 4vw, 1.25rem);
-}
-*/
-
-
 /* Fondo de landing cuando hay sesión iniciada */
 .backgroundimgLogged {
   background-image: url("https://res.cloudinary.com/ddvyou4tf/image/upload/v1761568645/rectangle_12_rmrumb.png");
@@ -332,7 +262,7 @@ background: linear-gradient(90deg, rgb(152,152,152) 0%, rgba(235, 39, 39, 0.64) 
 
 .alert-danger {
   background: rgba(144, 19, 5, 0.491);
-  color: #e74c3c;
+  color: #efe7e7;
   border: 1px solid rgba(231, 76, 60, 0.25);
   box-shadow: 0 2px 12px rgba(231, 76, 60, 0.15);
 }
@@ -375,18 +305,6 @@ background: linear-gradient(90deg, rgb(152,152,152) 0%, rgba(235, 39, 39, 0.64) 
   font-size: 3rem;
 }
 
-/* =======================================================================================
-Teams
-   ======================================================================================= */
-.pageShell {
-  padding-top: 72px;
-}
-
-@media (max-width: 768px) {
-  .pageShell {
-    padding-top: 96px;
-  }
-}
 
 /* =======================================================================================
    IMAGENES EVENTS
@@ -400,4 +318,7 @@ Teams
 
 .carousel .object-fit-cover {
   height: 400px;     
+}
+.min-heigth-80{
+  min-height: 92vh !important;
 }

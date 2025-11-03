@@ -1,11 +1,32 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import styles from "./Hero.module.css";
+import { openModalById } from "../../utils/modalUtils";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
+import { useNavigate } from "react-router-dom";
+
 
 const Hero = () => {
+
+  const { store } = useGlobalReducer();
+  const navigate = useNavigate();
+  
+  const handleToEvents = () => {
+    if (store?.isAuth) {
+      navigate("/events");
+    } else {
+      openModalById("loginModal");
+    }
+  }
+  const handleToTeams = () => {
+    if (store?.isAuth) {
+      navigate("/teams");
+    } else {
+      openModalById("loginModal");
+    }
+  }
+
   return (
     <section className={`${styles.hero} text-center`}>
-      {/* Contenido */}
       <div className={styles.content}>
         <h1 className={styles.title}>Your league starts here</h1>
         <h2 className={styles.subtitle}>
@@ -21,16 +42,15 @@ const Hero = () => {
         </p>
 
         <div className={styles.actions}>
-          <Link to="/events" className={`${styles.btn} ${styles.btnGhost}`}>
+          <button onClick={handleToEvents} className={`${styles.btn} ${styles.btnGhost}`}>
             Live Events
-          </Link>
-          <Link to="/teams" className={`${styles.btn} ${styles.btnGhost}`}>
+          </button>
+          <button onClick={handleToTeams} className={`${styles.btn} ${styles.btnGhost}`}>
             Explore Teams
-          </Link>
+          </button>
         </div>
       </div>
 
-      {/* Imagen de fondo */}
       <div className={styles.bg} role="img" aria-label="Sports gear background" />
     </section>
   );

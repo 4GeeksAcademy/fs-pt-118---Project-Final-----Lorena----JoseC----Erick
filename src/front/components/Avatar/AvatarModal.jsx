@@ -77,7 +77,7 @@ const AvatarModal = ({ id = "avatarModal", current, onSelect }) => {
               </div>
             )}
 
-            <div className="row g-3"> 
+            <div className="row g-3 justify-content-center"> 
               {Object.entries(AVATAR_MAP).map(([key, url]) => {
                 const selected = isSelected(key) || isSelected(url);
                 return (
@@ -96,22 +96,18 @@ const AvatarModal = ({ id = "avatarModal", current, onSelect }) => {
                         src={url}
                         alt={`Avatar ${key}`}
                         className="rounded-circle w-100"
-                        style={{ aspectRatio: "1 / 1", objectFit: "cover" }}
+                        style={{ borderRadius: "999px" }}
                         />
                     </button>
                   </div>
                 );
               })}
-                <div className="col-4 col-sm-3">
+                <div className="col-4 col-sm-4 d-flex justify-content-center ">
                 <button
                   type="button"
-                  className={`btn w-100 d-flex flex-column align-items-center justify-content-center p-3 border border-2
-                     ${isSelected(current) ? "border-primary" : "border-secondary-subtle"}`}
-                  style={{
-                    aspectRatio: "1 / 1",
-                    borderRadius: "16px",
-                    position: "relative",
-                  }}
+                  className={`btn p-1 w-100 border-2 d-flex flex-column align-items-center justify-content-center
+                     ${isSelected(current) ? "border-primary" : "border-secondary-subtle"}`}  
+                     style={{ borderRadius: "999px" }}          
                   onClick={handleOpenFile}
                   aria-label="Upload a custom avatar"
                 >
@@ -126,8 +122,8 @@ const AvatarModal = ({ id = "avatarModal", current, onSelect }) => {
                     </>
                   ) : (
                     <>
-                      <i className="bi bi-cloud-arrow-up" style={{fontSize: 28, color: "gray" }} />
-                      <small className="mt-2" style={{ color: "gray" }}  >Upload</small>
+                      <i className="bi bi-cloud-arrow-up" style={{fontSize: 28, color: "#44ac32ff"}} />
+                      <small className="mt-2" style={{ color: "#44ac32ff" }}  >Upload</small>
                     </>
                   )}
                 </button>
