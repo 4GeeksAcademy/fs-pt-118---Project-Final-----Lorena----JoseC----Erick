@@ -31,7 +31,7 @@ def seed_data():
         end_time=now + timedelta(days=6),
         status=EventsStatus.ACTIVE,
         creator_id=u1.id,
-        imagen="imagen"
+        imagen="https://imgs.search.brave.com/i25jVm3f8IIQn-yWURb-ublI4oCCDVTU_zxmvcvaaP8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/Zm90b3MtcHJlbWl1/bS9hdGxldGFzLWNv/cnJpZW5kby1hZ3Vh/LXBpc3RhLW5vY2hl/XzY5NTI0Mi0xNjAx/NS5qcGc_c2VtdD1h/aXNfaW5jb21pbmcm/dz03NDAmcT04MA"
     )
     e2 = Events(
         name="Noche de Juegos",
@@ -40,7 +40,7 @@ def seed_data():
         end_time=now + timedelta(days=10, hours=4),
         status=EventsStatus.PENDING,
         creator_id=u2.id,
-        imagen="imagen"
+        imagen="https://imgs.search.brave.com/Xe7hWiCPhgZB1n565tjxW6EiYiymU_AJ7nqnyt2isqU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTM5/NzEwODg0NC9lcy9m/b3RvL3NlbmlvcnMt/cGxheWluZy1jYXJk/cy1pbi10aGVpci1y/ZXRpcmVtZW50LWhv/bWUuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPThDbmtsMUJt/bTByRTNYNG5WS29V/MVBIMUVhb3lnNHA3/YU1rNnVaX0g2NG89"
     )
     e3 = Events(
         name="Torneo de Invierno",
@@ -49,16 +49,16 @@ def seed_data():
         end_time=now + timedelta(days=21),
         status=EventsStatus.PAUSED,
         creator_id=u1.id,
-        imagen="imagen"
+        imagen="https://imgs.search.brave.com/ITkDKbZUTKvitI0e9lSZl1Vv7gF6-TgFNpKgxWRznrw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzE2LzE0Lzk4Lzkz/LzM2MF9GXzE2MTQ5/ODkzNTZfdE1DWGhi/WlROdko0OEpRVGxM/TW9maHk2MWVuczZo/dnYuanBn"
     )
 
     db.session.add_all([e1, e2, e3])
     db.session.commit()
 
     # --- Groups ---
-    g1 = Groups(name="Team Alpha", user_id=u2.id, description="descripcion 1")
-    g2 = Groups(name="Team Bravo", user_id=u3.id, description="descripcion 1")
-    g3 = Groups(name="Team Omega", user_id=u4.id, description="descripcion 1")
+    g1 = Groups(name="Team Alpha", user_id=u2.id,avatar="https://imgs.search.brave.com/Sta4PBjgjYo5XzxkjsRThW8Abxnk8vMXs6dEcgh5fqI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2JkL2E0/LzcwL2JkYTQ3MDFk/ZTRhYjA2MTI4YjE0/NmY5Zjk5MDI3OTlh/LmpwZw", description="descripcion 1")
+    g2 = Groups(name="Team Bravo", user_id=u3.id,avatar="https://imgs.search.brave.com/UEm0g-Q2WCJlmzUKYEchwFv2PM7HkllR7j9lKV_fRxM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2IyL2Y1/LzYyL2IyZjU2MjJk/Y2JkYjljNjMzY2Yw/ZDM5OWFlZTFlM2Y2/LmpwZw", description="descripcion 1")
+    g3 = Groups(name="Team Omega", user_id=u4.id,avatar="https://imgs.search.brave.com/zWq-xOTePgXzBelZ-Blemc6Ul1K7NerR626KcqI7EdM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9taWxp/dGFyeWxhbmQubmV0/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDI1/LzA0L2lfb21lZ2F0/ZWFtLTEud2VicA", description="descripcion 1")
 
     db.session.add_all([g1, g2, g3])
     db.session.commit()

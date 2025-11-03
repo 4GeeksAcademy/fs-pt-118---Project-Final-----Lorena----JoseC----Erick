@@ -1,7 +1,7 @@
 import Groups from "../components/Groups/Groups"
 const Teams = () => {
     return (                 /* pageShell borrado del class*/
-        <div className="container">
+        <div className="container min-heigth-80">
          <Groups/>
 
         </div>

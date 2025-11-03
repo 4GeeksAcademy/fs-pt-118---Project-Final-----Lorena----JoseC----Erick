@@ -10,11 +10,13 @@ import GroupDetails from "../../components/Groups/GroupsDetails";
 import EventForm from "../../components/EventForm";
 import { openModalById, forceCloseModalById } from "../../utils/modalUtils";
 import AvatarModal from "../../components/Avatar/AvatarModal";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { store, dispatch } = useGlobalReducer();
   const detailsRef = useRef(null);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     user_name: store?.user?.user_name || "",
@@ -92,10 +94,8 @@ const Profile = () => {
     userServices
       .updateProfile(payload, token)
       .then((resp) => {
-        console.log(resp);
         if (resp.success) {
           const user = resp.data;
-
           const num = inferNumberFromUrl(user?.avatar);
           const isPreset = num && AVATAR_MAP[num];
 
@@ -105,8 +105,7 @@ const Profile = () => {
             avatar: isPreset ? AVATAR_MAP[num] : (user?.avatar || ""),
           });
           setAvatarNumber(isPreset ? String(num) : null);
-          console.log("numerooooooo->>>>>>:", num);
-          console.log("i->>>>>>:", isPreset);
+
           dispatch({ type: "auth", payload: { user } });
           localStorage.setItem("user", JSON.stringify(user));
 
@@ -137,23 +136,6 @@ const Profile = () => {
     }
   };
 
-  const handleShowCreateGroup = () => {
-    setShowCreateGroup((prev) => !prev);
-    if (!showCreateGroup) {
-      setShowCreateEvent(false);
-      dispatch({ type: "toggleGroup", payload: { group: null } });
-      dispatch({ type: "setEditMode", payload: false });
-    }
-  };
-
-  const handleShowCreateEvent = () => {
-    setShowCreateEvent((prev) => !prev);
-    if (!showCreateEvent) {
-      setShowCreateGroup(false);
-      dispatch({ type: "toggleGroup", payload: { group: null } });
-      dispatch({ type: "setEditMode", payload: false });
-    }
-  };
 
   return (
     <>
@@ -235,19 +217,28 @@ const Profile = () => {
           <div className="container mt-4">
             {tab === "events" && (
               <div className={styles.panel}>
+                <div className="d-flex justify-content-between align-items-center px-2">
                 <h6 className="fw-bold m-2">Your Events</h6>
+                <small className="mx-2"> start-events</small>
+                </div>
 
                 {events.length ? (
                   <ul className={styles.list}>
                     {events.map((ev) => (
-                      <li key={ev.id} className={styles.item}>
+                      <li
+                        key={ev.id}
+                        className={styles.item}
+                        onClick={() => navigate(`/event/${ev.id}`)}
+                      >
                         <i className="fa-solid fa-calendar-day me-2" />
-                        <span className="me-auto">{ev.name}</span>
-                        {ev.start_time && (
-                          <span className={styles.date}>
-                            {new Date(ev.start_time).toLocaleDateString()}
-                          </span>
-                        )}
+                        <div className={styles.info}>
+                          <span className={styles.name}>{ev.name}</span>
+                          {ev.start_time && (
+                            <span className={styles.date}>
+                              {new Date(ev.start_time).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -296,7 +287,6 @@ const Profile = () => {
         <FormGroup show={showModal} onClose={() => setShowModal(false)} />
         <EventForm show={showEventModal} onClose={() => setShowEventModal(false)} />
 
-      
       </div>
       <AvatarModal
         id="avatarModal"
@@ -311,7 +301,6 @@ const Profile = () => {
         show={store.showGroupEditor}
         onClose={() => dispatch({ type: "setShowGroupEditor", payload: false })}
       />
-
     </>
   );
 };
