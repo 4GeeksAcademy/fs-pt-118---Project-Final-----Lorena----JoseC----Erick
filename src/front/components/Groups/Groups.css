@@ -53,8 +53,17 @@
 .team-avatar {
   width: clamp(80px, 10vw, 140px);
   height: clamp(80px, 10vw, 140px);
+  aspect-ratio: 1 / 1; 
+  overflow: hidden;
+  border: 2px solid var(--bs-dark);
   object-fit: cover;
   transition: transform 0.3s ease;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;    
 }
 .team-avatar:hover {
   transform: scale(1.05);
