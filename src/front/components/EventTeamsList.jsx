@@ -1,10 +1,11 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import GroupsServices from "../Services/GroupsServices";
-
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
-  const navigate = useNavigate();
+  const [showGroupsDropdown, setShowGroupsDropdown] = useState(false)
+  const { store, dispatch } = useGlobalReducer()
+  const toggleDropdown = () => { setShowGroupsDropdown(!showGroupsDropdown) }
 
   const handleJoinLeaveGroup = async (group) => {
     const isMember = group.members?.some(member => member.id === currentUser?.id);
@@ -13,11 +14,11 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
     try {
       let result;
       if (isMember) {
-        result = await GroupsServices.leaveGroup(group.id, token);
+        result = await GroupsServices.leaveGroup(group.id, token)
 
         if (result.success) {
-          onUpdateGroups((previousGroups) => {
-            return previousGroups.map((g) => {
+          onUpdateGroups((prevGroups) => {
+            return prevGroups.map((g) => {
               if (g.id === group.id) {
                 return {
                   ...g,
@@ -28,15 +29,15 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
             });
           });
         } else {
-          error(result.error || "Error leaving group");
+          console.error(result.error || "Error leaving group");
         }
 
       } else {
-        result = await GroupsServices.joinGroup(group.id, token);
+        result = await GroupsServices.joinGroup(group.id, token)
 
         if (result.success) {
-          onUpdateGroups((previousGroups) => {
-            return previousGroups.map((g) => {
+          onUpdateGroups((prevGroups) => {
+            return prevGroups.map((g) => {
               if (g.id === group.id) {
                 return {
                   ...g,
@@ -47,15 +48,13 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
             });
           });
         } else {
-          error(result.error || "Error joining group");
+          console.error(result.error || "Error joining group")
         }
       }
     } catch (error) {
-      console.error("Membership error:", error);
-      error("Something went wrong");
+      console.error("Error with group :", error)
     }
   }
-
 
   return (
 
@@ -64,12 +63,37 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
         <h4 className="mb-2 mb-md-0">Participating Teams</h4>
 
         <button
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => navigate(`/teams?eventId=${eventId}`)}
+          className="btn btn-outline-primary btn-sm cta"
+          onClick={toggleDropdown}
         >
-          Create group
+          Add Group
         </button>
       </div>
+
+      {showGroupsDropdown && (
+        <div className="dropdown-menu">
+          <h6 className="dropdown-header">Your Created Groups</h6>
+          {store.userGroups?.length === 0 ? (
+            <p className="dropdown-item">No groups created yet</p>
+          ) : (
+            store.userGroups.map((group) => (
+              <button
+                key={group.id}
+                className="dropdown-item"
+                onClick={() => {
+                  console.log("Group selected:", group);
+                  dispatch({
+                    type: "addGroupToEvent",
+                    payload: { eventId, group },
+                  });
+                }}
+              >
+                {group.name}
+              </button>
+            ))
+          )}
+        </div>
+      )}
 
       {!Array.isArray(groups) || groups.length === 0 ? (
         <p className="text-center text-muted">No teams are linked to this event yet.</p>
@@ -90,17 +114,16 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
                     />
                   </div>
 
-
                   <div className="col-12 col-sm-7 col-md-8">
                     <strong>{group.name}</strong>
                     <div className="text-muted small">
-                      {group.members?.length || 0}/{group.max_members || 20} members
+                      {group.members?.length || 0}/{group.max_members || 10} members
                     </div>
                   </div>
 
                   <div className="col-12 col-sm-3 col-md-3 text-sm-end mt-2 mt-sm-0">
                     <button
-                      className={`btn btn-sm ${isMember ? "btn-danger" : "btn-outline-success"}`}
+                      className={`btn btn-sm ${isMember ? "btn-danger" : "btn-outline-success cta"}`}
                       onClick={() => handleJoinLeaveGroup(group)}
                     >
                       {isMember ? (
@@ -116,7 +139,7 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}

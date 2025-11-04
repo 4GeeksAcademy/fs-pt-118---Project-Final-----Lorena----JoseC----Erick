@@ -7,7 +7,8 @@ export const initialStore = () => {
     groups: {},
     userEvents: [],
     userGroups: [],
-    comments: [],
+    comments: {},
+    favorites: [],
     showGroupDetails: false,
     showGroupEditor: false,
   };
@@ -60,9 +61,6 @@ export default function storeReducer(store, action = {}) {
         ...store,
         groups: action.payload,
       };
-
-    default:
-      throw Error("Unknown action.");
 
     case "setEventGroups":
       return {
@@ -127,6 +125,23 @@ export default function storeReducer(store, action = {}) {
         ...store,
         showGroupEditor: action.payload,
       };
-      
+
+    case "Favorites":
+      return {
+        ...store,
+        favorites: action.payload,
+      };
+
+    case "addGroupToEvent":
+      return {
+        ...store,
+        groups: {
+          ...store.groups,
+          [action.payload.eventId]: [
+            ...(store.groups[action.payload.eventId] || []),
+            action.payload.group,
+          ],
+        },
+      };
   }
 }

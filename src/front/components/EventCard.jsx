@@ -3,50 +3,47 @@ import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import servicesGetEvents from "../Services/servicesGetEvents";
 
-
 const EventCard = ({ event }) => {
 
-    const { store } = useGlobalReducer()
+    const { store, dispatch } = useGlobalReducer()
     const navigate = useNavigate()
     const token = localStorage.getItem("token")
     const isAuth = !!store?.isAuth
 
     const [isFavorite, setIsFavorite] = useState(false)
-    const handleView = () => {
-        navigate(`/event/${event.id}`)
-    }
 
     useEffect(() => {
-        const loadFavorites = async () => {
-            if (!isAuth) return
-            try {
-                const result = await servicesGetEvents.getUserFavorites(token)
-                const favorites = result.data || []
-                const favIds = favorites.map(f => f.event_id)
-                setIsFavorite(favIds.includes(event.id))
-            } catch (error) {
-                console.error("Error checking favorites:", error)
-            }
-        }
-        loadFavorites();
-    }, [event.id, isAuth])
+        const favoriteIds = store?.favorites?.map(f => f.event_id) || [];
+        setIsFavorite(favoriteIds.includes(event.id));
+    }, [store?.favorites, event.id]);
+
+    const handleView = () => {
+        navigate(`/event/${event.id}`);
+    };
 
     const handleFavorite = async () => {
         if (!isAuth) {
-            return
+            const modal = new bootstrap.Modal(document.getElementById("registerModal"));
+            modal.show();
+            return;
         }
 
         try {
             const result = await servicesGetEvents.toggleFavorite(event.id, token)
-            setIsFavorite(result.is_favorite)
-            if (result.is_favorite) {
+            const updatedFavoriteStatus = result?.is_favorite || false
+            setIsFavorite(updatedFavoriteStatus)
+
+            let updatedFavorites;
+            if (updatedFavoriteStatus) {
+                updatedFavorites = [...store.favorites, { event_id: event.id }];
             } else {
+                updatedFavorites = store.favorites.filter(f => f.event_id !== event.id);
             }
+            dispatch({ type: 'Favorites', payload: updatedFavorites });
         } catch (error) {
-            console.error("Error updating favorite:", error)
+            console.error("Error updating favorite:", error);
         }
     }
-
 
     return (
 
@@ -57,13 +54,10 @@ const EventCard = ({ event }) => {
                     alt={event.name}
                     className="card-img-top object-fit-cover border"
                 />
-
                 <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{event.name}</h5>
                     <p className="card-text text-muted">
-                        {event.description
-                            ? event.description.substring() + "..."
-                            : "No description available."}
+                        {event.description ? event.description.substring(0, 50) + "..." : "No description available."}
                     </p>
 
                     <div className="mt-auto d-flex justify-content-between align-items-center">

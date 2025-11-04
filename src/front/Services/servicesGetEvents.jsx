@@ -48,9 +48,11 @@ servicesGetEvents.getEventGroups = async (eventId) => {
     }
 }
 
-//----------------------------------------------Favorites Events----------------------------------------------------------
+//------------------------------------Favorites Events---------------------------------------------------------
 
 servicesGetEvents.toggleFavorite = async (eventId, token) => {
+    if (!token) throw new Error("No token provided for toggleFavorite");
+
     try {
         const response = await fetch(`${url}/api/favorites/${eventId}`, {
             method: "POST",
@@ -58,24 +60,41 @@ servicesGetEvents.toggleFavorite = async (eventId, token) => {
                 Authorization: `Bearer ${token}`,
             },
         });
+
+        if (!response.ok) {
+            console.error(`Error toggling favorite: ${response.status} ${response.statusText}`);
+            return null
+        }
+
         return response.json();
     } catch (error) {
         console.error("Error toggling favorite:", error);
-        throw error;
+        return null;
     }
 }
 
 servicesGetEvents.getUserFavorites = async (token) => {
+    if (!token) {
+        console.warn("No token provided for getUserFavorites");
+        return [];
+    }
+
     try {
         const response = await fetch(`${url}/api/favorites`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
+
+        if (!response.ok) {
+            console.error(`Error fetching favorites: ${response.status} ${response.statusText}`);
+            return [];
+        }
+
         return response.json();
     } catch (error) {
         console.error("Error fetching favorites:", error);
-        throw error;
+        return [];
     }
 }
 
@@ -94,7 +113,7 @@ servicesGetEvents.getComments = async (eventId, token) => {
     }
 }
 
-servicesGetEvents.addComment = async (eventId, content, token) => {
+servicesGetEvents.addComment = async (eventId, content, token, user_name) => {
     try {
         const response = await fetch(`${url}/api/events/${eventId}/comments`, {
             method: "POST",
@@ -102,13 +121,14 @@ servicesGetEvents.addComment = async (eventId, content, token) => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ content }),
+            body: JSON.stringify({ content, user_name })
         });
-        if (!response.ok) throw new Error("Failed to add comment")
-        return response.json()
+
+        if (!response.ok) throw new Error("Failed to add comment");
+        return response.json();
     } catch (error) {
-        console.error("Error adding comment:", error)
-        throw error
+        console.error("Error adding comment:", error);
+        throw error;
     }
 }
 
@@ -151,6 +171,38 @@ servicesGetEvents.deleteComment = async (commentId, token) => {
     } catch (error) {
         console.error("Error deleting comment:", error);
         throw error;
+    }
+}
+
+//---------------------------------------- Get User Groups -----------------------------------+----------------
+
+servicesGetEvents.getAllUserGroups = async () => {
+    try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("No token provided");
+        }
+
+        const resp = await fetch(`${url}/api/user/groups`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!resp.ok) {
+            throw new Error("Failed to fetch user groups");
+        }
+
+        const data = await resp.json();
+        if (!Array.isArray(data)) {
+            throw new Error("Unexpected response format");
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching user groups:", error);
+        return [];
     }
 }
 

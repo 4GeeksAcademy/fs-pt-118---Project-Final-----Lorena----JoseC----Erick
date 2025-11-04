@@ -46,7 +46,7 @@ const EventDetails = () => {
     }
 
     fetchEvent()
-  }, [id]);
+  }, [id,store,dispatch]);
 
   if (loading) return <p className="text-center mt-5">Loading event details...</p>
   if (!event) return <p className="text-center mt-5">Event not found.</p>

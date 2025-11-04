@@ -3,11 +3,11 @@ import servicesEvents from "../Services/servicesGetEvents";
 
 const EventsCarousel = () => {
 
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([])
 
   useEffect(() => {
     servicesEvents.getAllEvents().then(setEvents).catch(console.error);
-  }, []);
+  }, [])
 
   if (!events.length) return <p className="text-center mt-4">There are no active events</p>;
 
