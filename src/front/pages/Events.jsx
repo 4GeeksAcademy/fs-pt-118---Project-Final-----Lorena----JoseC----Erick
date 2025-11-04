@@ -39,7 +39,7 @@ const Events = () => {
 
     return (
 
-        <div className="container mt-5 pt-5">
+        <div className="container mt-5 pt-5 min-heigth-80">
             <h2 className="text-center mb-4">Events of the week</h2>
             <EventsCarousel events={events} />
 

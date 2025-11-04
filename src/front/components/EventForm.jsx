@@ -15,7 +15,6 @@ const EventForm = ({ show, onClose }) => {
     end_time: "",
   });
 
-  // Limpia el formulario cuando se cierra
   useEffect(() => {
     if (!show) {
       setFormData({ name: "", description: "", start_time: "", end_time: "" });
@@ -60,7 +59,7 @@ const EventForm = ({ show, onClose }) => {
       if (success) {
         setOkMsg("Event created successfully 🎉");
         setTimeout(() => {
-          onClose(); // cerrar modal
+          onClose();
           window.location.reload();
         }, 3000);
       } else {
@@ -79,25 +78,8 @@ const EventForm = ({ show, onClose }) => {
   };
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      zIndex: 1050,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
-      <div style={{
-        background: "#fff",
-        borderRadius: "1rem",
-        padding: "2rem",
-        width: "600px",
-        maxHeight: "90vh",
-        overflowY: "auto",
-        zIndex: 1060,
-        position: "relative"
-      }}>
+    <div className="modal-overlay">
+      <div className="modal-content mx-3">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="fw-bold">Create Event</h4>
           <button className="btn-close" onClick={onClose}></button>
@@ -176,11 +158,10 @@ const EventForm = ({ show, onClose }) => {
                 htmlFor="image"
                 className="btn btn-outline-danger cta w-100"
                 style={{ cursor: "pointer" }}
-              >
+                >
                 {imageFile ? "Image selected ✅" : "Choose image"}
               </label>
             </div>
-
             {imageFile && (
               <div className="mt-3 text-center">
                 <img
@@ -192,7 +173,6 @@ const EventForm = ({ show, onClose }) => {
               </div>
             )}
           </div>
-
           <button
             type="submit"
             className="btn w-100 py-2 fw-bold text-white cta"

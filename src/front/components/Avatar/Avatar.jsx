@@ -12,6 +12,7 @@ export const AVATAR_MAP = {
   "8": "https://i.pravatar.cc/240?img=8",
   "9": "https://i.pravatar.cc/240?img=9",
   "10": "https://i.pravatar.cc/240?img=10",
+  "11": "https://i.pravatar.cc/240?img=23",
 };
 
 // --- Utilidad para deducir el número desde la URL ---

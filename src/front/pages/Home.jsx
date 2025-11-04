@@ -11,7 +11,7 @@ export const Home = () => {
   const { store } = useGlobalReducer();
 
   return (
-    <div>
+    <>
       {store.isAuth ? (
         <LandingLogged />
       ) : (
@@ -22,6 +22,6 @@ export const Home = () => {
         </>
       )}
 
-    </div>
+    </>
   );
 };

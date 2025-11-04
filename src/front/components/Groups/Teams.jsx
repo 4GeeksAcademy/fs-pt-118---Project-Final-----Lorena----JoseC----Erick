@@ -2,10 +2,9 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import GroupsServices from "../../Services/GroupsServices";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
-import { removeGroupAndCleanup } from "../../hooks/groupsActions";
 import { createPortal } from "react-dom";
 
-const Teams = ({ group, scrollRef }) => {
+const Teams = ({ group }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const { store, dispatch } = useGlobalReducer();
   const token = localStorage.getItem("token");
@@ -14,17 +13,6 @@ const Teams = ({ group, scrollRef }) => {
   const isAdmin = currentUser?.role === "admin";
   const isOwner = group.owner_name === currentUserId;
   const isActive = store.activeGroup?.id === group.id && store.showGroupDetails;
-
-  const scrollToDetails = () => {
-    const tryScroll = () => {
-      if (scrollRef?.current) {
-        scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      } else {
-        setTimeout(tryScroll, 50);
-      }
-    };
-    tryScroll();
-  };
 
   const handleToggle = () => {
     dispatch({ type: "toggleGroup", payload: { group: null } });
@@ -37,7 +25,6 @@ const Teams = ({ group, scrollRef }) => {
       dispatch({ type: "setEditMode", payload: false });
       dispatch({ type: "setShowGroupEditor", payload: false });
       dispatch({ type: "setShowGroupDetails", payload: true });
-      scrollToDetails();
     }, 0);
   };
 
@@ -53,7 +40,6 @@ const Teams = ({ group, scrollRef }) => {
         dispatch({ type: "toggleGroup", payload: { group } });
         dispatch({ type: "setEditMode", payload: true });
         dispatch({ type: "setShowGroupEditor", payload: true });
-        scrollToDetails();
       }, 0);
     }
   };
@@ -66,7 +52,11 @@ const Teams = ({ group, scrollRef }) => {
 
     if (success) {
       toast.success("Group deleted successfully 🗑️", { autoClose: 2500 });
-      removeGroupAndCleanup(dispatch, store, group.id);
+      dispatch({ type: "removeGroup", payload: group.id });
+      if (store.activeGroup?.id === group.id) {
+        dispatch({ type: "toggleGroup", payload: { group: null } });
+        dispatch({ type: "setEditMode", payload: false });
+      }
     } else {
       toast.error(error || "Error deleting group");
     }
