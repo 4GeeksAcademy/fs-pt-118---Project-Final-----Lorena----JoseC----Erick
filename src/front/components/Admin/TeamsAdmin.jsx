@@ -3,22 +3,18 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 import CardGroups from "../Groups/CardGroups";
 import GroupDetails from "../Groups/GroupsDetails";
 import GroupDetailsEdit from "../Groups/GroupsDetailsEdit";
-import servicesStats from "../../Services/servicesStats";
 
 const TeamsAdmin = () => {
     const { dispatch, store } = useGlobalReducer();
-    const [stats, setStats] = useState({ groupsCount: 0 });
-
-    useEffect(() => {
-        servicesStats.getStats().then(data => setStats(data));
-    }, []);
+    const groupsCount = Array.isArray(store.groups) ? store.groups.length : 0;
 
     return (
         <div className="container py-4">
             <div className="text-center border-bottom pb-3 mb-4">
                 <h1>Welcome to the equipment section</h1>
-                <p className="fs-5 text-muted m-0">Currently registered teams in the system:
-                    <span className="fs-4 fw-bold text-secondary mx-2">{stats.groupsCount}</span>
+                <p className="fs-5 text-muted m-0">
+                    Currently registered teams in the system:
+                    <span className="fs-4 fw-bold text-secondary mx-2">{groupsCount}</span>
                 </p>
             </div>
             <CardGroups />

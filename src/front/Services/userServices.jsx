@@ -73,4 +73,28 @@ userServices.updateProfile = async (payload, token) => {
   return handleResponse(resp);
 }
 
+userServices.getUsers = async () => {
+  const resp = await fetch(`${url}/api/users`, {
+    method: "GET",
+  });
+  return handleResponse(resp);
+}
+
+userServices.deleteUser = async (id, token) => {
+  const resp = await fetch(`${url}/api/remove-account/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    }
+  });
+  const data = await resp.json();
+
+  if (resp.ok) {
+    return { success: true, data };
+  } else {
+    return { success: false, error: data?.message || "Error deleting group" };
+  }
+};
+
 export default userServices;
