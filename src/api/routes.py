@@ -123,13 +123,12 @@ def register_user():
 def login_user():
     body = request.get_json()
 
-    identifier = body.get("identifier")   
+    identifier = body.get("identifier")
     password = body.get("password")
 
     if not identifier or not password:
         return jsonify({"error": "Identifier and password are required"}), 400
 
-    
     query = select(User).where(
         (User.email == identifier) | (User.user_name == identifier)
     )
@@ -138,16 +137,14 @@ def login_user():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    
     if not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid password"}), 401
 
-    
     token = create_access_token(
         identity=str(user.id),
         additional_claims={
             "user_name": user.user_name,
-            "role": user.role.value  
+            "role": user.role.value
         }
     )
 
@@ -217,6 +214,7 @@ def edit_user(id):
 @api.route('/remove-account/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(id):
+    print("Received DELETE for user ID:", id)
     current_user_id = get_jwt_identity()
     claims = get_jwt()
 
@@ -230,12 +228,21 @@ def delete_user(id):
     if not user:
         return jsonify({"error": "User not found"}), 404
     try:
+        for event in user.events_created:
+            db.session.delete(event)
+        for group in user.groups_created:
+            db.session.delete(group)
+        for comment in user.comments:
+            db.session.delete(comment)
+        for reservation in user.reservations:
+            db.session.delete(reservation)
         db.session.delete(user)
         db.session.commit()
         return jsonify({"success": True, "message": "User deleted successfully"}), 200
-    except:
+    except Exception as e:
+        traceback.print_exc()
         db.session.rollback()
-    return jsonify({"error": "Internal server error"}), 500
+        return jsonify({"error": "Internal server error", "detail": str(e)}), 500
 
 
 @api.route('/forgot-password', methods=['POST'])
@@ -426,7 +433,7 @@ def update_group(group_id):
 def delete_group(group_id):
     jwt_data = get_jwt()
     user_name = jwt_data.get("user_name")
-    user_role = jwt_data.get("role") 
+    user_role = jwt_data.get("role")
 
     group = db.session.get(Groups, group_id)
 

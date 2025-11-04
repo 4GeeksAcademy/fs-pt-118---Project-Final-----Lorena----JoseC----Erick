@@ -43,7 +43,7 @@ const LandingLogged = () => {
                     {events.slice(0, 3).map((event) => (
                         <EventCard key={event.id} event={event} onFavorite={handleFavorite} />
                     ))}
-                    <h3 className="w-100 text-center my-5">¡have fun discovering events!</h3>
+                    <h3 className="w-100 text-center my-5 title">¡have fun discovering events!</h3>
                     {events.slice(3, 6).map((event) => (
                         <EventCard key={event.id} event={event} onFavorite={handleFavorite} />
                     ))}

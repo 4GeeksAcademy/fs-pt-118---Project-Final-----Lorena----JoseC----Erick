@@ -15,6 +15,7 @@ const CardGroups = ({ scrollRef }) => {
     });
   }, [dispatch]);
 
+
   const groups = Array.isArray(store.groups)
     ? store.groups.filter(g =>
         g.name.toLowerCase().includes(searchTerm.toLowerCase())

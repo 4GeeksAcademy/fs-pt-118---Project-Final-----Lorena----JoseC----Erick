@@ -346,3 +346,6 @@ background: linear-gradient(90deg, rgb(152,152,152) 0%, rgba(235, 39, 39, 0.64) 
 .min-heigth-80{
   min-height: 92vh !important;
 }
+.mar{
+  margin-top: 100px;
+}
