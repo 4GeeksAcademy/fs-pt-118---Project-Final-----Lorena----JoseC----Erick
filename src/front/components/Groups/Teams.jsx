@@ -52,7 +52,11 @@ const Teams = ({ group }) => {
 
     if (success) {
       toast.success("Group deleted successfully 🗑️", { autoClose: 2500 });
-      removeGroupAndCleanup(dispatch, store, group.id);
+      dispatch({ type: "removeGroup", payload: group.id });
+      if (store.activeGroup?.id === group.id) {
+        dispatch({ type: "toggleGroup", payload: { group: null } });
+        dispatch({ type: "setEditMode", payload: false });
+      }
     } else {
       toast.error(error || "Error deleting group");
     }
