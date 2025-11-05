@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export const Footer = () => (
 
-	<footer className="bg-light py-3 border-top">
+	<footer id="page-footer" className="bg-light py-3 border-top">
 		<div className="container overflow-hidden">
 			<div className="row align-items-center text-center text-md-start">
 

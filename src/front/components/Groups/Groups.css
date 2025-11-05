@@ -143,6 +143,7 @@
   padding: 12px 20px;
   border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease;
 }
 
 .group-modal-backdrop {

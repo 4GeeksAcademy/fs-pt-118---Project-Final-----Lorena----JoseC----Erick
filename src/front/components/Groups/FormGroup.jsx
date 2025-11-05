@@ -23,6 +23,24 @@ const FormGroup = ({ show, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg(""); // Limpia errores anteriores
+
+    // Validación manual
+    if (!groupData.name.trim()) {
+      setErrorMsg("Team name is required.");
+      return;
+    }
+
+    if (!groupData.description.trim()) {
+      setErrorMsg("Description is required.");
+      return;
+    }
+
+    if (!groupData.imageFile) {
+      setErrorMsg("Group image is required.");
+      return;
+    }
+
     setIsUploading(true);
 
     try {
@@ -35,7 +53,7 @@ const FormGroup = ({ show, onClose }) => {
       const payload = {
         name: groupData.name,
         description: groupData.description,
-        avatar: avatarUrl
+        avatar: avatarUrl,
       };
 
       const token = localStorage.getItem("token");

@@ -121,7 +121,7 @@ const GroupDetails = ({ show, onClose }) => {
               ))}
             </ul>
           ) : (
-            <div className="alert alert-warning mt-2">
+            <div className="alert alert-danger mt-2">
               This group has no members yet.
             </div>
           )}
@@ -142,8 +142,6 @@ const GroupDetails = ({ show, onClose }) => {
         )}
       </div>
     </div>
-
-
   );
 };
 
