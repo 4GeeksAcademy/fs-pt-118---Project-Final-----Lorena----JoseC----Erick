@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CardGroups from './CardGroups';
 import FormGroup from './FormGroup';
 import GroupDetails from './GroupsDetails';
@@ -10,6 +10,32 @@ const Groups = () => {
   const { store, dispatch } = useGlobalReducer();
   const detailsRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const button = document.querySelector(".botonModal");
+    const checkFooter = () => {
+      const footer = document.getElementById("page-footer");
+      if (!footer || !button) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            button.style.opacity = "0";
+            button.style.pointerEvents = "none";
+          } else {
+            button.style.opacity = "1";
+            button.style.pointerEvents = "auto";
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(footer);
+    };
+
+    const timeout = setTimeout(checkFooter, 100);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
 
   return (
@@ -23,7 +49,6 @@ const Groups = () => {
         <FormGroup show={showModal} onClose={() => setShowModal(false)} />
         <button
           className="btn cta position-fixed d-flex align-items-center gap-2 botonModal"
-          style={{ bottom: "30px", right: "30px", zIndex: 1040 }}
           onClick={() => setShowModal(true)}
         >
           <span style={{ fontSize: "24px", lineHeight: "1" }}>+</span>

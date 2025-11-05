@@ -47,6 +47,9 @@ const UsersAdmin = () => {
   return (
     <div className="container mt-4">
       <h3 className="mb-4">User Administration</h3>
+      <h6 className="text-muted mb-3">
+        Total users: {[users.length]}
+      </h6>
 
       <div className="mb-3">
         <input

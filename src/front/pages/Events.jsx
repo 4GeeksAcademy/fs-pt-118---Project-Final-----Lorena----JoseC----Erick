@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 import EventsCarousel from "../components/EventsCarousel";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import EventForm from "../components/EventForm";
-
+import { useLocation } from "react-router-dom";
 const Events = () => {
 
     const [events, setEvents] = useState([])
@@ -27,13 +27,55 @@ const Events = () => {
         if (isAuth) {
             const token = localStorage.getItem("token")
             servicesGetEvents.getUserFavorites(token)
-                .then((result) => { 
+                .then((result) => {
                     const favorites = result.data || [];
                     dispatch({ type: 'Favorites', payload: favorites })
                 })
                 .catch(console.error)
         }
     }, [isAuth, dispatch])
+
+
+    useEffect(() => {
+        let observer;
+        let footerReady = false;
+        let buttonReady = false;
+        const setupObserver = () => {
+            const footer = document.getElementById("page-footer");
+            const button = document.querySelector(".botonModal");
+            if (!footer || !button) return;
+            observer = new IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) {
+                        button.style.opacity = "0";
+                        button.style.pointerEvents = "none";
+                    } else {
+                        button.style.opacity = "1";
+                        button.style.pointerEvents = "auto";
+                    }
+                },
+                { threshold: 0.1 }
+            );
+            observer.observe(footer);
+        };
+        const mutationObserver = new MutationObserver(() => {
+            if (!footerReady && document.getElementById("page-footer")) {
+                footerReady = true;
+            }
+            if (!buttonReady && document.querySelector(".botonModal")) {
+                buttonReady = true;
+            }
+            if (footerReady && buttonReady) {
+                setupObserver();
+                mutationObserver.disconnect();
+            }
+        });
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+        return () => {
+            if (observer) observer.disconnect();
+            mutationObserver.disconnect();
+        };
+    }, []);
 
     if (loading) return <p className="text-center mt-5">Loading Events...</p>
 
@@ -51,7 +93,6 @@ const Events = () => {
             </div>
             <button
                 className="btn cta position-fixed d-flex align-items-center gap-2 botonModal"
-                style={{ bottom: "30px", right: "30px", zIndex: 1040 }}
                 onClick={() => setShowForm(true)}
             >
                 <span style={{ fontSize: "24px", lineHeight: "1" }}>+</span>

@@ -3,37 +3,35 @@ import Hero from "./Hero";
 import EventCard from "../EventCard";
 import servicesGetEvents from "../../Services/servicesGetEvents"
 import WhoWeAre from "./WhoWeAre";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 const LandingLogged = () => {
+    const { store, dispatch } = useGlobalReducer()
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const isAuth = !!store?.isAuth
 
-
-
-    const handleFavorite = (eventId) => {
-        if (!isAuth) {
-            const modal = new bootstrap.Modal(document.getElementById("registerModal"));
-            modal.show();
-            return;
-        }
-
-        setFavorites((prev) =>
-            prev.includes(eventId)
-                ? prev.filter((id) => id !== eventId)
-                : [...prev, eventId]
-        );
-    };
 
     useEffect(() => {
         servicesGetEvents.getAllEvents()
             .then((data) => {
-                setEvents(data || []);
-                setLoading(false);
+                setEvents(data || [])
+                setLoading(false)
             })
             .catch((err) => {
-                console.error("Error fetching events:", err);
-                setLoading(false);
-            });
-    }, []);
+                console.error("Error fetching events:", err)
+                setLoading(false)
+            })
+
+        if (isAuth) {
+            const token = localStorage.getItem("token")
+            servicesGetEvents.getUserFavorites(token)
+                .then((result) => {
+                    const favorites = result.data || [];
+                    dispatch({ type: 'Favorites', payload: favorites })
+                })
+                .catch(console.error)
+        }
+    }, [isAuth, dispatch])
 
     return (
         <>
@@ -41,11 +39,11 @@ const LandingLogged = () => {
             <div className="d-flex flex-column align-items-center my-5">
                 <div className="row m-2 justify-content-center my-3">
                     {events.slice(0, 3).map((event) => (
-                        <EventCard key={event.id} event={event} onFavorite={handleFavorite} />
+                        <EventCard key={event.id} event={event} />
                     ))}
                     <h3 className="w-100 text-center my-5 title">¡have fun discovering events!</h3>
                     {events.slice(3, 6).map((event) => (
-                        <EventCard key={event.id} event={event} onFavorite={handleFavorite} />
+                        <EventCard key={event.id} event={event} />
                     ))}
                 </div>
             </div>
