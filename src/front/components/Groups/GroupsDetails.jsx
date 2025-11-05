@@ -134,7 +134,7 @@ const GroupDetails = ({ show, onClose }) => {
                 <i className="fa-solid fa-right-from-bracket me-2"></i> Leave Group
               </button>
             ) : (
-              <button className="btn btn-success px-4" onClick={handleJoin} disabled={loading}>
+              <button className="btn cta px-4" onClick={handleJoin} disabled={loading}>
                 <i className="fa-solid fa-user-plus me-2"></i> Join Group
               </button>
             )}

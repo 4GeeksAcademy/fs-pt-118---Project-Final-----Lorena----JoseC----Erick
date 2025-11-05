@@ -377,9 +377,16 @@ def create_group():
             user_id=get_jwt_identity(),
         )
 
-        new_group.members.append(current_user)
+        #new_group.members.append(current_user)
 
         db.session.add(new_group)
+        db.session.flush()
+        new_user_group=UsersGroups(
+            user_id=get_jwt_identity(),
+            group_id=new_group.id,
+            role="captain"
+        )
+        db.session.add(new_user_group)
         db.session.commit()
 
         return jsonify(success=True, data=new_group.serialize()), 201
@@ -606,36 +613,36 @@ def update_profile():
 def get_user_favorites():
     user_id = get_jwt_identity()
     favorites = Favorites.query.filter_by(user_id=user_id).all()
-    return jsonify({
-        "success": True,
-        "data": [fav.serialize() for fav in favorites]
-    }), 200
+    data = []
+    for fav in favorites:
+        if fav.event:
+            data.append({
+                "id": fav.id,
+                "event_id": fav.event_id,
+                "name": fav.event.name,
+                "image": fav.event.imagen,
+            })
+
+    return jsonify({"success": True, "data": data}), 200
 
 
 @api.route("/favorites/<int:event_id>", methods=["POST"])
 @jwt_required()
 def toggle_favorite(event_id):
     user_id = get_jwt_identity()
-
+    event = Events.query.get(event_id)
+    if not event:
+        return jsonify({"success": False, "message": "Event not found"}), 404
     existing_fav = Favorites.query.filter_by(
         user_id=user_id, event_id=event_id).first()
-
     if existing_fav:
         db.session.delete(existing_fav)
         db.session.commit()
-        return jsonify({
-            "success": True,
-            "is_favorite": False
-        }), 200
-
+        return jsonify({"success": True, "is_favorite": False}), 200
     new_fav = Favorites(user_id=user_id, event_id=event_id)
     db.session.add(new_fav)
     db.session.commit()
-
-    return jsonify({
-        "success": True,
-        "is_favorite": True
-    }), 201
+    return jsonify({"success": True, "is_favorite": True}), 201
 
 # -----------------------------------------------------------Comments--------------------------------------------------------------------------
 
@@ -723,3 +730,43 @@ def edit_comment(comment_id):
         "msg": "Comment successfully updated.",
         "data": comment.serialize()
     }), 200
+# ----------------------------------------------UserGroups------------------------------------------------------
+
+
+@api.route('/user/groups', methods=['GET'])
+@jwt_required()
+def get_user_groups():
+    current_user_id = get_jwt_identity()
+    user = db.session.get(User, current_user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found"}), 404
+    created_groups = Groups.query.filter_by(user_id=current_user_id).all()
+    return jsonify([g.serialize() for g in created_groups]), 200
+
+# ------------------------------ADD THE USER'S CREATED GROUP TO THE EVENT---------------------------------------
+
+
+@api.route('/events/<int:event_id>/add-group/<int:group_id>', methods=['POST'])
+@jwt_required()
+def add_group_to_event(event_id, group_id):
+    try:
+        event = db.session.get(Events, event_id)
+        group = db.session.get(Groups, group_id)
+        current_user_id = get_jwt_identity()
+        if not event:
+            return jsonify(success=False, message="Event not found"), 404
+        if not group:
+            return jsonify(success=False, message="Group not found"), 404
+        # Solo el dueño del grupo puede agregarlo al evento
+        print(group.user_id,current_user_id)
+        if str(group.user_id) != current_user_id:
+            return jsonify(success=False, message="You are not authorized to add this group"), 403
+        if group in event.groups:
+            return jsonify(success=False, message="Group already linked to event"), 400
+        event.groups.append(group)
+        db.session.commit()
+        return jsonify(success=True, message="Group added to event", data=group.serialize()), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(success=False, message=str(e)), 500

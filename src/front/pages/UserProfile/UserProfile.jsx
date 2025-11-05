@@ -3,7 +3,7 @@ import userServices from "../../Services/userServices";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import styles from "./UserProfile.module.css";
 import FormGroup from "../../components/Groups/FormGroup"
-import Avatar, { AVATAR_MAP, inferNumberFromUrl } from "../../components/Avatar/Avatar";
+import Avatar from "../../components/Avatar/Avatar";
 import Teams from "../../components/Groups/Teams";
 import GroupDetailsEdit from "../../components/Groups/GroupsDetailsEdit";
 import GroupDetails from "../../components/Groups/GroupsDetails";
@@ -11,6 +11,7 @@ import EventForm from "../../components/EventForm";
 import { openModalById, forceCloseModalById } from "../../utils/modalUtils";
 import AvatarModal from "../../components/Avatar/AvatarModal";
 import { useNavigate } from "react-router-dom";
+import servicesGetEvents from "../../Services/servicesGetEvents";
 
 const Profile = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -23,9 +24,10 @@ const Profile = () => {
     email: store?.user?.email || "",
     avatar: store?.user?.avatar || "",
   });
-  const [avatarNumber, setAvatarNumber] = useState("5");
+
   const [events, setEvents] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [tab, setTab] = useState("events");
   const [loading, setLoading] = useState(true);
   const [okMsg, setOkMsg] = useState("");
@@ -52,33 +54,44 @@ const Profile = () => {
   useEffect(() => {
     setLoading(true);
 
-    userServices.getProfile(token).then((resp) => {
-      if (!resp?.success) {
-        setErrorMsg("Error loading profile");
-        return;
-      }
-      const { user, groups, events } = resp;
+    userServices.getProfile(token)
+      .then((resp) => {
+        if (!resp?.success) {
+          setErrorMsg("Error loading profile");
+          return;
+        }
+        const { user, groups, events } = resp;
 
-      const num = inferNumberFromUrl(user?.avatar);
-      const isPreset = num && AVATAR_MAP[num];
+        setForm({
+          user_name: user?.user_name || "",
+          email: user?.email || "",
+          avatar: user?.avatar || "",
+        });
 
-      setForm({
-        user_name: user?.user_name || "",
-        email: user?.email || "",
-        avatar: isPreset ? AVATAR_MAP[num] : (user?.avatar || ""),
-      });
-      setAvatarNumber(isPreset ? String(num) : null);
+        // Si el usuario no tiene avatar dicBear asignado, colocamos uno por defecto
+        if (!user?.avatar && user?.user_name) {
+          const fallback = `https://api.dicebear.com/9.x/initials/png?seed=${encodeURIComponent(user.user_name)}`;
+          setForm((prev) => ({ ...prev, avatar: fallback }));
+        }
 
-      setEvents(events);
-      setGroups(groups);
+        setEvents(events);
+        setGroups(groups);
 
-      dispatch({ type: "setUserEvents", payload: events });
-      dispatch({ type: "setUserGroups", payload: groups });
-      dispatch({ type: "auth", payload: { user } });
-      localStorage.setItem("user", JSON.stringify(user));
-    })
+        dispatch({ type: "setUserEvents", payload: events });
+        dispatch({ type: "setUserGroups", payload: groups });
+        dispatch({ type: "auth", payload: { user } });
+        localStorage.setItem("user", JSON.stringify(user));
+      })
       .catch(() => setErrorMsg("Error loading profile"))
       .finally(() => setLoading(false));
+
+    servicesGetEvents.getUserFavorites(token)
+      .then(favResp => {
+        if (favResp?.success) {
+          setFavorites(favResp.data)
+          dispatch({ type: "Favorites", payload: favResp.data })
+        }
+      })
   }, [dispatch, token]);
 
   const handleSave = () => {
@@ -87,24 +100,18 @@ const Profile = () => {
 
     const payload = {
       user_name: form.user_name,
-      password: form.password,
-      avatar: (form.avatar || null),
+      avatar: form.avatar || null,
     };
 
-    userServices
-      .updateProfile(payload, token)
+    userServices.updateProfile(payload, token)
       .then((resp) => {
         if (resp.success) {
           const user = resp.data;
-          const num = inferNumberFromUrl(user?.avatar);
-          const isPreset = num && AVATAR_MAP[num];
-
           setForm({
             user_name: user.user_name || "",
             email: user.email || "",
-            avatar: isPreset ? AVATAR_MAP[num] : (user?.avatar || ""),
+            avatar: user.avatar || "",
           });
-          setAvatarNumber(isPreset ? String(num) : null);
 
           dispatch({ type: "auth", payload: { user } });
           localStorage.setItem("user", JSON.stringify(user));
@@ -122,20 +129,22 @@ const Profile = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const looksLikeUrl = (v) => typeof v === "string" && /^https?:\/\//i.test(v);
-
   const handleOnSelect = (value) => {
-    if (looksLikeUrl(value)) {
-      // Selección personalizada (Cloudinary)
-      setAvatarNumber(null);
-      setForm((prev) => ({ ...prev, avatar: value }));
-    } else {
-      // select predefinida
-      setAvatarNumber(String(value));
-      setForm((prev) => ({ ...prev, avatar: AVATAR_MAP[value] }));
-    }
+    setForm((prev) => ({ ...prev, avatar: value }));
   };
 
+  const handleRemoveFavorite = async (eventId) => {
+    try {
+      const result = await servicesGetEvents.toggleFavorite(eventId, token)
+      if (result?.is_favorite === false) {
+        const updatedFavorites = favorites.filter(f => f.event_id !== eventId)
+        setFavorites(updatedFavorites);
+        dispatch({ type: "Favorites", payload: updatedFavorites })
+      }
+    } catch (error) {
+      console.error("Error removing favorite:", error)
+    }
+  }
 
   return (
     <>
@@ -149,7 +158,7 @@ const Profile = () => {
                   src={form.avatar}
                   name={form.user_name}
                   size={180}
-                  className={styles.avatar}
+                /* className={styles.avatar} */
                 />
               </div>
               <div className="mt-3">
@@ -210,6 +219,12 @@ const Profile = () => {
                 >
                   Teams
                 </button>
+                <button
+                  className={`${styles.tabBtn} ${tab === "favorites" ? styles.active : ""}`}
+                  onClick={() => setTab("favorites")}
+                >
+                  Favorites
+                </button>
               </div>
             </div>
           </div>
@@ -218,8 +233,8 @@ const Profile = () => {
             {tab === "events" && (
               <div className={styles.panel}>
                 <div className="d-flex justify-content-between align-items-center px-2">
-                <h6 className="fw-bold m-2">Your Events</h6>
-                <small className="mx-2"> start-events</small>
+                  <h6 className="fw-bold m-2">Your Events</h6>
+                  <small className="mx-2"> start-events</small>
                 </div>
 
                 {events.length ? (
@@ -280,6 +295,47 @@ const Profile = () => {
               </div>
             )}
 
+            {tab === "favorites" && (
+              <div className={styles.panel}>
+                <div className="d-flex justify-content-between align-items-center px-2">
+                  <h6 className="fw-bold m-2">Your Favorite Events</h6>
+                </div>
+
+                {store?.favorites?.length ? (
+                  <ul className={styles.list}>
+                    {store.favorites.map((fav) => (
+                      <li
+                        key={fav.event_id}
+                        className={`${styles.item} d-flex align-items-center justify-content-between`}
+                      >
+                        <div
+                          className="d-flex align-items-center"
+                          onClick={() => navigate(`/event/${fav.event_id}`)}
+                          role="button"
+                        >
+                          <img
+                            src={fav.image}
+                            alt={fav.name}
+                            className={styles.favoriteImg}
+                          />
+                          <div className={styles.info}>
+                            <span className={styles.name}>{fav.name}</span>
+                          </div>
+                        </div>
+                        <button
+                          className="btn btn-sm"
+                          onClick={() => handleRemoveFavorite(fav.event_id)}
+                        >
+                          <i className="fa-solid fa-xmark text-danger"></i>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className={styles.empty}>No favorites yet.</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -290,7 +346,8 @@ const Profile = () => {
       </div>
       <AvatarModal
         id="avatarModal"
-        current={avatarNumber ?? form.avatar}
+        current={form.avatar}
+        userName={form.user_name}
         onSelect={handleOnSelect}
       />
       <GroupDetails
