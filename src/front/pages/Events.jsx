@@ -27,9 +27,9 @@ const Events = () => {
         if (isAuth) {
             const token = localStorage.getItem("token")
             servicesGetEvents.getUserFavorites(token)
-                .then((result) => {
+                .then((result) => { 
                     const favorites = result.data || [];
-                    dispatch({ type: 'SET_FAVORITES', payload: favorites })
+                    dispatch({ type: 'Favorites', payload: favorites })
                 })
                 .catch(console.error)
         }

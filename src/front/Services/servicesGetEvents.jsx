@@ -178,31 +178,39 @@ servicesGetEvents.deleteComment = async (commentId, token) => {
 
 servicesGetEvents.getAllUserGroups = async () => {
     try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            throw new Error("No token provided");
-        }
-
+        const token = localStorage.getItem("token")
+        if (!token) { throw new Error("No token provided") }
         const resp = await fetch(`${url}/api/user/groups`, {
             headers: {
                 Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!resp.ok) {
-            throw new Error("Failed to fetch user groups");
-        }
-
-        const data = await resp.json();
+            }
+        })
+        if (!resp.ok) { throw new Error("Failed to fetch user groups") }
+        const data = await resp.json()
         if (!Array.isArray(data)) {
-            throw new Error("Unexpected response format");
+            throw new Error("Unexpected response")
         }
-
-        return data;
+        return data
     } catch (error) {
-        console.error("Error fetching user groups:", error);
-        return [];
+        console.error("Error fetching user groups:", error)
+        return []
+    }
+}
+
+servicesGetEvents.addGroupToEvent = async (eventId, groupId) => {
+    try {
+        const token = localStorage.getItem("token")
+        if (!token) throw new Error("No token provided")
+        const resp = await fetch(`${url}/api/events/${eventId}/add-group/${groupId}`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await resp.json()
+        if (!resp.ok) throw new Error(data.message || "Error adding group")
+        return data
+    } catch (error) {
+        console.error("Error adding group to event:", error)
+        return { success: false, message: error.message }
     }
 }
 

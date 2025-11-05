@@ -62,7 +62,7 @@ const EventCard = ({ event }) => {
 
                     <div className="mt-auto d-flex justify-content-between align-items-center">
                         <button
-                            className="btn btn-outline-secondary btn-sm"
+                            className="btn btn-outline btn-sm cta"
                             onClick={handleView}>
                             View +
                         </button>

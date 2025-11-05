@@ -23,30 +23,30 @@ const EventDetails = () => {
           dispatch({
             type: "setUserEvents",
             payload: [...(store.userEvents || []), eventData],
-          });
+          })
         }
 
-        setEvent(eventData);
-        let eventGroups = store.groups?.[id];
+        setEvent(eventData)
+        let eventGroups = store.groups?.[id]
         if (!eventGroups) {
-          const responseGroups = await servicesGetEvents.getEventGroups(id);
-          eventGroups = responseGroups;
+          const responseGroups = await servicesGetEvents.getEventGroups(id)
+          eventGroups = responseGroups
           dispatch({
             type: "setEventGroups",
             payload: { eventId: id, groups: eventGroups },
-          });
+          })
         }
 
-        setGroups(eventGroups);
+        setGroups(eventGroups)
       } catch (error) {
-        console.error("Error loading event details:", error);
+        console.error("Error loading event details:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
     fetchEvent()
-  }, [id,store,dispatch]);
+  }, [id, store, dispatch])
 
   if (loading) return <p className="text-center mt-5">Loading event details...</p>
   if (!event) return <p className="text-center mt-5">Event not found.</p>
@@ -80,9 +80,9 @@ const EventDetails = () => {
             </span>
           </div>
 
-          <p>{event.description}</p>
-          <p><strong>Start:</strong> {new Date(event.start_time).toLocaleString()}</p>
-          <p><strong>End:</strong> {new Date(event.end_time).toLocaleString()}</p>
+          <p className="text-wrap text-break">{event.description}</p>
+          <p className="text-wrap text-break"><strong>Start:</strong> {new Date(event.start_time).toLocaleString()}</p>
+          <p className="text-wrap text-break"><strong>End:</strong> {new Date(event.end_time).toLocaleString()}</p>
         </div>
       </div>
 

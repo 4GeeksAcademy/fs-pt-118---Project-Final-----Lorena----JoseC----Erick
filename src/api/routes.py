@@ -723,3 +723,41 @@ def edit_comment(comment_id):
         "msg": "Comment successfully updated.",
         "data": comment.serialize()
     }), 200
+# ----------------------------------------------UserGroups------------------------------------------------------
+
+
+@api.route('/user/groups', methods=['GET'])
+@jwt_required()
+def get_user_groups():
+    current_user_id = get_jwt_identity()
+    user = db.session.get(User, current_user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found"}), 404
+    created_groups = Groups.query.filter_by(user_id=current_user_id).all()
+    return jsonify([g.serialize() for g in created_groups]), 200
+
+# ------------------------------ADD THE USER'S CREATED GROUP TO THE EVENT---------------------------------------
+
+@api.route('/events/<int:event_id>/add-group/<int:group_id>', methods=['POST'])
+@jwt_required()
+def add_group_to_event(event_id, group_id):
+    try:
+        event = db.session.get(Events, event_id)
+        group = db.session.get(Groups, group_id)
+        current_user_id = get_jwt_identity()
+        if not event:
+            return jsonify(success=False, message="Event not found"), 404
+        if not group:
+            return jsonify(success=False, message="Group not found"), 404
+        # Solo el dueño del grupo puede agregarlo al evento
+        if group.user_id != current_user_id:
+            return jsonify(success=False, message="You are not authorized to add this group"), 403
+        if group in event.groups:
+            return jsonify(success=False, message="Group already linked to event"), 400
+        event.groups.append(group)
+        db.session.commit()
+        return jsonify(success=True, message="Group added to event", data=group.serialize()), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(success=False, message=str(e)), 500
