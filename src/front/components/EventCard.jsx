@@ -35,7 +35,11 @@ const EventCard = ({ event }) => {
 
             let updatedFavorites;
             if (updatedFavoriteStatus) {
-                updatedFavorites = [...store.favorites, { event_id: event.id }];
+                updatedFavorites = [...store.favorites, {
+                    event_id: event.id,
+                    name: event.name,
+                    image: event.imagen || event.image_url || "",
+                },];
             } else {
                 updatedFavorites = store.favorites.filter(f => f.event_id !== event.id);
             }

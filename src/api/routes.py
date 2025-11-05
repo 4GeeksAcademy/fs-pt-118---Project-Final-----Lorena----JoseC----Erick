@@ -606,36 +606,36 @@ def update_profile():
 def get_user_favorites():
     user_id = get_jwt_identity()
     favorites = Favorites.query.filter_by(user_id=user_id).all()
-    return jsonify({
-        "success": True,
-        "data": [fav.serialize() for fav in favorites]
-    }), 200
+    data = []
+    for fav in favorites:
+        if fav.event:
+            data.append({
+                "id": fav.id,
+                "event_id": fav.event_id,
+                "name": fav.event.name,
+                "image": fav.event.imagen,
+            })
+
+    return jsonify({"success": True, "data": data}), 200
 
 
 @api.route("/favorites/<int:event_id>", methods=["POST"])
 @jwt_required()
 def toggle_favorite(event_id):
     user_id = get_jwt_identity()
-
+    event = Events.query.get(event_id)
+    if not event:
+        return jsonify({"success": False, "message": "Event not found"}), 404
     existing_fav = Favorites.query.filter_by(
         user_id=user_id, event_id=event_id).first()
-
     if existing_fav:
         db.session.delete(existing_fav)
         db.session.commit()
-        return jsonify({
-            "success": True,
-            "is_favorite": False
-        }), 200
-
+        return jsonify({"success": True, "is_favorite": False}), 200
     new_fav = Favorites(user_id=user_id, event_id=event_id)
     db.session.add(new_fav)
     db.session.commit()
-
-    return jsonify({
-        "success": True,
-        "is_favorite": True
-    }), 201
+    return jsonify({"success": True, "is_favorite": True}), 201
 
 # -----------------------------------------------------------Comments--------------------------------------------------------------------------
 
@@ -738,6 +738,7 @@ def get_user_groups():
 
 # ------------------------------ADD THE USER'S CREATED GROUP TO THE EVENT---------------------------------------
 
+
 @api.route('/events/<int:event_id>/add-group/<int:group_id>', methods=['POST'])
 @jwt_required()
 def add_group_to_event(event_id, group_id):
@@ -757,7 +758,7 @@ def add_group_to_event(event_id, group_id):
         event.groups.append(group)
         db.session.commit()
         return jsonify(success=True, message="Group added to event", data=group.serialize()), 200
-    
+
     except Exception as e:
         db.session.rollback()
         return jsonify(success=False, message=str(e)), 500
