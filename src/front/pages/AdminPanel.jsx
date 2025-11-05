@@ -7,7 +7,7 @@ const AdminPanel = () => {
 
     return (
         <div className="mar min-heigth-80">
-            <ul className="nav nav-tabs d-flex justify-content-center gap-2">
+            <ul className="nav nav-tabs admin-nav d-flex justify-content-center gap-2">
                 <li className="nav-item">
                     <button
                         className={`nav-link ${activeTab === "teams" ? "active" : ""}`}

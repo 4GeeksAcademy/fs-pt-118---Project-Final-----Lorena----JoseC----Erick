@@ -10,7 +10,7 @@ const WhoWeAre = () => {
                 Our goal is to connect players and spectators in one place,
                 making it easy to create, find, book, and follow sporting events in real time.
             </p>
-            <div className="row justify-content-center gap-2">
+            <div className="row justify-content-center gap-4 mx-2">
                 <div className="border border-black rounded-5 p-4 col-sm-12 col-md-6 col-lg-3">
                     <span className="fa-solid fa-user text-danger title"></span>
                     <p className="fs-3 m-0 title">Erick Estrada</p>
