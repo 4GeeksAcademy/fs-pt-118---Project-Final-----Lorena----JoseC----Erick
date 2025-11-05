@@ -377,9 +377,16 @@ def create_group():
             user_id=get_jwt_identity(),
         )
 
-        new_group.members.append(current_user)
+        #new_group.members.append(current_user)
 
         db.session.add(new_group)
+        db.session.flush()
+        new_user_group=UsersGroups(
+            user_id=get_jwt_identity(),
+            group_id=new_group.id,
+            role="captain"
+        )
+        db.session.add(new_user_group)
         db.session.commit()
 
         return jsonify(success=True, data=new_group.serialize()), 201
@@ -751,7 +758,8 @@ def add_group_to_event(event_id, group_id):
         if not group:
             return jsonify(success=False, message="Group not found"), 404
         # Solo el dueño del grupo puede agregarlo al evento
-        if group.user_id != current_user_id:
+        print(group.user_id,current_user_id)
+        if str(group.user_id) != current_user_id:
             return jsonify(success=False, message="You are not authorized to add this group"), 403
         if group in event.groups:
             return jsonify(success=False, message="Group already linked to event"), 400
