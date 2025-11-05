@@ -44,8 +44,6 @@ const Teams = ({ group }) => {
     }
   };
 
-
-
   const handleDelete = async () => {
     setShowConfirmModal(false);
     const { success, error } = await GroupsServices.deleteGroup(group.id, token);
@@ -64,14 +62,14 @@ const Teams = ({ group }) => {
 
   return (
     <div className="container d-flex flex-column align-items-center my-3">
-      <div className="team-card border rounded-4 shadow-sm p-3 w-100" style={{ maxWidth: "700px" }}>
+      <div className="border rounded-4 shadow-sm p-3 w-100" style={{ maxWidth: "auto" }}>
         <div className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
           <div className="d-flex align-items-center gap-3 flex-grow-1 justify-content-center justify-content-md-start">
             {group.avatar && (
               <img
                 src={group.avatar}
                 alt={`${group.name} avatar`}
-                className="team-avatar img-fluid rounded-circle border border-primary shadow"
+                className="team-avatar"
               />
             )}
             <div>
