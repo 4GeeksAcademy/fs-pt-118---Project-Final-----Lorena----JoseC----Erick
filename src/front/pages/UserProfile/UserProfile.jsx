@@ -11,6 +11,7 @@ import EventForm from "../../components/EventForm";
 import { openModalById, forceCloseModalById } from "../../utils/modalUtils";
 import AvatarModal from "../../components/Avatar/AvatarModal";
 import { useNavigate } from "react-router-dom";
+import servicesGetEvents from "../../Services/servicesGetEvents";
 
 const Profile = () => {
   const { store, dispatch } = useGlobalReducer();
@@ -26,6 +27,7 @@ const Profile = () => {
 
   const [events, setEvents] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [tab, setTab] = useState("events");
   const [loading, setLoading] = useState(true);
   const [okMsg, setOkMsg] = useState("");
@@ -67,10 +69,10 @@ const Profile = () => {
         });
 
         // Si el usuario no tiene avatar dicBear asignado, colocamos uno por defecto
-          if (!user?.avatar && user?.user_name) {
-        const fallback = `https://api.dicebear.com/9.x/initials/png?seed=${encodeURIComponent(user.user_name)}`;
-        setForm((prev) => ({ ...prev, avatar: fallback }));
-      }
+        if (!user?.avatar && user?.user_name) {
+          const fallback = `https://api.dicebear.com/9.x/initials/png?seed=${encodeURIComponent(user.user_name)}`;
+          setForm((prev) => ({ ...prev, avatar: fallback }));
+        }
 
         setEvents(events);
         setGroups(groups);
@@ -82,6 +84,14 @@ const Profile = () => {
       })
       .catch(() => setErrorMsg("Error loading profile"))
       .finally(() => setLoading(false));
+
+    servicesGetEvents.getUserFavorites(token)
+      .then(favResp => {
+        if (favResp?.success) {
+          setFavorites(favResp.data)
+          dispatch({ type: "Favorites", payload: favResp.data })
+        }
+      })
   }, [dispatch, token]);
 
   const handleSave = () => {
@@ -123,6 +133,18 @@ const Profile = () => {
     setForm((prev) => ({ ...prev, avatar: value }));
   };
 
+  const handleRemoveFavorite = async (eventId) => {
+    try {
+      const result = await servicesGetEvents.toggleFavorite(eventId, token)
+      if (result?.is_favorite === false) {
+        const updatedFavorites = favorites.filter(f => f.event_id !== eventId)
+        setFavorites(updatedFavorites);
+        dispatch({ type: "Favorites", payload: updatedFavorites })
+      }
+    } catch (error) {
+      console.error("Error removing favorite:", error)
+    }
+  }
 
   return (
     <>
@@ -197,6 +219,12 @@ const Profile = () => {
                 >
                   Teams
                 </button>
+                <button
+                  className={`${styles.tabBtn} ${tab === "favorites" ? styles.active : ""}`}
+                  onClick={() => setTab("favorites")}
+                >
+                  Favorites
+                </button>
               </div>
             </div>
           </div>
@@ -267,6 +295,47 @@ const Profile = () => {
               </div>
             )}
 
+            {tab === "favorites" && (
+              <div className={styles.panel}>
+                <div className="d-flex justify-content-between align-items-center px-2">
+                  <h6 className="fw-bold m-2">Your Favorite Events</h6>
+                </div>
+
+                {store?.favorites?.length ? (
+                  <ul className={styles.list}>
+                    {store.favorites.map((fav) => (
+                      <li
+                        key={fav.event_id}
+                        className={`${styles.item} d-flex align-items-center justify-content-between`}
+                      >
+                        <div
+                          className="d-flex align-items-center"
+                          onClick={() => navigate(`/event/${fav.event_id}`)}
+                          role="button"
+                        >
+                          <img
+                            src={fav.image}
+                            alt={fav.name}
+                            className={styles.favoriteImg}
+                          />
+                          <div className={styles.info}>
+                            <span className={styles.name}>{fav.name}</span>
+                          </div>
+                        </div>
+                        <button
+                          className="btn btn-sm"
+                          onClick={() => handleRemoveFavorite(fav.event_id)}
+                        >
+                          <i className="fa-solid fa-xmark text-danger"></i>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className={styles.empty}>No favorites yet.</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

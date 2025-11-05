@@ -325,6 +325,7 @@ class Comments(db.Model):
             "content": self.content,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
+            "user_name":self.author.user_name if self.author else None
         }
 
 

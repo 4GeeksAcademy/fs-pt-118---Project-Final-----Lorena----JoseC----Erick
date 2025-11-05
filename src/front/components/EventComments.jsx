@@ -4,42 +4,48 @@ import servicesGetEvents from "../Services/servicesGetEvents";
 
 const EventComments = ({ eventId }) => {
 
-    const { store } = useGlobalReducer()
+    const { store, dispatch } = useGlobalReducer()
     const token = localStorage.getItem("token")
     const isAuth = !!store?.isAuth
-    const userId = Number (store?.user?.id)
-    const [comments, setComments] = useState([])
+    const userId = Number(store?.user?.id)
     const [newComment, setNewComment] = useState("")
     const [editingId, setEditingId] = useState(null)
     const [editingText, setEditingText] = useState("")
 
-    // Obtener comentarios
+    // Obtener los comentarios del evento
     useEffect(() => {
         const loadComments = async () => {
             try {
                 const data = await servicesGetEvents.getComments(eventId, token)
-                setComments(data.data || [])
+                dispatch({
+                    type: "setEventComments",
+                    payload: { eventId, comments: data.data || [] },
+                })
             } catch (error) {
                 console.error("Error loading comments:", error)
             }
         }
-        loadComments()
-    }, [eventId, token])
+        loadComments();
+    }, [eventId, token, dispatch])
 
-    // Agregar comentario
+    // Agregar un nuevo comentario
     const handleAddComment = async () => {
         if (!newComment.trim()) return
-        if (!isAuth) {
-            return
-        }
+        if (!isAuth) return
         try {
-            const added = await servicesGetEvents.addComment(eventId, newComment, token)
-            setComments(prev => [...prev, added.data])
+            const userName = store?.user?.name || "Anonymous";
+            const added = await servicesGetEvents.addComment(eventId, newComment, token, userName)
+            dispatch({
+                type: "addEventComment",
+                payload: { eventId, comment: added.data },
+            });
             setNewComment("")
-        } catch (error) { }
+        } catch (error) {
+            console.error("Error adding comment:", error)
+        }
     }
 
-    // Editar comentario
+    // Editar un comentario
     const startEditing = (comment) => {
         setEditingId(comment.id)
         setEditingText(comment.content)
@@ -49,19 +55,27 @@ const EventComments = ({ eventId }) => {
         if (!editingText.trim()) return
         try {
             const updated = await servicesGetEvents.updateComment(commentId, editingText, token)
-            setComments(prev => prev.map(c => c.id === commentId ? updated.data : c))
+            dispatch({
+                type: "updateEventComment",
+                payload: { eventId, comment: updated.data },
+            })
             setEditingId(null)
             setEditingText("")
         } catch (error) {
+            console.error("Error updating comment:", error)
         }
     }
 
-    // Eliminar comentario
+    // Eliminar un comentario
     const handleDeleteComment = async (commentId) => {
         try {
             await servicesGetEvents.deleteComment(commentId, token)
-            setComments(prev => prev.filter(c => c.id !== commentId))
+            dispatch({
+                type: "deleteEventComment",
+                payload: { eventId, commentId },
+            })
         } catch (error) {
+            console.error("Error deleting comment:", error)
         }
     }
 
@@ -72,15 +86,25 @@ const EventComments = ({ eventId }) => {
 
             <div className="bg-dark bg-gradient rounded">
                 <div className="comments-list text-white border border-0">
-                    {comments.length === 0 && <p>No comments yet.</p>}
-                    {comments.map(comment => (
+                    {store.comments[eventId]?.length === 0 && <p>No comments yet.</p>}
+                    {store.comments[eventId]?.map((comment) => (
                         <div key={comment.id} className="comment mb-2 p-2 border border-0">
                             <div className="d-flex justify-content-between">
-                                <strong>{comment.nick_name || "Anonymous"}</strong>
+                                <strong>{comment.user_name || "Anonymous"}</strong>
                                 {comment.user_id === userId && (
                                     <div>
-                                        <button className="btn btn-sm border border-white me-1" onClick={() => startEditing(comment)}><i className="fa-solid fa-pencil text-white"></i></button>
-                                        <button className="btn btn-sm border border-danger" onClick={() => handleDeleteComment(comment.id)}><i className="fa-solid fa-trash text-white"></i></button>
+                                        <button
+                                            className="btn btn-sm border border-white me-1"
+                                            onClick={() => startEditing(comment)}
+                                        >
+                                            <i className="fa-solid fa-pencil text-white"></i>
+                                        </button>
+                                        <button
+                                            className="btn btn-sm border border-danger"
+                                            onClick={() => handleDeleteComment(comment.id)}
+                                        >
+                                            <i className="fa-solid fa-trash text-white"></i>
+                                        </button>
                                     </div>
                                 )}
                             </div>
@@ -92,8 +116,18 @@ const EventComments = ({ eventId }) => {
                                         value={editingText}
                                         onChange={(e) => setEditingText(e.target.value)}
                                     />
-                                    <button className="btn btn-sm border border-success me-1" onClick={() => handleUpdateComment(comment.id)}><i className="fa-solid fa-check text-white"></i></button>
-                                    <button className="btn btn-sm border border-danger" onClick={() => setEditingId(null)}><i className="fa-solid fa-x text-white"></i></button>
+                                    <button
+                                        className="btn btn-sm border border-success me-1"
+                                        onClick={() => handleUpdateComment(comment.id)}
+                                    >
+                                        <i className="fa-solid fa-check text-white"></i>
+                                    </button>
+                                    <button
+                                        className="btn btn-sm border border-danger"
+                                        onClick={() => setEditingId(null)}
+                                    >
+                                        <i className="fa-solid fa-x text-white"></i>
+                                    </button>
                                 </div>
                             ) : (
                                 <p className="mb-0 mt-1">{comment.content}</p>
@@ -109,16 +143,16 @@ const EventComments = ({ eventId }) => {
                         <div className="input-group">
                             <input
                                 type="text"
-                                className="form-control border border-dark "
+                                className="form-control border border-dark"
                                 placeholder="Write a comment..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 onKeyDown={(e) => {
-                                    if (e.key === "") handleAddComment();
+                                    if (e.key === "Enter") handleAddComment();
                                 }}
                             />
                             <button
-                                className="btn btn-dark bg-gradient"
+                                className="btn btn cta"
                                 type="button"
                                 onClick={handleAddComment}
                             >
