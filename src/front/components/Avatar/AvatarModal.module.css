@@ -1,0 +1,117 @@
+.modalMinimal {
+  border: 1px solid rgba(0,0,0,.35);
+  background: rgba(10, 12, 24, .8);
+  backdrop-filter: blur(4px);
+}
+
+/* barra de controles */
+.controlBar {
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+/* select minimal con hover/focus */
+.select {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  border: 1px solid rgba(0,0,0,.6);
+  border-radius: .6rem;
+  padding: .4rem 1.5rem .4rem .6rem;
+  transition: all .2s ease-in-out;
+  min-width: 170px;
+}
+.select:hover {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.5);
+}
+.select:focus {
+  background: rgba(255,255,255,.12);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+  outline: none;
+}
+/* colorear el menú desplegable (necesita global) */
+:global(.modal .form-select option) {
+  background-color: #111827;
+  color: #fff;
+}
+
+/* botón random minimal */
+.randomBtn {
+  border-radius: .6rem !important;
+  border: 1px solid rgba(0,0,0,.6) !important;
+  background: rgba(255,255,255,.05) !important;
+  color: #fff !important;
+  transition: all .2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .4rem .8rem;
+}
+.randomBtn:hover {
+  border-color: var(--bs-primary) !important;
+  background: rgba(13,110,253,.15) !important;
+  box-shadow: 0 0 6px rgba(13,110,253,.4);
+}
+.randomBtn:active {
+  transform: scale(.98);
+}
+
+.selected {
+  border: 2px solid var(--bs-primary);
+  box-shadow: 0 6px 20px rgba(13,110,253,.25);
+}
+
+.uploader i { color: var(--bs-primary); }
+.uploading { cursor: wait; opacity: .9; }
+
+.uploadBtn {
+  padding: 0px 20px;
+  border-radius: 16px;
+  border: 2px solid rgba(130, 185, 240, 0.9); 
+  background: rgba(255, 255, 255, 0.043);
+  color: rgba(130, 185, 240, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.uploadBtn i {
+  font-size: 32px;
+  transition: transform 0.2s ease;
+}
+
+.uploadBtn:hover {
+  background: rgba(36, 186, 10, 0.281);
+  box-shadow: 0 0 12px rgba(68, 172, 50, 0.4);
+  transform: translateY(-2px);
+}
+
+.uploadBtn:hover i {
+  transform: translateY(-2px);
+}
+
+.uploadBtn:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 08px rgba(68, 172, 50, 0.5);
+}
+
+/* Estado uploading */
+.uploading {
+  cursor: wait;
+  opacity: 0.85;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2) inset;
+}
+.uploading .spinner-border {
+  width: 32px;
+  height: 32px;
+  color: #44ac32;
+}
+
+
+@media (min-width: 992px) {
+  .tile { min-height: 170px; }
+}
