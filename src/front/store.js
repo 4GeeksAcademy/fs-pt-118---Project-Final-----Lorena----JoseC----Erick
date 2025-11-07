@@ -5,6 +5,8 @@ export const initialStore = () => {
     activeGroup: null,
     editMode: false,
     groups: [],
+    groupsEvents:{},
+    allEvents:[],
     userEvents: [],
     userGroups: [],
     comments: {},
@@ -54,6 +56,11 @@ export default function storeReducer(store, action = {}) {
         ...store,
         userGroups: action.payload,
       };
+      case "setAllEvents":
+      return {
+        ...store,
+        allEvents: action.payload,
+      };
     case "setGroups":
       return {
         ...store,
@@ -63,9 +70,8 @@ export default function storeReducer(store, action = {}) {
     case "setEventGroups":
       return {
         ...store,
-        groups: {
-          ...store.groups,
-          [action.payload.eventId]: action.payload.groups,
+        groupsEvents: {
+          [action.payload.eventId]: action.payload.groupsEvents,
         },
       };
 

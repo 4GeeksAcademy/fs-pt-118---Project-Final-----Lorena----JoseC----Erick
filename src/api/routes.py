@@ -336,7 +336,7 @@ def create_event():
         db.session.add(user_event)
 
         db.session.commit()
-        return jsonify({"success": True, "event_id": new_event.id}), 201
+        return jsonify(data=new_event.serialize()), 201
 
     except Exception as e:
         db.session.rollback()

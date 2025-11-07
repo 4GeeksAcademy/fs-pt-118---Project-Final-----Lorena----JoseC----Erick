@@ -120,7 +120,7 @@ const UsersAdmin = () => {
                   This action will permanently remove the user from the system.
                 </p>
                 <p className="text-muted">
-                  All associated data, events, and group memberships will be lost. There is no undo.
+                  All associated data, events, and group will be lost. There is no undo.
                 </p>
                 <p className="text-danger fst-italic">
                   Are you absolutely sure you want to proceed?
