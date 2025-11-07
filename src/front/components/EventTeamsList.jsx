@@ -25,33 +25,41 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
   const handleAddGroup = async (group) => {
     const result = await servicesGetEvents.addGroupToEvent(eventId, group.id)
     if (result.success) {
-      alert("Group added successfully!")
       onUpdateGroups((prev) => [...prev, result.data])
-      setShowDropdown(false)
+      setShowGroupsDropdown(false)
     } else {
       alert(`${result.message}`)
     }
   }
 
   const handleJoinLeaveGroup = async (group) => {
-    const isMember = group.members?.some(member => member.id === currentUser?.id);
-    const token = localStorage.getItem("token");
+    const isMember = group.members?.some(member => member.id === currentUser?.id)
+    const isOwner = group.user_id === currentUser?.id
+    const token = localStorage.getItem("token")
 
     try {
-      let result;
       if (isMember) {
-        result = await GroupsServices.leaveGroup(group.id, token)
-        if (result.success) {
-          onUpdateGroups((prevGroups) =>
-            prevGroups.map((g) =>
-              g.id === group.id
-                ? { ...g, members: g.members.filter((m) => m.id !== currentUser.id) }
-                : g
+        if (isOwner) {
+          const removeResult = await servicesGetEvents.removeGroupFromEvent(eventId, group.id)
+          if (removeResult.success) {
+            onUpdateGroups((prevGroups) => prevGroups.filter((g) => g.id !== group.id))
+          } else {
+            alert("Error removing your group from event: " + removeResult.message)
+          }
+        } else {
+          const result = await GroupsServices.leaveGroup(group.id, token)
+          if (result.success) {
+            onUpdateGroups((prevGroups) =>
+              prevGroups.map((g) =>
+                g.id === group.id
+                  ? { ...g, members: g.members.filter((m) => m.id !== currentUser.id) }
+                  : g
+              )
             )
-          )
+          }
         }
       } else {
-        result = await GroupsServices.joinGroup(group.id, token)
+        const result = await GroupsServices.joinGroup(group.id, token)
         if (result.success) {
           onUpdateGroups((prevGroups) =>
             prevGroups.map((g) =>
@@ -66,6 +74,7 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
   }
 
   return (
+
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         <h4 className="mb-2 mb-md-0">Participating Teams</h4>
