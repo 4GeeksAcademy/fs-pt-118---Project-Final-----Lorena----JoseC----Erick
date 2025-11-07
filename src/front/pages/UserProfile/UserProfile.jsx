@@ -94,6 +94,10 @@ const Profile = () => {
       })
   }, [dispatch, token]);
 
+  useEffect(() => {
+    setGroups(store.userGroups);
+  }, [store.userGroups]);
+
   const handleSave = () => {
     setOkMsg("");
     setErrorMsg("");

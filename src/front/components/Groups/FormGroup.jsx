@@ -3,8 +3,10 @@ import CloudinaryServices from "../../Services/Cloudinary";
 import GroupsServices from "../../Services/GroupsServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 const FormGroup = ({ show, onClose }) => {
+  const {store, dispatch} = useGlobalReducer();
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState("");
   const [okMsg, setOkMsg] = useState("");
@@ -62,10 +64,9 @@ const FormGroup = ({ show, onClose }) => {
       if (success) {
         toast.success("Group created successfully 🎉");
         setGroupData({ name: "", description: "", imageFile: null });
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        dispatch({ type: "addGroup", payload: data.data });
+        dispatch({ type: "setUserGroups", payload: [...store.userGroups, data.data] });
+        onClose()
       } else {
         toast.error(error || "Error creating group");
       }

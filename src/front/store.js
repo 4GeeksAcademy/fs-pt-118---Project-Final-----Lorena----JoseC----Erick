@@ -4,7 +4,7 @@ export const initialStore = () => {
     user: JSON.parse(localStorage.getItem("user")) || null,
     activeGroup: null,
     editMode: false,
-    groups: {},
+    groups: [],
     userEvents: [],
     userGroups: [],
     comments: {},
@@ -37,6 +37,7 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         groups: store.groups.filter((g) => g.id !== action.payload),
+        userGroups: store.userGroups.filter((g) => g.id !== action.payload),
       };
     case "setEditMode":
       return {
@@ -139,7 +140,12 @@ export default function storeReducer(store, action = {}) {
           ],
         },
       };
-   default:
+    case "addGroup":
+      return {
+        ...store,
+        groups: [...store.groups, action.payload],
+      };
+    default:
       throw Error("Unknown action.");
   }
 }
