@@ -37,7 +37,7 @@ const EventDetails = () => {
           })
         }
 
-        setGroups(eventGroups)
+        setGroups(Array.isArray(eventGroups) ? eventGroups : [])
       } catch (error) {
         console.error("Error loading event details:", error)
       } finally {

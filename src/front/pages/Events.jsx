@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 import EventsCarousel from "../components/EventsCarousel";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import EventForm from "../components/EventForm";
-import { useLocation } from "react-router-dom";
+
 const Events = () => {
 
     const [events, setEvents] = useState([])
@@ -38,12 +38,12 @@ const Events = () => {
 
     useEffect(() => {
         let observer;
-        let footerReady = false;
-        let buttonReady = false;
+        let footerReady = false
+        let buttonReady = false
         const setupObserver = () => {
-            const footer = document.getElementById("page-footer");
-            const button = document.querySelector(".botonModal");
-            if (!footer || !button) return;
+            const footer = document.getElementById("page-footer")
+            const button = document.querySelector(".botonModal")
+            if (!footer || !button) return
             observer = new IntersectionObserver(
                 ([entry]) => {
                     if (entry.isIntersecting) {
@@ -55,9 +55,9 @@ const Events = () => {
                     }
                 },
                 { threshold: 0.1 }
-            );
-            observer.observe(footer);
-        };
+            )
+            observer.observe(footer)
+        }
         const mutationObserver = new MutationObserver(() => {
             if (!footerReady && document.getElementById("page-footer")) {
                 footerReady = true;
@@ -74,8 +74,8 @@ const Events = () => {
         return () => {
             if (observer) observer.disconnect();
             mutationObserver.disconnect();
-        };
-    }, []);
+        }
+    }, [])
 
     if (loading) return <p className="text-center mt-5">Loading Events...</p>
 

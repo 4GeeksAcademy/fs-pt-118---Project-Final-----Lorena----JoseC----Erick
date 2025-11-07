@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import TeamsAdmin from "../components/Admin/TeamsAdmin";
 import UsersAdmin from "../components/Admin/UsersAdmin";
+import EventsAdmin from "../components/Admin/EventsAdmin";
 
 const AdminPanel = () => {
     const [activeTab, setActiveTab] = useState("teams");
@@ -47,7 +48,7 @@ const AdminPanel = () => {
                 )}
                 {activeTab === "Events" && (
                     <div className="tab-pane active">
-                        {/* <EventsAdmin /> */}
+                        <EventsAdmin />
                     </div>
                 )}
             </div>
