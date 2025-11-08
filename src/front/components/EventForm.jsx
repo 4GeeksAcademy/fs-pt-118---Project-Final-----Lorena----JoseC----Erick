@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import EventsServices from "../Services/EventsServices";
 import CloudinaryServices from "../Services/Cloudinary";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import { toast } from "react-toastify";
 
 const EventForm = ({ show, onClose }) => {
+  const { store, dispatch } = useGlobalReducer();
   const [isUploading, setIsUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [okMsg, setOkMsg] = useState("");
@@ -38,14 +41,11 @@ const EventForm = ({ show, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true);
-
     try {
       let imageUrl = "";
-
       if (imageFile) {
         imageUrl = await CloudinaryServices.uploadEventImage(imageFile);
       }
-
       const payload = {
         name: formData.name,
         description: formData.description,
@@ -53,27 +53,20 @@ const EventForm = ({ show, onClose }) => {
         end_time: formData.end_time,
         imagen: imageUrl,
       };
-
-      const { success, event_id, error } = await EventsServices.createEvent(payload);
-
-      if (success) {
-        setOkMsg("Event created successfully 🎉");
-        setTimeout(() => {
-          onClose();
-          window.location.reload();
-        }, 3000);
+      const data = await EventsServices.createEvent(payload);
+      if (data.success) {
+        toast.success("Event created successfully 🎉");
+        dispatch({ type: "setUserEvents", payload: [...store.userEvents, data.data.data] });
+        dispatch({ type: "setAllEvents", payload: [...store.allEvents, data.data.data] });
+        setTimeout(onClose, 3000);
       } else {
-        setErrorMsg(error || "Error creating event");
+        toast.error(data.error || "Error creating event");
       }
     } catch (err) {
       console.error("Error creating event:", err);
-      setErrorMsg(err.message || "Unexpected error occurred");
+      toast.error(err.message || "Unexpected error occurred");
     } finally {
       setIsUploading(false);
-      setTimeout(() => {
-        setOkMsg("");
-        setErrorMsg("");
-      }, 3000);
     }
   };
 
@@ -158,7 +151,7 @@ const EventForm = ({ show, onClose }) => {
                 htmlFor="image"
                 className="btn btn-outline-danger cta w-100"
                 style={{ cursor: "pointer" }}
-                >
+              >
                 {imageFile ? "Image selected ✅" : "Choose image"}
               </label>
             </div>

@@ -84,11 +84,11 @@ const EventComments = ({ eventId }) => {
         <div className="event-comments mt-4">
             <h5>Comments</h5>
 
-            <div className="bg-dark bg-gradient rounded">
-                <div className="comments-list text-white border border-0">
+            <div className="bg-dark bg-gradient rounded overflow-y-auto" style={{maxHeight: "300px"}}>
+                <div className="comments-list text-white border border-0 ">
                     {store.comments[eventId]?.length === 0 && <p>No comments yet.</p>}
                     {store.comments[eventId]?.map((comment) => (
-                        <div key={comment.id} className="comment mb-2 p-2 border border-0">
+                        <div key={comment.id} className="comment mb-2 p-2 border border-0 ">
                             <div className="d-flex justify-content-between">
                                 <strong>{comment.user_name || "Anonymous"}</strong>
                                 {comment.user_id === userId && (
@@ -140,7 +140,7 @@ const EventComments = ({ eventId }) => {
             <div className="row mb-5">
                 {isAuth && (
                     <div className="col-12 mb-4">
-                        <div className="input-group">
+                        <div className="input-group mt-3">
                             <input
                                 type="text"
                                 className="form-control border border-dark"

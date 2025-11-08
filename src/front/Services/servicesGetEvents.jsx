@@ -48,6 +48,25 @@ servicesGetEvents.getEventGroups = async (eventId) => {
     }
 }
 
+servicesGetEvents.deleteEvent = async (eventId) => {
+    try {
+        const token = localStorage.getItem("token")
+        if (!token) throw new Error("No token provided")
+
+        const resp = await fetch(`${url}/api/events/${eventId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        const data = await resp.json()
+        if (!resp.ok) throw new Error(data.message || "Error deleting the event")
+        return { success: true, message: "Successfully deleted event", data }
+    } catch (error) {
+        return { success: false, message: error.message }
+    }
+}
+
 //------------------------------------Favorites Events---------------------------------------------------------
 
 servicesGetEvents.toggleFavorite = async (eventId, token) => {
@@ -210,6 +229,23 @@ servicesGetEvents.addGroupToEvent = async (eventId, groupId) => {
         return data
     } catch (error) {
         console.error("Error adding group to event:", error)
+        return { success: false, message: error.message }
+    }
+}
+
+servicesGetEvents.removeGroupFromEvent = async (eventId, groupId) => {
+    try {
+        const token = localStorage.getItem("token")
+        if (!token) throw new Error("No token provided")
+        const resp = await fetch(`${url}/api/events/${eventId}/remove-group/${groupId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        const data = await resp.json()
+        if (!resp.ok) throw new Error(data.message || "Error removing group from event")
+        return data
+    } catch (error) {
+        console.error("Error removing group from event:", error)
         return { success: false, message: error.message }
     }
 }

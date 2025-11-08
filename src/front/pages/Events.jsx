@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 import EventsCarousel from "../components/EventsCarousel";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import EventForm from "../components/EventForm";
-import { useLocation } from "react-router-dom";
+
 const Events = () => {
 
     const [events, setEvents] = useState([])
@@ -12,10 +12,13 @@ const Events = () => {
     const { store, dispatch } = useGlobalReducer()
     const isAuth = !!store?.isAuth
     const [showForm, setShowForm] = useState(false)
+    const newEvent = store.allEvents
+    
 
     useEffect(() => {
         servicesGetEvents.getAllEvents()
             .then((data) => {
+                dispatch({type:"setAllEvents",payload: data})
                 setEvents(data || [])
                 setLoading(false)
             })
@@ -33,17 +36,21 @@ const Events = () => {
                 })
                 .catch(console.error)
         }
-    }, [isAuth, dispatch])
+    }, [ dispatch])
+
+    useEffect(() => {
+        setEvents(newEvent);
+      }, [store.allEvents]);
 
 
     useEffect(() => {
         let observer;
-        let footerReady = false;
-        let buttonReady = false;
+        let footerReady = false
+        let buttonReady = false
         const setupObserver = () => {
-            const footer = document.getElementById("page-footer");
-            const button = document.querySelector(".botonModal");
-            if (!footer || !button) return;
+            const footer = document.getElementById("page-footer")
+            const button = document.querySelector(".botonModal")
+            if (!footer || !button) return
             observer = new IntersectionObserver(
                 ([entry]) => {
                     if (entry.isIntersecting) {
@@ -74,8 +81,8 @@ const Events = () => {
         return () => {
             if (observer) observer.disconnect();
             mutationObserver.disconnect();
-        };
-    }, []);
+        }
+    }, [])
 
     if (loading) return <p className="text-center mt-5">Loading Events...</p>
 

@@ -336,14 +336,38 @@ def create_event():
         db.session.add(user_event)
 
         db.session.commit()
-        return jsonify({"success": True, "event_id": new_event.id}), 201
+        return jsonify(data=new_event.serialize()), 201
 
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+@api.route("/events/<int:event_id>", methods=["DELETE"])
+@jwt_required()
+def delete_event(event_id):
+    try:
+        jwt_data = get_jwt()
+        current_user_id = get_jwt_identity()
+        user_role = jwt_data.get("role")
+        event = db.session.get(Events, event_id)
+        if not event:
+            return jsonify({"success": False, "message": "Event not found"}), 404
+        if event.creator_id != current_user_id and user_role != "admin":
+            return jsonify({"success": False, "message": "You are not authorized to delete this event"}), 403
+        event.groups.clear()
+        db.session.delete(event)
+        db.session.commit()
+
+        return jsonify({"success": True, "message": "Event deleted successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": "Internal server error", "detail": str(e)}), 500
+
 # -----------------------------------------------------Event Groups----------------------------------------------------
+
+
 @api.route('/events/<int:event_id>/groups', methods=['GET'])
 def get_groups_for_event(event_id):
     event = Events.query.get(event_id)
@@ -377,11 +401,11 @@ def create_group():
             user_id=get_jwt_identity(),
         )
 
-        #new_group.members.append(current_user)
+        # new_group.members.append(current_user)
 
         db.session.add(new_group)
         db.session.flush()
-        new_user_group=UsersGroups(
+        new_user_group = UsersGroups(
             user_id=get_jwt_identity(),
             group_id=new_group.id,
             role="captain"
@@ -743,7 +767,7 @@ def get_user_groups():
     created_groups = Groups.query.filter_by(user_id=current_user_id).all()
     return jsonify([g.serialize() for g in created_groups]), 200
 
-# ------------------------------ADD THE USER'S CREATED GROUP TO THE EVENT---------------------------------------
+# ------------------------------------- USER-CREATED GROUPS FOR THE EVENT---------------------------------------
 
 
 @api.route('/events/<int:event_id>/add-group/<int:group_id>', methods=['POST'])
@@ -758,7 +782,7 @@ def add_group_to_event(event_id, group_id):
         if not group:
             return jsonify(success=False, message="Group not found"), 404
         # Solo el dueño del grupo puede agregarlo al evento
-        print(group.user_id,current_user_id)
+        print(group.user_id, current_user_id)
         if str(group.user_id) != current_user_id:
             return jsonify(success=False, message="You are not authorized to add this group"), 403
         if group in event.groups:
@@ -766,6 +790,31 @@ def add_group_to_event(event_id, group_id):
         event.groups.append(group)
         db.session.commit()
         return jsonify(success=True, message="Group added to event", data=group.serialize()), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(success=False, message=str(e)), 500
+
+
+@api.route('/events/<int:event_id>/remove-group/<int:group_id>', methods=['DELETE'])
+@jwt_required()
+def remove_group_from_event(event_id, group_id):
+    try:
+        event = db.session.get(Events, event_id)
+        group = db.session.get(Groups, group_id)
+        current_user_id = get_jwt_identity()
+        if not event:
+            return jsonify(success=False, message="Event not found"), 404
+        if not group:
+            return jsonify(success=False, message="Group not found"), 404
+        # Solo el dueño del grupo puede eliminarlo del evento
+        if str(group.user_id) != current_user_id:
+            return jsonify(success=False, message="You are not authorized to remove this group"), 403
+        if group not in event.groups:
+            return jsonify(success=False, message="Group is not linked to this event"), 400
+        event.groups.remove(group)
+        db.session.commit()
+        return jsonify(success=True, message="Group removed from event successfully"), 200
 
     except Exception as e:
         db.session.rollback()
