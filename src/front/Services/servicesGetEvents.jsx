@@ -56,12 +56,17 @@ servicesGetEvents.deleteEvent = async (eventId) => {
         const resp = await fetch(`${url}/api/events/${eventId}`, {
             method: "DELETE",
             headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
         })
+
         const data = await resp.json()
+
         if (!resp.ok) throw new Error(data.message || "Error deleting the event")
+
         return { success: true, message: "Successfully deleted event", data }
+
     } catch (error) {
         return { success: false, message: error.message }
     }

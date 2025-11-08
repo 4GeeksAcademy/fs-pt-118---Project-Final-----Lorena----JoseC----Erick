@@ -154,6 +154,8 @@ class Events(db.Model):
             "creator_id": self.creator_id,
             "participants_count": len(self.participants) if self.participants else 0,
             "groups_count": len(self.groups) if self.groups else 0,
+            "groups": [{"id": g.id, "name": g.name} for g in (self.groups or [])],
+            "comments": [{"id": c.id, "content": c.content} for c in (self.comments or [])]
         }
 
 # Tabla intermedia para la relación muchos a muchos entre usuarios y eventos
@@ -325,9 +327,8 @@ class Comments(db.Model):
             "content": self.content,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            "user_name":self.author.user_name if self.author else None
+            "user_name": self.author.user_name if self.author else None
         }
-
 
     # Subscriptions Tabla (comentado por ahora)
 """ class Subscription(db.Model):
