@@ -22,22 +22,21 @@ const EventsAdmin = () => {
   }
 
   const handleDelete = async () => {
-    const token = localStorage.getItem("token")
-    try {
-      const { success, error } = await servicesGetEvents.deleteEvent(selectedEventId, token)
-      if (success) {
-        setEvents((prev) => prev.filter((e) => e.id !== selectedEventId))
-        showAlert("Event deleted successfully.", "success")
-      } else {
-        showAlert(error || "Failed to delete event.", "danger")
-      }
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setShowModal(false)
-      setSelectedEventId(null)
+  try {
+    const { success, message } = await servicesGetEvents.deleteEvent(selectedEventId)
+    if (success) {
+      setEvents((prev) => prev.filter((e) => e.id !== selectedEventId))
+      showAlert(message || "Event deleted successfully.", "success")
+    } else {
+      showAlert(message || "Failed to delete event.", "danger")
     }
+  } catch (error) {
+    showAlert(error.message || "An unexpected error occurred.", "danger")
+  } finally {
+    setShowModal(false)
+    setSelectedEventId(null)
   }
+}
 
   const showAlert = (message, type) => {
     setAlertModal({ show: true, message, type })

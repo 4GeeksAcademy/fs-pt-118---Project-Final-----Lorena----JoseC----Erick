@@ -14,19 +14,19 @@ const EventComments = ({ eventId }) => {
 
     // Obtener los comentarios del evento
     useEffect(() => {
-        const loadComments = async () => {
-            try {
-                const data = await servicesGetEvents.getComments(eventId, token)
-                dispatch({
-                    type: "setEventComments",
-                    payload: { eventId, comments: data.data || [] },
-                })
-            } catch (error) {
-                console.error("Error loading comments:", error)
-            }
+    const loadComments = async () => {
+        try {
+            const data = await servicesGetEvents.getComments(eventId, token);
+            dispatch({
+                type: "setEventComments",
+                payload: { eventId, comments: data.data || [] },
+            });
+        } catch (error) {
+            console.error("Error loading comments:", error);
         }
-        loadComments();
-    }, [eventId, token, dispatch])
+    };
+    loadComments();
+}, [eventId, token, dispatch]);
 
     // Agregar un nuevo comentario
     const handleAddComment = async () => {
