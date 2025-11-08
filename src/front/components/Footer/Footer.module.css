@@ -1,0 +1,96 @@
+.footer {
+  width: 100%;
+  min-height: fit-content;
+  color: inherit;
+  background: rgba(223, 222, 229, 0.646) !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.06) !important;
+  border-top: 1px solid rgba(0,0,0,.04);
+}
+
+.hr {
+  margin: 1rem 0 0.75rem;
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Quiénes somos */
+.title {
+  font-weight: 800;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: #1E2A47;
+}
+
+.about {
+  opacity: .9;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #1E2A47;
+}
+
+/* Enlaces */
+.links {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.link {
+  text-decoration: none;
+  font-weight: 600;
+  opacity: .9;
+  color: inherit;
+  transition: opacity .25s ease, transform .2s ease;
+}
+.link:hover { opacity: 1; transform: translateY(-1px); }
+.dot { opacity: .45; }
+
+/* Redes sociales */
+.social {
+  display: inline-flex;
+  gap: .6rem;
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.06);
+  color: #222;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+}
+
+.social i {
+  font-size: 1.3rem;
+}
+
+.social a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}
+
+/* Colores fuertes por red */
+.ig { color: #E1306C; }    /* Instagram */
+.tw { color: #111; }       /* X */
+.fb { color: #1877F2; }    /* Facebook */
+.yt { color: #FF0000; }    /* YouTube */
+.li { color: #0A66C2; }    /* LinkedIn */
+.gh { color: #24292F; }    /* GitHub */
+
+.ig:hover { background: rgba(225,48,108,.15); }
+.tw:hover { background: rgba(17,17,17,.15); }
+.fb:hover { background: rgba(24,119,242,.15); }
+.yt:hover { background: rgba(255,0,0,.15); }
+.li:hover { background: rgba(10,102,194,.15); }
+.gh:hover { background: rgba(36,41,47,.15); }
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .links { justify-content: center; }
+}
+

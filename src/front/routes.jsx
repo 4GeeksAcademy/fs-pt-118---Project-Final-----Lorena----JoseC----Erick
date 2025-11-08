@@ -5,7 +5,7 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
-import ResetPassword from './pages/ResetPassword';
+import ResetPassword from './pages/ResetPassword/ResetPassword.jsx';
 import Events from "./pages/Events";import Teams from "./pages/Teams";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import EventDetails from "./pages/EventDetails";

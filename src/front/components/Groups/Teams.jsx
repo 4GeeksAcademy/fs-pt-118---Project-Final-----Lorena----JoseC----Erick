@@ -62,7 +62,7 @@ const Teams = ({ group }) => {
 
   return (
     <div className="container d-flex flex-column align-items-center my-3">
-      <div className="border rounded-4 shadow-sm p-3 w-100" style={{ maxWidth: "auto" }}>
+      <div className="team-card border rounded-4 shadow-sm p-3 w-100">
         <div className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
           <div className="d-flex align-items-center gap-3 flex-grow-1 justify-content-center justify-content-md-start">
             {group.avatar && (

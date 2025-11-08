@@ -8,6 +8,7 @@
 .transition {
   transition: transform 0.3s ease;
 }
+
 .transition:hover {
   transform: scale(1.05);
 }
@@ -36,7 +37,8 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  z-index: 1051; /* por encima del backdrop */
+  z-index: 1051;
+  /* por encima del backdrop */
 }
 
 @keyframes fadeInScale {
@@ -44,6 +46,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -53,7 +56,7 @@
 .team-avatar {
   width: clamp(80px, 10vw, 140px);
   height: clamp(80px, 10vw, 140px);
-  aspect-ratio: 1 / 1; 
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 2px solid var(--bs-dark);
   object-fit: cover;
@@ -63,8 +66,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;    
+  background-color: #fff;
 }
+
 .team-avatar:hover {
   transform: scale(1.05);
 }
@@ -95,6 +99,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -119,6 +124,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -130,6 +136,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -189,43 +196,153 @@
   overflow-y: auto;
   padding-right: 0.5rem;
 }
+
+/* === Backdrop (limpio y consistente) === */
 .group-edit-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, .55);
+  backdrop-filter: blur(3px);
   z-index: 1050;
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(3px);
 }
 
+/* === Contenedor modal (espaciado, sombra y animación sutil) === */
 .group-edit-container {
-  background-color: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  padding: 1rem;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
   width: 95%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
+  padding: clamp(16px, 3vw, 22px);
+  box-shadow: 0 18px 56px rgba(0, 0, 0, .22);
   position: relative;
+  animation: modalIn .18s ease;
 }
 
+/* Reaprovecha tu @keyframes modalIn existente
+@keyframes modalIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+*/
+
+/* === Botón cerrar (clic cómodo y feedback) === */
 .group-edit-close {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: .6rem;
+  right: .6rem;
+  border-radius: 10px;
+  padding: .35rem .5rem;
+  line-height: 1;
+  opacity: .85;
+  transition: transform .15s ease, opacity .15s ease, box-shadow .2s ease;
 }
 
+.group-edit-close:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, .12);
+}
+
+/* === Título (jerarquía sutil) === */
+.group-edit-container h4 {
+  font-weight: 800;
+  letter-spacing: -.2px;
+  margin-bottom: .9rem;
+}
+
+.group-edit-container h4::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin: .5rem auto 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+}
+
+/* === Avatar (circular, nítido, con aro suave) === */
 .group-edit-avatar {
   width: 150px;
   height: 150px;
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid var(--bs-primary);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #2575fc;
+  box-shadow: 0 0 0 4px rgba(37, 117, 252, .12);
+  transition: transform .2s ease, box-shadow .2s ease;
 }
+
+.group-edit-avatar:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 6px rgba(106, 17, 203, .14);
+}
+
+/* === Inputs (bordes claros y foco accesible) === */
+.group-edit-container .form-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.group-edit-container .form-control,
+.group-edit-container .form-control-sm {
+  border: 1.5px solid #e7e7e7 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.group-edit-container .form-control:focus,
+.group-edit-container .form-control-sm:focus {
+  border-color: #6a11cb !important;
+  box-shadow: 0 0 0 4px rgba(106, 17, 203, .16) !important;
+}
+
+/* === Botones de acción (reutiliza clases Bootstrap con overrides scoped) === */
+.group-edit-container .btn.btn-outline-primary {
+  border: 2px solid #7b35e8;
+  color: #6a11cb;
+  background: #fff;
+  border-radius: 10px;
+  padding: .5rem 1rem;
+  font-weight: 600;
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.group-edit-container .btn.btn-outline-primary:hover {
+  background: #f4efff;
+  border-color: #6a11cb;
+  color: #4a11aa;
+  box-shadow: 0 6px 16px rgba(123, 53, 232, .18);
+  transform: translateY(-1px);
+}
+
+.group-edit-container .btn.btn-outline-secondary {
+  border: 1.6px solid #e3e8f5;
+  background: #f6f8fe;
+  color: #222;
+  border-radius: 10px;
+  padding: .5rem 1rem;
+  font-weight: 600;
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease;
+}
+
+.group-edit-container .btn.btn-outline-secondary:hover {
+  background: #e9eefb;
+  box-shadow: 0 6px 16px rgba(37, 117, 252, .12);
+  transform: translateY(-1px);
+}
+
+/* === Ajustes finos responsive === */
+@media (max-width: 576px) {
+  .group-edit-avatar {
+    width: 120px;
+    height: 120px;
+  }
+}
+
 
 .overlay {
   position: fixed;
@@ -250,6 +367,7 @@
   z-index: 1060;
   position: relative;
 }
+
 .event-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -257,9 +375,10 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: calc(2 * 80px + 0.75rem); 
+  max-height: calc(2 * 80px + 0.75rem);
   overflow-y: auto;
 }
+
 @media (min-width: 900px) {
   .event-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -282,7 +401,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: calc(2 * 80px + 0.75rem); 
+  max-height: calc(2 * 80px + 0.75rem);
   overflow-y: auto;
 }
 
@@ -299,4 +418,100 @@
   .member-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* ===== BOTONES DE ACCIÓN DENTRO DE LAS TARJETAS ===== */
+
+/* --- OJO (mostrar/ocultar grupo) --- */
+.btn.btn-link.border-0 {
+  color: #2575fc !important;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn.btn-link.border-0:hover {
+  transform: scale(1.15);
+  filter: brightness(1.3);
+}
+
+.btn.btn-link.border-0:active {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+/* --- EDITAR --- */
+.btn.btn-sm.btn-outline-primary {
+  background: #fff;
+  border: 2px solid #7b35e8;
+  color: #6a11cb;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.45rem 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.btn.btn-sm.btn-outline-primary:hover {
+  background: #f4efff;
+  border-color: #6a11cb;
+  color: #4a11aa;
+  box-shadow: 0 4px 12px rgba(123, 53, 232, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn.btn-sm.btn-outline-primary:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+/* --- ELIMINAR --- */
+.btn.btn-sm.btn-outline-danger {
+  background: #fff;
+  border: 2px solid #ff6b6b;
+  color: #c22727;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.45rem 0.9rem;
+  transition: all 0.25s ease;
+}
+
+.btn.btn-sm.btn-outline-danger:hover {
+  background: #fff1f1;
+  border-color: #ff4f4f;
+  color: #a91a1a;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn.btn-sm.btn-outline-danger:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+.team-card {
+  /* fondo y borde sobrios */
+  background: #fff;
+  border: 1px solid #ededed !important;
+  border-radius: 16px !important;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .team-card:hover {
+    transform: translateY(-2px);
+    border-color: #7b35e8 !important;
+    /* violeta */
+    box-shadow: 0 12px 28px rgba(37, 117, 252, 0.12);
+    /* azul suave */
+    background-color: #fbf8ff;
+    /* tinte muy suave */
+  }
+}
+
+.team-card:active {
+  transform: translateY(-1px);
+}
+
+.team-card:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 117, 252, .15);
 }

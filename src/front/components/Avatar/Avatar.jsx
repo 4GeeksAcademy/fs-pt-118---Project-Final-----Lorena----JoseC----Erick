@@ -4,7 +4,7 @@ const Avatar = ({
   src,               
   name = "User",    
   style = "initials",
-  size = 64,
+  size = 50,
 }) => {
   
   if (src && /^https?:\/\//.test(src)) {

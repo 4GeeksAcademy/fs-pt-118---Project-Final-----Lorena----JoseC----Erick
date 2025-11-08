@@ -54,7 +54,7 @@ const Events = () => {
                         button.style.pointerEvents = "auto";
                     }
                 },
-                { threshold: 0.1 }
+                { threshold: 0.5 }
             );
             observer.observe(footer);
         };
