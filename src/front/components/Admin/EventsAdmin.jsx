@@ -118,9 +118,16 @@ const EventsAdmin = () => {
                 <p className="text-muted">
                   All associated data (groups, comments, etc.) will be deleted. This action cannot be undone.
                 </p>
+                <div className="text-center">
+                  <img
+                src="https://static.wikia.nocookie.net/gensin-impact/images/2/2d/Icon_Emoji_Paimon%27s_Paintings_01_Lumine_2.png/revision/latest?cb=20240303141251"
+                alt="Lumine icon"
+                style={{ width: 80, height: 80, objectFit: "contain", marginBottom: "1rem" }}
+              />
+                </div>
                 <p className="text-danger fst-italic">Are you sure you want to continue?</p>
               </div>
-              <div className="modal-footer">
+              <div className="modal-footer d-flex justify-space-between gap-3">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
                   No, keep event
                 </button>

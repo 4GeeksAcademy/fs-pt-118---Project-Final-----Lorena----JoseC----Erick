@@ -55,7 +55,7 @@ const EventDetails = () => {
 
   return (
 
-    <div className="container mt-5 pt-5">
+    <div className="container mt-5 pt-5 min-heigth-80">
       <div className="row">
         <div className="col-md-4">
           <img

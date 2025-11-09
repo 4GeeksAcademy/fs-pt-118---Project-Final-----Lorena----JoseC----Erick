@@ -61,10 +61,10 @@ const Events = () => {
                         button.style.pointerEvents = "auto";
                     }
                 },
-                { threshold: 0.1 }
-            )
-            observer.observe(footer)
-        }
+                { threshold: 0.5 }
+            );
+            observer.observe(footer);
+        };
         const mutationObserver = new MutationObserver(() => {
             if (!footerReady && document.getElementById("page-footer")) {
                 footerReady = true;

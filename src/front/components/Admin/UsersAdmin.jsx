@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import userServices from "../../Services/userServices";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+
 
 const UsersAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -143,8 +143,6 @@ const UsersAdmin = () => {
           </div>
         </div>
       )}
-
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

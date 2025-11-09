@@ -31,7 +31,7 @@ const LandingLogged = () => {
                 })
                 .catch(console.error)
         }
-    }, [isAuth, dispatch])
+    }, [dispatch])
 
     return (
         <>
