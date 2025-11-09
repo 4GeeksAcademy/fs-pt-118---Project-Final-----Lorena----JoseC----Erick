@@ -242,7 +242,7 @@ const Profile = () => {
                 </div>
                 <div className="overflow-y-auto" style={{ maxHeight: '400px', paddingBottom: '60px' }}>
                   {events.length ? (
-                    <ul className={styles.list}>
+                    <ul className={`mt-2 ${styles.list}`}>
                       {events.map((ev) => (
                         <li
                           key={ev.id}
@@ -331,7 +331,7 @@ const Profile = () => {
                             className={styles.favoriteImg}
                           />
                           <div className={styles.info}>
-                            <span className={styles.name}>{fav.name}</span>
+                            <span className={`${styles.name}`}>{fav.name}</span>
                           </div>
                         </div>
                         <button

@@ -6,7 +6,7 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="page-footer" className={`${styles.footer} mt-auto`}>
+    <footer id="page-footer" className={`${styles.footer} mt-5`}>
       <div className="container py-4">
 
         <div className="row align-items-center gy-3">

@@ -1,39 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import userServices from "../Services/userServices";
-import { forceCloseModalById, openModalById } from "../utils/modalUtils";
-
-
+import { forceCloseModalById, openModalById, switchModals } from "../utils/modalUtils";
 const RegisterForm = () => {
-
   const [formData, setFormData] = useState({
     user_name: "",
     email: "",
     password: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [okMsg, setOkMsg] = useState("");
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
-
-  const closeRegisterAndOpenLogin = () => {
-    forceCloseModalById("registerModal", () => openModalById("loginModal"));
-  };
-
-  // ----  envío del formulario ----
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  useEffect(() => {
+    if (okMsg) {
+      const timer = setTimeout(() => {
+        forceCloseModalById("registerModal", () => openModalById("loginModal"));
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [okMsg]);
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrorMsg("");
     setOkMsg("");
     setLoading(true);
-
-    // validaciones 
     if (!formData.user_name.trim() || !formData.email.trim() || !formData.password.trim()) {
       setErrorMsg("All fields are required");
-      setTimeout(() => {
-        setErrorMsg("")
-      }, 3000);
       setLoading(false);
       return;
     }
@@ -41,26 +33,19 @@ const RegisterForm = () => {
     if (!emailRegex.test(formData.email)) {
       setErrorMsg("Please enter a valid email address");
       setLoading(false);
-        setTimeout(() => {
-        setErrorMsg("")
-      }, 3000);
       return;
     }
     if (formData.password.length <= 5) {
       setErrorMsg("The password must have more than 5 characters");
-      setLoading(false)
-        setTimeout(() => {
-        setErrorMsg("")
-      }, 3000);
+      setLoading(false);
       return;
     }
-
-    userServices.registerUser(formData).then((data) => {
-      if (data?.success) {
-        setOkMsg("Registration successful. You can now log in.");
-        setTimeout(closeRegisterAndOpenLogin, 2500);
-      }
-    })
+    userServices.registerUser(formData)
+      .then((data) => {
+        if (data?.success) {
+          setOkMsg("Registration successful. You can now log in.");
+        }
+      })
       .catch((err) => {
         if (err.status === 409) {
           setErrorMsg(err.data?.error || "Email or username already exists");
@@ -69,26 +54,17 @@ const RegisterForm = () => {
         } else {
           setErrorMsg(err.message || "Error registering user");
         }
-        setTimeout(() => setErrorMsg(""), 4000);
       })
       .finally(() => {
         setLoading(false);
+        setTimeout(() => setErrorMsg(""), 4000);
       });
   };
-
   return (
-    <div
-      className="modal"
-      id="registerModal"
-      aria-labelledby="registerModalLabel"
-      tabIndex="-1"
-
-    >
+    <div className="modal" id="registerModal" aria-labelledby="registerModalLabel" tabIndex="-1">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content colorModals">
-
           <p className="modal-title fs-2 p-2 text-center" id="registerModalLabel">Register</p>
-
           <div className="modal-body">
             {errorMsg && <div className="alert alert-danger text-center">{errorMsg}</div>}
             {okMsg && (
@@ -98,15 +74,13 @@ const RegisterForm = () => {
                   <button
                     type="button"
                     className="btn btn-sm btn-success"
-                    data-bs-dismiss="modal"
-                    data-modal-chain="#loginModal"
+                    onClick={() => switchModals("registerModal", "loginModal")}
                   >
                     Go to Login
                   </button>
                 </div>
               </div>
             )}
-
             {!okMsg && (
               <form onSubmit={handleSubmit} noValidate>
                 <div className="mb-3">
@@ -120,13 +94,11 @@ const RegisterForm = () => {
                     value={formData.user_name}
                     onChange={handleChange}
                     required
-                    title="De 3 a 20 caracteres: letras, números, _ . -"
                     autoComplete="username"
                     autoFocus
                     disabled={loading}
                   />
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="reg_email" className="form-label">Email</label>
                   <input
@@ -142,7 +114,6 @@ const RegisterForm = () => {
                     disabled={loading}
                   />
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="reg_password" className="form-label">Password</label>
                   <input
@@ -160,20 +131,17 @@ const RegisterForm = () => {
                   />
                   <div className="form-text">Minimum 5 characters.</div>
                 </div>
-
                 <button type="submit" className="btn btn-dark w-100 fw-bold" disabled={loading}>
                   {loading ? "Registering..." : "Register"}
                 </button>
               </form>
             )}
-
             <div className="mt-3">
               <span className="me-1">¿You already have an account?</span>
               <button
                 type="button"
                 className="btn btn-link link-dark link-underline-primary p-0 text-start"
-                data-bs-dismiss="modal"
-                data-modal-chain="#loginModal"
+                onClick={() => switchModals("registerModal", "loginModal")}
               >
                 Sign In
               </button>
@@ -184,5 +152,4 @@ const RegisterForm = () => {
     </div>
   );
 };
-
 export default RegisterForm;
