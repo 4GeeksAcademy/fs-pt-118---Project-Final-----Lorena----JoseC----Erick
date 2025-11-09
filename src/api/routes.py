@@ -214,32 +214,53 @@ def edit_user(id):
 @api.route('/remove-account/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(id):
-    print("Received DELETE for user ID:", id)
+    jwt_data = get_jwt()
     current_user_id = get_jwt_identity()
-    claims = get_jwt()
-
-    if current_user_id != id and claims.get("role") != "admin":
-        return jsonify({"error": "Unauthorized"}), 403
-
-    if claims.get("role") == "admin" and current_user_id == id:
-        return jsonify({"error": "Admins cannot delete themselves"}), 403
+    user_role = jwt_data.get("role", "").lower()
 
     user = db.session.get(User, id)
     if not user:
         return jsonify({"error": "User not found"}), 404
+
+    if str(user.id) == str(current_user_id) and user_role == "admin":
+        return jsonify({"error": "Admins cannot delete themselves"}), 403
+
+    if str(user.id) != str(current_user_id) and user_role != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
+
     try:
+        for fav in user.favorites_link:
+            db.session.delete(fav)
+
+        for link in user.users_groups_link:
+            db.session.delete(link)
+
+        user.events_joined.clear()
+        user.groups_joined.clear()
+
+        for event in user.events_created:
+            for fav in event.favorited_by_link:
+                db.session.delete(fav)
+
         for event in user.events_created:
             db.session.delete(event)
+
         for group in user.groups_created:
             db.session.delete(group)
+
         for comment in user.comments:
             db.session.delete(comment)
+
         for reservation in user.reservations:
             db.session.delete(reservation)
+
         db.session.delete(user)
         db.session.commit()
+
         return jsonify({"success": True, "message": "User deleted successfully"}), 200
+
     except Exception as e:
+        import traceback
         traceback.print_exc()
         db.session.rollback()
         return jsonify({"error": "Internal server error", "detail": str(e)}), 500
