@@ -81,19 +81,23 @@ userServices.getUsers = async () => {
 }
 
 userServices.deleteUser = async (id, token) => {
-  const resp = await fetch(`${url}/api/remove-account/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+  try {
+    const resp = await fetch(`${url}/api/remove-account/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    const data = await resp.json();
+    if (resp.ok) {
+      return { success: true, data };
+    } else {
+      const errorMsg = data?.error || data?.message || "Error deleting user";
+      return { success: false, error: errorMsg };
     }
-  });
-  const data = await resp.json();
-
-  if (resp.ok) {
-    return { success: true, data };
-  } else {
-    return { success: false, error: data?.message || "Error deleting group" };
+  } catch (err) {
+    return { success: false, error: "Network error or unexpected failure" };
   }
 };
 

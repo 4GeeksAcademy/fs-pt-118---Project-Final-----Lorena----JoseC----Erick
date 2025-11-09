@@ -18,7 +18,6 @@ const UsersAdmin = () => {
   const confirmDelete = (userId) => {
     setSelectedUserId(userId);
     setShowModal(true);
-    console.log("Deleting user with ID:", userId);
   };
 
   const handleDelete = async () => {
@@ -33,7 +32,6 @@ const UsersAdmin = () => {
       }
     } catch (err) {
       toast.error("Unexpected error occurred");
-      console.error(err);
     } finally {
       setShowModal(false);
       setSelectedUserId(null);
