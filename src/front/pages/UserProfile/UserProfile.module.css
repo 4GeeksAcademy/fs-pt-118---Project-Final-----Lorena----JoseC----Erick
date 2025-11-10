@@ -161,6 +161,7 @@
   font-weight: 500;
   color: #333;
   max-width: 150px;
+  align-content: center;
 }
 .date {
   font-size: 0.875rem;
