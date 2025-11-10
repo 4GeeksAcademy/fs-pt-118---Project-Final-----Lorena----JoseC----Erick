@@ -92,6 +92,10 @@ const ResetPassword = () => {
             setError("Passwords do not match");
             return;
         }
+        if (newPassword.length <= 5) {
+            setError("The password must have more than 5 characters");
+            return;
+        }
         setError('');
         setMsg('');
 
