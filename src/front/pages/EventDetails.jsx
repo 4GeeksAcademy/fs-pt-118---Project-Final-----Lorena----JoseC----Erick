@@ -12,6 +12,7 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true)
   const [event, setEvent] = useState(null)
   const [groups, setGroups] = useState([])
+  
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -27,33 +28,34 @@ const EventDetails = () => {
         }
 
         setEvent(eventData)
-        let eventGroups = store.groups?.[id]
+        let eventGroups = store.groupsEvents?.[id]
         if (!eventGroups) {
           const responseGroups = await servicesGetEvents.getEventGroups(id)
           eventGroups = responseGroups
+          
           dispatch({
             type: "setEventGroups",
-            payload: { eventId: id, groups: eventGroups },
+            payload: { eventId: id, groupsEvents: eventGroups },
           })
+          
         }
+
 
         setGroups(Array.isArray(eventGroups) ? eventGroups : [])
       } catch (error) {
-        console.error("Error loading event details:", error)
       } finally {
         setLoading(false)
       }
     }
 
     fetchEvent()
-  }, [id, store, dispatch])
-
+  }, [id, dispatch])
   if (loading) return <p className="text-center mt-5">Loading event details...</p>
   if (!event) return <p className="text-center mt-5">Event not found.</p>
 
   return (
 
-    <div className="container mt-5 pt-5">
+    <div className="container mt-5 pt-5 min-heigth-80">
       <div className="row">
         <div className="col-md-4">
           <img

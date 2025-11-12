@@ -96,7 +96,8 @@ const Profile = () => {
 
   useEffect(() => {
     setGroups(store.userGroups);
-  }, [store.userGroups]);
+    setEvents(store.userEvents);
+  }, [store.userGroups, store.userEvents]);
 
   const handleSave = () => {
     setOkMsg("");
@@ -162,7 +163,6 @@ const Profile = () => {
                   src={form.avatar}
                   name={form.user_name}
                   size={180}
-                /* className={styles.avatar} */
                 />
               </div>
               <div className="mt-3">
@@ -240,30 +240,38 @@ const Profile = () => {
                   <h6 className="fw-bold m-2">Your Events</h6>
                   <small className="mx-2"> start-events</small>
                 </div>
+                <div className="overflow-y-auto" style={{ maxHeight: '400px', paddingBottom: '60px' }}>
+                  {events.length ? (
+                    <ul className={`mt-2 ${styles.list}`}>
+                      {events.map((ev) => (
+                        <li
+                          key={ev.id}
+                          className={styles.item}
+                          onClick={() => navigate(`/event/${ev.id}`)}
+                        >
+                          <div className={styles.info}>
+                            <div className="d-flex text-center ">
 
-                {events.length ? (
-                  <ul className={styles.list}>
-                    {events.map((ev) => (
-                      <li
-                        key={ev.id}
-                        className={styles.item}
-                        onClick={() => navigate(`/event/${ev.id}`)}
-                      >
-                        <i className="fa-solid fa-calendar-day me-2" />
-                        <div className={styles.info}>
-                          <span className={styles.name}>{ev.name}</span>
-                          {ev.start_time && (
-                            <span className={styles.date}>
-                              {new Date(ev.start_time).toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className={styles.empty}>No events yet.</p>
-                )}
+                            <img
+                              src={ev.imagen}
+                              alt={ev.name}
+                              className={styles.favoriteImg}
+                              />
+                            <span className={`${styles.name} text-truncate truncate-sm`}>{ev.name}</span>
+                              </div>
+                            {ev.start_time && (
+                              <span className={styles.date}>
+                                {new Date(ev.start_time).toLocaleDateString()}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={styles.empty}>No events yet.</p>
+                  )}
+                </div>
                 <div className="fixed-bottom w-100 text-center my-3">
                   <button
                     className="btn w-75 cta"
@@ -323,7 +331,7 @@ const Profile = () => {
                             className={styles.favoriteImg}
                           />
                           <div className={styles.info}>
-                            <span className={styles.name}>{fav.name}</span>
+                            <span className={`${styles.name}`}>{fav.name}</span>
                           </div>
                         </div>
                         <button

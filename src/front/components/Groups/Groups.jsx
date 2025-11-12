@@ -26,7 +26,7 @@ const Groups = () => {
             button.style.pointerEvents = "auto";
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0.5 }
       );
 
       observer.observe(footer);
@@ -40,8 +40,8 @@ const Groups = () => {
 
   return (
     <>
-      <div className="container py-4 d-flex flex-column align-items-center mt-5 mt-sm-0">
-        <div className="card-groups w-100 border rounded-4 shadow-sm" style={{ maxWidth: "800px" }}>
+      <div className="groups-scope container py-4 d-flex flex-column align-items-center mt-5 mt-sm-0">
+        <div className="card-groups w-100 border rounded-4 shadow-sm py-5"  style={{ maxWidth: "100vh" }}>
           <h1 className="text-center fw-bold mb-4 my-2">Teams List</h1>
 
           <CardGroups scrollRef={detailsRef} />

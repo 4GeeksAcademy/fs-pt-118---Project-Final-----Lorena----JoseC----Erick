@@ -160,6 +160,8 @@
 .name {
   font-weight: 500;
   color: #333;
+  max-width: 150px;
+  align-content: center;
 }
 .date {
   font-size: 0.875rem;
@@ -177,6 +179,16 @@
   .tabs { margin-top: .75rem; }
   .avatar { width: 120px; height: 120px; }
 }
+
+@media (max-width: 576px) {
+  .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+}
+
 .showBtn {
   background: transparent;
   border: none;
@@ -198,4 +210,4 @@
   object-fit: cover;
   border-radius: 8px;
   margin-right: 10px;
-}  
+}

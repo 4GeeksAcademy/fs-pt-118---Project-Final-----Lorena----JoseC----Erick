@@ -12,10 +12,13 @@ const Events = () => {
     const { store, dispatch } = useGlobalReducer()
     const isAuth = !!store?.isAuth
     const [showForm, setShowForm] = useState(false)
+    const newEvent = store.allEvents
+    
 
     useEffect(() => {
         servicesGetEvents.getAllEvents()
             .then((data) => {
+                dispatch({type:"setAllEvents",payload: data})
                 setEvents(data || [])
                 setLoading(false)
             })
@@ -33,7 +36,11 @@ const Events = () => {
                 })
                 .catch(console.error)
         }
-    }, [isAuth, dispatch])
+    }, [ dispatch])
+
+    useEffect(() => {
+        setEvents(newEvent);
+      }, [store.allEvents]);
 
 
     useEffect(() => {
@@ -54,10 +61,10 @@ const Events = () => {
                         button.style.pointerEvents = "auto";
                     }
                 },
-                { threshold: 0.1 }
-            )
-            observer.observe(footer)
-        }
+                { threshold: 0.5 }
+            );
+            observer.observe(footer);
+        };
         const mutationObserver = new MutationObserver(() => {
             if (!footerReady && document.getElementById("page-footer")) {
                 footerReady = true;

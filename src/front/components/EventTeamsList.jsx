@@ -20,7 +20,7 @@ const EventTeamsList = ({ groups, currentUser, onUpdateGroups, eventId }) => {
       }
     }
     if (!store.userGroups || store.userGroups.length === 0) { fetchUserGroups() }
-  }, [store.userGroups, dispatch])
+  }, [])
 
   const handleAddGroup = async (group) => {
     const result = await servicesGetEvents.addGroupToEvent(eventId, group.id)

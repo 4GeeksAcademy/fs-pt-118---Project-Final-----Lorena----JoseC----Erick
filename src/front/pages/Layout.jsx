@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom"
 import ScrollToTop from "../components/ScrollToTop"
 import { Navbar } from "../components/Navbar/Navbar"
-import { Footer } from "../components/Footer"
+import { Footer } from "../components/Footer/Footer"
 import RegisterForm from "../components/RegisterForm"
 import ForgotPasswordModal from "../components/ForgotPasswordForm"
 import { ToastContainer } from "react-toastify";

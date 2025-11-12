@@ -214,35 +214,49 @@ def edit_user(id):
 @api.route('/remove-account/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(id):
-    print("Received DELETE for user ID:", id)
+    jwt_data = get_jwt()
     current_user_id = get_jwt_identity()
-    claims = get_jwt()
-
-    if current_user_id != id and claims.get("role") != "admin":
-        return jsonify({"error": "Unauthorized"}), 403
-
-    if claims.get("role") == "admin" and current_user_id == id:
-        return jsonify({"error": "Admins cannot delete themselves"}), 403
-
+    user_role = jwt_data.get("role", "").lower()
     user = db.session.get(User, id)
     if not user:
         return jsonify({"error": "User not found"}), 404
+    if str(user.id) == str(current_user_id) and user_role == "admin":
+        return jsonify({"error": "Admins cannot delete themselves"}), 403
+    if str(user.id) != str(current_user_id) and user_role != "admin":
+        return jsonify({"error": "Unauthorized"}), 403
     try:
-        for event in user.events_created:
+        for fav in list(user.favorites_link):
+            db.session.delete(fav)
+        for link in list(user.users_groups_link):
+            db.session.delete(link)
+        user.events_joined.clear()
+        user.groups_joined.clear()
+        for event in list(user.events_created):
+            event.participants.clear()
+            for fav in list(event.favorited_by_link):
+                db.session.delete(fav)
             db.session.delete(event)
-        for group in user.groups_created:
+        for group in list(user.groups_created):
+            group.members.clear()
+            if hasattr(group, "events"):
+                for event in list(group.events):
+                    event.groups.clear()
             db.session.delete(group)
-        for comment in user.comments:
+        for comment in list(user.comments):
             db.session.delete(comment)
-        for reservation in user.reservations:
+        for reservation in list(user.reservations):
             db.session.delete(reservation)
         db.session.delete(user)
         db.session.commit()
         return jsonify({"success": True, "message": "User deleted successfully"}), 200
     except Exception as e:
+        import traceback
         traceback.print_exc()
         db.session.rollback()
-        return jsonify({"error": "Internal server error", "detail": str(e)}), 500
+        return jsonify({
+            "error": "Internal server error",
+            "detail": str(e)
+        }), 500
 
 
 @api.route('/forgot-password', methods=['POST'])
@@ -336,7 +350,7 @@ def create_event():
         db.session.add(user_event)
 
         db.session.commit()
-        return jsonify({"success": True, "event_id": new_event.id}), 201
+        return jsonify(data=new_event.serialize()), 201
 
     except Exception as e:
         db.session.rollback()
@@ -350,11 +364,16 @@ def delete_event(event_id):
         jwt_data = get_jwt()
         current_user_id = get_jwt_identity()
         user_role = jwt_data.get("role")
+
         event = db.session.get(Events, event_id)
         if not event:
             return jsonify({"success": False, "message": "Event not found"}), 404
+
         if event.creator_id != current_user_id and user_role != "admin":
             return jsonify({"success": False, "message": "You are not authorized to delete this event"}), 403
+
+        Favorites.query.filter_by(event_id=event_id).delete()
+
         event.groups.clear()
         db.session.delete(event)
         db.session.commit()

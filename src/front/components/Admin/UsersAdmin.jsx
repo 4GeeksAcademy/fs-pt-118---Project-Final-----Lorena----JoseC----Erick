@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import userServices from "../../Services/userServices";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+
 
 const UsersAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -18,7 +18,6 @@ const UsersAdmin = () => {
   const confirmDelete = (userId) => {
     setSelectedUserId(userId);
     setShowModal(true);
-    console.log("Deleting user with ID:", userId);
   };
 
   const handleDelete = async () => {
@@ -33,7 +32,6 @@ const UsersAdmin = () => {
       }
     } catch (err) {
       toast.error("Unexpected error occurred");
-      console.error(err);
     } finally {
       setShowModal(false);
       setSelectedUserId(null);
@@ -120,7 +118,7 @@ const UsersAdmin = () => {
                   This action will permanently remove the user from the system.
                 </p>
                 <p className="text-muted">
-                  All associated data, events, and group memberships will be lost. There is no undo.
+                  All associated data, events, and group will be lost. There is no undo.
                 </p>
                 <p className="text-danger fst-italic">
                   Are you absolutely sure you want to proceed?
@@ -145,8 +143,6 @@ const UsersAdmin = () => {
           </div>
         </div>
       )}
-
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

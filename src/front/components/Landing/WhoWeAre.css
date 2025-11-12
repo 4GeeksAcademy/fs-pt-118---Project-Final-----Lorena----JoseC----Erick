@@ -1,0 +1,52 @@
+.who-we-are {
+  color: #222;
+  max-width: 1000px;
+}
+
+.who-title {
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: -0.5px;
+  color: #111;
+}
+
+.who-description {
+  font-size: 1.25rem;
+  color: #555;
+  line-height: 1.7;
+  max-width: 800px;
+}
+
+.who-card {
+  background-color: #fff;
+  border: solid black 16px;
+  border-radius: 2rem;
+  transition: all 0.3s ease;
+}
+
+.who-card:hover {
+  transform: translateY(-8px);
+  border-color: #070000;
+  background: rgb(223, 222, 229);
+  box-shadow: 0 0 0 6px #000, 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+
+.who-avatar {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border: 3px solid #f5f5f5;
+}
+
+@media (max-width: 768px) {
+  .who-description {
+    font-size: 1.1rem;
+    padding: 0 1rem;
+  }
+
+  .who-avatar {
+    width: 75px;
+    height: 75px;
+  }
+}

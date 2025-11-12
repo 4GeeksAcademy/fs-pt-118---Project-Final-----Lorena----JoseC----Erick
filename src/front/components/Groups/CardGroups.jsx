@@ -25,7 +25,7 @@ const CardGroups = ({ scrollRef }) => {
   return (
     <div
       className="container py-4 d-flex flex-column align-items-center shadow"
-      style={{ maxWidth: "800px" }}
+      style={{ maxWidth: "999px" }}
     >
       <div className="mb-3 w-100">
         <input
