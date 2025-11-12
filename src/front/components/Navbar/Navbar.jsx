@@ -104,7 +104,7 @@ export const Navbar = () => {
               {role === "admin" && (
                 <>
                   <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>
-                  <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/admin">Admin Panel</Link></li>
+                  <li><Link className={`dropdown-item ${styles.dropdownItem}`} to="/admin-panel">Admin Panel</Link></li>
                 </>
               )}
               <li><hr className={`dropdown-divider ${styles.dropdownDivider}`} /></li>
