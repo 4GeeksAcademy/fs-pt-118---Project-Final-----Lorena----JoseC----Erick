@@ -120,7 +120,7 @@ const EventsAdmin = () => {
                 </p>
                 <div className="text-center">
                   <img
-                src="https://static.wikia.nocookie.net/gensin-impact/images/2/2d/Icon_Emoji_Paimon%27s_Paintings_01_Lumine_2.png/revision/latest?cb=20240303141251"
+                src="https://res.cloudinary.com/ddvyou4tf/image/upload/v1762990230/Icon_Emoji_Paimon_27s_Paintings_01_Lumine_2_ig0xpi.webp"
                 alt="Lumine icon"
                 style={{ width: 80, height: 80, objectFit: "contain", marginBottom: "1rem" }}
               />

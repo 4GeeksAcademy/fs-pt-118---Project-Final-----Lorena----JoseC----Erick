@@ -23,6 +23,7 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 flask-mail = "*"
 itsdangerous = "*"
+tomli = "*"
 
 [requires]
 python_version = "3.13"

@@ -33,7 +33,7 @@ export const router = createBrowserRouter(
       <Route path="/event/:id" element={<EventDetails />} />   
       <Route path="/teams" element={<Teams />} />
       <Route path="/profile" element={<UserProfile />} />
-      <Route path="/admin" element={<AdminPanel />} />
+      <Route path="/admin-panel" element={<AdminPanel />} />
     </Route>
   )
 );

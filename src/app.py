@@ -14,7 +14,6 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_cors import CORS
 from datetime import timedelta
-
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -93,6 +92,20 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
+@app.route('/api/seed', methods=['POST'])
+def seed_database():
+    from seeder import seed_data
+    try:
+        seed_data()
+        return jsonify({
+            "message": "Base de datos poblada exitosamente",
+            "status": "success"
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "message": f"Error al poblar la base de datos: {str(e)}",
+            "status": "error"
+        }), 500
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
