@@ -8,7 +8,8 @@ npm run build
 
 # Install Python dependencies
 pip install pipenv
-pipenv install
+# CAMBIO: Forzar instalación sin verificar hashes
+pipenv install --skip-lock
 
 # Database migrations
 # Inicializar migraciones si no existe la carpeta
