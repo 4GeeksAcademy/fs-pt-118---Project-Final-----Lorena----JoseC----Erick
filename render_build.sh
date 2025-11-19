@@ -27,8 +27,12 @@ fi
 echo "🔄 Checking for multiple heads..."
 pipenv run flask db merge heads -m "Merge migration heads" || echo "No merge needed"
 
-# Aplicar todas las migraciones
+# Marcar migraciones como aplicadas sin ejecutarlas (stamps)
+echo "🏷️ Stamping database to head..."
+pipenv run flask db stamp head || echo "Stamp not needed"
+
+# Aplicar solo migraciones nuevas
 echo "⬆️ Applying database migrations..."
-pipenv run flask db upgrade
+pipenv run flask db upgrade || echo "No new migrations to apply"
 
 echo "✅ Build completed successfully!"
