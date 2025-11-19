@@ -8,7 +8,6 @@ npm run build
 
 # Install Python dependencies
 pip install pipenv
-# CAMBIO: Forzar instalación sin verificar hashes
 pipenv install --skip-lock
 
 # Database migrations
@@ -23,6 +22,10 @@ if [ ! -d "migrations/versions" ] || [ -z "$(ls -A migrations/versions 2>/dev/nu
     echo "📝 Creating initial migration..."
     pipenv run flask db migrate -m "Initial migration"
 fi
+
+# ARREGLAR MÚLTIPLES HEADS: Mergear automáticamente
+echo "🔄 Checking for multiple heads..."
+pipenv run flask db merge heads -m "Merge migration heads" || echo "No merge needed"
 
 # Aplicar todas las migraciones
 echo "⬆️ Applying database migrations..."
